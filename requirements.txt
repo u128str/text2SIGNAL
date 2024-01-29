@@ -1,0 +1,17 @@
+--extra-index-url https://int.repositories.cloud.sap/artifactory/api/pypi/proxy-deploy-releases-hyperspace-pypi/simple
+#sap-llm-commons[all]
+#sap-doxml-commons[data]==4.47.0
+# pyenv versions
+# python -m venv ll-bnch-new
+# source llm-bnch/bin/activate
+# pip install sap-llm-eval-toolkit --extra-index-url https://int.repositories.cloud.sap/artifactory/api/pypi/proxy-deploy-releases-hyperspace-pypi/simple --trusted-host int.repositories.cloud.sap --index-url  https://int.repositories.cloud.sap/artifactory/api/pypi/build-releases-pypi/simple
+sap-llm-eval-toolkit
+# for jsons/string comparisons
+deepdiff
+sentence-transformers
+pandas
+pyyaml
+pydantic==1.10.9
+tqdm==4.65.0
+matplotlib==3.7.2
+seaborn==0.12.2

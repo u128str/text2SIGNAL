@@ -1,32 +1,31 @@
-# template for python-based projects at process.ai
+# Text to SIGNAL
 
-# Introduction
-- describe the project, also from a non-technical perspective
-- describe the goal of the project
-- describe if the repo is rather explanatory or meant to become production code
+### Setup virtual environment
 
-# Setup
-- describe how to set up the project
-- this includes how to install tools, how to set up the environment, how to install dependencies
+Initially, we attempted to set up the project using `poetry`. However, we encountered issues where the `poetry install` command was running indefinitely without completion, for unclear reasons.
+
+If you prefer to use `poetry` and are able to resolve the issues, the `pyproject.toml` file is available in the repository.
+
+However, due to the aforementioned issues, using `pip` with `requirements.txt` is the recommended approach.
 
 ```
-    ├── package_name
-    │   └── module_1
-    │       ├── schemas.py
-    │       ├── logic_of_module_1.py
-    │       └── ...
-    │   └── module_2
-    │       ├── schemas.py
-    │       ├── logic_of_module_2.py
-    │       └── ...
-    │   └── tests
-    │       ├── unit
-    │       │   ├── test_module_1.py
-    │       │   └── ...
-    │       │   integration
-    │       │   ├── test_module_1.py
-    │       │   └── ...
-    |   └── main.py
-    |   └── pyproject.toml
-    
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
 ```
+
+#### Poetry setup
+
+- Install [Poetry](https://python-poetry.org/docs/#installation).
+- Get an Identity Token for <https://common.repositories.cloud.sap/>
+    - Log in using “SAML SSO”
+    - Navigate to your profile page
+    - Click “Generate Identity Token” and give it a description and then click “Next”
+    - Configure the Hyperspace repository with `poetry config http-basic.hyperspace <i/d-number> <identity-token>`.
+- Repeat the previous step for <https://int.repositories.cloud.sap/> and set
+    - `poetry config http-basic.internal-hyperspace <i/d-number> <identity-token>`
+    - `poetry config http-basic.internal-hyperspace-deploy <i/d-number> <identity-token>`
+- Run `poetry install` to install a virtual environment with all dependencies.
+- Add libraries you are adding to the project (i.e., direct imports) to `pyproject.toml` and run `poetry lock --no-update` to update `poetry.lock` without changing the dependencies.
+- Activate the virtual environment with `poetry shell`.

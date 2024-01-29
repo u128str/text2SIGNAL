@@ -128,8 +128,20 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Pycharm
-*.idea
+# ruff
+.ruff_cache/
 
-# mac
+# Docker
+.local/
+
+# Pycharm
+.idea/
+
+#VScode
+.vscode/
+
+# MacOS
 .DS_Store
+
+# Generated artifacts
+.generated
