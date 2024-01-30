@@ -1,4 +1,4 @@
-# Text to SIGNAL
+# Text to SIGNAL (Signavio)
 
 ### Setup virtual environment
 
