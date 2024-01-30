@@ -17,11 +17,6 @@ sap-llm-eval-toolkit = { extras = ["all"], version = ">=0.1.12", source = "inter
 pytest = "7.4.3"
 
 [[tool.poetry.source]]
-name = "signavio"
-url = "https://signavio.jfrog.io/artifactory/api/pypi/pypi/simple/"
-priority = "primary"
-
-[[tool.poetry.source]]
 name = "hyperspace"
 url = "https://common.repositories.cloud.sap/artifactory/api/pypi/deploy-releases-hyperspace-pypi/simple/"
 priority = "primary"
