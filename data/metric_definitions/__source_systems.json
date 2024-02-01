@@ -1,0 +1,70 @@
+[
+  {
+    "id": "SAP_SALES_CLOUD",
+    "name": "SAP Sales Cloud"
+  },
+  {
+    "id": "SAP_SERVICE_CLOUD",
+    "name": "SAP Service Cloud"
+  },
+  {
+    "id": "SERVICENOW",
+    "name": "ServiceNow"
+  },
+  {
+    "id": "SFSF",
+    "name": "SAP SuccessFactors"
+  },
+  {
+    "id": "SAP_ECC",
+    "name": "SAP ECC"
+  },
+  {
+    "id": "SAP_S4HANA",
+    "name": "SAP S/4HANA"
+  },
+  {
+    "id": "SAP_S4HANACLOUD",
+    "name": "SAP S/4HANA Cloud"
+  },
+  {
+    "id": "SAP_ISU",
+    "name": "SAP for Utilities (IS-U)"
+  },
+  {
+    "id": "SALESFORCE",
+    "name": "Salesforce"
+  },
+  {
+    "id": "ARIBA",
+    "name": "SAP Ariba"
+  },
+  {
+    "id": "JIRA",
+    "name": "Jira"
+  },
+  {
+    "id": "SAP_IBP",
+    "name": "SAP Integrated Business Planning (IBP)"
+  },
+  {
+    "id": "CROSS_SAP_ARIBA_SAP_ERP",
+    "name": "Cross System: SAP Ariba and SAP ERP (ECC, S/4HANA)"
+  },
+  {
+    "id": "SAP_DIGITAL_MANUFACTURING",
+    "name": "SAP Digital Manufacturing (DM)"
+  },
+  {
+    "id": "SAP_EWM",
+    "name": "SAP Extended Warehouse Management (EWM)"
+  },
+  {
+    "id": "SAP_OPENTEXT",
+    "name": "SAP OpenText"
+  },
+  {
+    "id": "SAP_TM",
+    "name": "SAP Transportation Management"
+  }
+]

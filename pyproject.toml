@@ -11,10 +11,14 @@ python-dotenv = "1.0.0"
 deepdiff = "6.7.1"
 pyyaml = "6.0.1"
 sap-doxml-commons = { extras = ["data"], version = "4.47.0", source = "internal-hyperspace-deploy" }
-sap-llm-eval-toolkit = { extras = ["all"], version = ">=0.1.12", source = "internal-hyperspace" }
+sap-llm-eval-toolkit = { extras = ["all"], version = "0.1.11", source = "internal-hyperspace" }
 
 [tool.poetry.group.dev.dependencies]
 pytest = "7.4.3"
+jupyter = "^1.0.0"
+pandas = "^2.2.0"
+matplotlib = "^3.8.2"
+sqlglot = "^20.11.0"
 
 [[tool.poetry.source]]
 name = "hyperspace"

@@ -1,0 +1,528 @@
+{
+  "metrics": [
+    {
+      "id": "i2c_s4hc_avg_ar_creation_to_clearing_time",
+      "name": "Average accounts receivable documents creation to clearing time",
+      "description": "Average time from accounts receivable documents creation to clearing",
+      "signalFragment": "SUM(\"AR_AVGClearingDays\" * \"AR_CountClearedDocuments\")\n/\nSUM(\"AR_CountClearedDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_avg_net_payment_terms",
+      "name": "Average net payment terms",
+      "description": "Average net payment terms in days",
+      "signalFragment": "SUM(\"AR_AVGNetDueDateDays\" * \"AR_CountDocuments\")\n/\nSUM(\"AR_CountDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_avg_payment_delay",
+      "name": "Average payment delay",
+      "description": "Average delay of payments in days",
+      "signalFragment": "SUM(\"AR_AVGClearingAfterNetDueDays\" * \"AR_CountClearedDocuments\")\n/\nSUM(\"AR_CountClearedDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_billing_request_rejection_rate",
+      "name": "Billing request (DMR) rejection rate",
+      "description": "Percentage of billing requests (debit memo requests) that were rejected",
+      "signalFragment": "(\nSUM(\"BillingRequest_RejectedCount\")\n/\nSUM(\"BillingRequest_TotalCount\")\n)\n * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_automation_rate_inv_clearing",
+      "name": "Automation rate for invoice clearing",
+      "description": "Percentage of automated invoice clearing events",
+      "signalFragment": "SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\t\tWHERE (event_name IN (${i2c_s4hc_clear_invoice_events})\n\t\t\tAND (${i2c_s4hc_automation_condition})))\n\t)\n)\n/ SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\tWHERE (event_name IN (${i2c_s4hc_clear_invoice_events})))\n\t)\n)\n * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_lead_time",
+      "name": "Average time from invoice creation to its clearing within a certain time frame",
+      "description": "Average time from invoice creation to invoice clearing within a reference period",
+      "signalFragment": "AVG(\n\t(SELECT LAST(${i2c_s4hc_clearing_date}) \n\t\tWHERE ((NOW() - LAST(end_time)) < DURATION ${i2c_s4hc_invoice_clearing_period}))\n\t-(SELECT LAST(${i2c_s4hc_posting_date})\n\t\tWHERE ((NOW() - LAST(end_time)) < DURATION ${i2c_s4hc_invoice_posting_period}))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_days_sales_outstanding",
+      "name": "Days sales outstanding (DSO)",
+      "description": "Average number of days to collect revenue, weighted by the invoice value",
+      "signalFragment": "AVG((\n\t(SELECT LAST(${i2c_s4hc_clearing_date})) \n\t\t- (SELECT FIRST(${i2c_s4hc_posting_date})))\n\t* (SELECT LAST(${i2c_s4hc_amount_conv}))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_early_payment_rate",
+      "name": "Early payment rate",
+      "description": "Percentage of invoices that were cleared more than 5 days before their due dates",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${i2c_s4hc_due_date} - ${i2c_s4hc_clearing_date} \n\t\t> DURATION ${i2c_s4hc_early_payment_condition})\n)\n/ COUNT(case_id) FILTER (\n\tWHERE (${i2c_s4hc_clearing_date} IS NOT NULL)\n) * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_late_payment_rate",
+      "name": "Late payment rate",
+      "description": "Percentage of invoices that were cleared one or more days after their due dates",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${i2c_s4hc_clearing_date} - ${i2c_s4hc_due_date} \n\t\t> DURATION ${i2c_s4hc_late_payment_condition})\n)\n/ COUNT(case_id) FILTER (\n\tWHERE (${i2c_s4hc_clearing_date} IS NOT NULL)\n) * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_no_payment_rate",
+      "name": "No payment rate",
+      "description": "Percentage of overdue invoices from all open invoices",
+      "signalFragment": "COUNT (case_id) FILTER (\n\tWHERE (${i2c_s4hc_clearing_date} IS NULL AND ${i2c_s4hc_due_date} < DATE_TRUNC('day', NOW()))\n\t)\n/ COUNT (case_id) FILTER(\n\tWHERE (${i2c_s4hc_clearing_date} IS NULL)) * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_open_overdue_invoices",
+      "name": "Number of open overdue invoices",
+      "description": "Number of invoices that are currently open and overdue",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${i2c_s4hc_clearing_date} IS NULL)\n\t\t AND ${i2c_s4hc_due_date} < DATE_TRUNC('day', NOW())\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_on_time_payment_rate",
+      "name": "On-time payment rate",
+      "description": "Percentage of invoices that were cleared less than one day or more before and no later than one day or more after their due dates",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${i2c_s4hc_clearing_date} - ${i2c_s4hc_due_date} \n\t\t< DURATION ${i2c_s4hc_late_payment_condition}\n\t AND ${i2c_s4hc_due_date} - ${i2c_s4hc_clearing_date}\n\t\t< DURATION ${i2c_s4hc_early_payment_condition}\n\t)\n)\n/\nCOUNT(case_id) FILTER (\n\tWHERE (${i2c_s4hc_clearing_date} IS NOT NULL)\n)\n * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_reversed_invoices",
+      "name": "Percentage of reversed invoices",
+      "description": "Percentage of invoices that were reversed",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${i2c_s4hc_invoice_reversal_events}))\n/\n COUNT(case_id)\n * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_total_overdue_invoice_amount",
+      "name": "Total overdue invoice amounts",
+      "description": "Sum of all invoice amounts that are overdue",
+      "signalFragment": "SUM(${i2c_s4hc_amount_conv}) FILTER(\n\t WHERE (${i2c_s4hc_clearing_date} IS NULL)\n\t\t AND ${i2c_s4hc_due_date} < DATE_TRUNC('day', NOW())\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_invoice_cancellation_rate",
+      "name": "Invoice cancellation rate",
+      "description": "Percentage of invoices (billing documents) that were cancelled",
+      "signalFragment": "(\nSUM(\"BillingDoc_TotalCancelled\")\n/\nSUM(\"BillingDoc_TotalCount\")\n)\n * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_number_of_ar_documents",
+      "name": "Number of accounts receivable documents",
+      "description": "Number of accounts receivable documents that were created",
+      "signalFragment": "SUM(\"AR_CountDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_number_of_ar_documents_paid_late",
+      "name": "Number of accounts receivable documents paid late",
+      "description": "Number of accounts receivable documents that were cleared one or more days after their due dates",
+      "signalFragment": "SUM(\"AR_PaidLateCount\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_number_of_billing_requests",
+      "name": "Number of billing requests (DMR)",
+      "description": "Number of billing requests (debit memo requests)",
+      "signalFragment": "SUM(\"BillingRequest_TotalCount\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_number_of_cleared_ar_items",
+      "name": "Number of cleared accounts receivable documents",
+      "description": "Number of accounts receivable documents that were fully cleared",
+      "signalFragment": "SUM(\"AR_CountClearedDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_number_of_invoices_cancelled",
+      "name": "Number of invoices cancelled",
+      "description": "Number of invoices (billing documents) that were cancelled",
+      "signalFragment": "SUM(\"BillingDoc_TotalCancelled\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_number_of_invoices_created",
+      "name": "Number of invoices created",
+      "description": "Number of invoices (billing documents) that were created",
+      "signalFragment": "SUM(\"BillingDoc_TotalCount\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_number_of_open_ar_docs",
+      "name": "Number of open accounts receivable documents",
+      "description": "Number of accounts receivable documents that are not yet cleared",
+      "signalFragment": "SUM(\"AR_CountOpenDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_number_of_open_ar_docs_timeframe",
+      "name": "Number of open accounts receivable documents, with time frame",
+      "description": "Number of accounts receivable documents open for longer than a certain time frame",
+      "signalFragment": "COUNT(DISTINCT \"ARUniqueKey\") FILTER (\n\tWHERE\n\t\tevent_name = 'Create Accounts Receivable'\n\t\t AND \"ClearingDate\" IS NULL\n\t\t AND (NOW()-\"DocumentDate\") > DURATION ${i2c_s4hc_open_ar_period}\n\t)",
+      "aggregationType": "EVENT",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_number_of_overdue_ar_documents",
+      "name": "Number of overdue accounts receivable documents (with time frame)",
+      "description": "Number of all accounts receivable documents that are overdue for longer than a certain time frame",
+      "signalFragment": "COUNT(DISTINCT \"ARUniqueKey\") FILTER (\n\tWHERE event_name = 'Create Accounts Receivable'\n\t AND \"ClearingDate\" IS NULL\n\t AND (NOW()-\"NetDueDate\") > DURATION ${i2c_s4hc_overdue_ar_period}\n\t)",
+      "aggregationType": "EVENT",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_number_of_rejected_billing_requests",
+      "name": "Number of rejected billing requests (DMR)",
+      "description": "Number of rejected billing requests (debit memo requests)",
+      "signalFragment": "SUM(\"BillingRequest_RejectedCount\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_total_cleared_amount",
+      "name": "Total cleared amount",
+      "description": "Total of all cleared amounts in accounts receivable documents",
+      "signalFragment": "SUM(${i2c_s4hc_cleared_sum_currency}) * (-1)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_total_invoiced_amount",
+      "name": "Total invoiced amount",
+      "description": "Total of all invoiced amounts in accounts receivable documents",
+      "signalFragment": "SUM(${i2c_s4hc_invoiced_sum_currency})",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_total_open_amount",
+      "name": "Total open amount",
+      "description": "Total of all open amounts in accounts receivable documents",
+      "signalFragment": "SUM(${i2c_s4hc_invoiced_sum_currency} + ${i2c_s4hc_cleared_sum_currency})",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_total_overdue_amount",
+      "name": "Total overdue amount (with time frame)",
+      "description": "Total of all amounts in accounts receivable documents that are overdue for longer than a certain time frame",
+      "signalFragment": "SUM(${i2c_s4hc_amount_currency}) FILTER (\n\tWHERE event_name = 'Create Accounts Receivable'\n\t AND \"ClearingDate\" IS NULL\n\t AND (NOW()-\"NetDueDate\") > DURATION ${i2c_s4hc_overdue_ar_period}\n\t)",
+      "aggregationType": "EVENT",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "i2c_s4hc_total_paid_late_amount",
+      "name": "Total paid late amount",
+      "description": "Total of all amounts in accounts receivable documents that were cleared one or more days after their due dates",
+      "signalFragment": "SUM(${i2c_s4hc_amount_currency}) FILTER (\n\tWHERE event_name = 'Clear Accounts Receivable'\n\t AND (\"ClearingDate\" - \"NetDueDate\") > DURATION ${i2c_s4hc_overdue_ar_period}\n\t)",
+      "aggregationType": "EVENT",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "i2c_s4hc_clear_invoice_events",
+      "description": "Event identifying the clearing of an invoice, for example 'Clear Accounts Receivable'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Clear Accounts Receivable'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_automation_condition",
+      "description": "Condition indicating that an event was automated, for example \"AutomationFlag\" = 'X'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"AutomationFlag\" = 'X'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_clearing_date",
+      "description": "Attribute identifying the clearing date of an invoice, for example \"AR_LastClearingDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"AR_LastClearingDate\"",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_invoice_clearing_period",
+      "description": "Reference time period to monitor invoice creation to clearing times within, for example the last 60 weeks: '60weeks'",
+      "defaultValues": [
+        {
+          "defaultValue": "'60weeks'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_posting_date",
+      "description": "Attribute identifying the posting date of an invoice, for example \"AR_LastCreationDateTime\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"AR_LastCreationDateTime\"",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_invoice_posting_period",
+      "description": "Reference time period to monitor clearing of invoices within, for example the last 60 weeks: '60weeks'",
+      "defaultValues": [
+        {
+          "defaultValue": "'60weeks'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_amount_conv",
+      "description": "Attribute identifying the amount of an invoice, for example \"AR_InvoicedAmountInGlobalCurrency\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"AR_InvoicedAmountInGlobalCurrency\"",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_due_date",
+      "description": "Attribute identifying the due date of an invoice, for example \"AR_LastNetDueDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"AR_LastNetDueDate\"",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_early_payment_condition",
+      "description": "Number of days an invoice clearing is considered to be too early, for example '1day'",
+      "defaultValues": [
+        {
+          "defaultValue": "'1day'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_late_payment_condition",
+      "description": "Number of days an invoice clearing is considered to be too late, for example '1day'",
+      "defaultValues": [
+        {
+          "defaultValue": "'1day'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_invoice_reversal_events",
+      "description": "Event identifying the reversal of an invoice, for example 'Reverse Accounts Receivable'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Reverse Accounts Receivable'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_open_ar_period",
+      "description": "Reference time period to consider for calculation of open accounts receivable documents, for example '30days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'30days'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_overdue_ar_period",
+      "description": "Reference time period to consider for calculation of overdue accounts receivable documents, for example '30days' after net due date",
+      "defaultValues": [
+        {
+          "defaultValue": "'30days'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_cleared_sum_currency",
+      "description": "Field defining in which currency the cleared amounts are to be calculated, for example \"AR_ClearedAmountInGlobalCurrency\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"AR_ClearedAmountInGlobalCurrency\"",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_invoiced_sum_currency",
+      "description": "Field defining in which currency the invoiced amounts are to be calculated, for example \"AR_InvoicedAmountInGlobalCurrency\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"AR_InvoicedAmountInGlobalCurrency\"",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "i2c_s4hc_amount_currency",
+      "description": "Field defining in which currency the amounts are to be calculated on event level, for example \"AmountInGlobalCurrency\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"AmountInGlobalCurrency\"",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    }
+  ]
+}

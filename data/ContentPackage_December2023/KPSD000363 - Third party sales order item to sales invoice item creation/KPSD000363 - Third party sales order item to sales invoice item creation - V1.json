@@ -1,0 +1,54 @@
+{
+  "comment": "KPSD000363 Third party sales order item to sales invoice item creation w/o 01VSP2 steps",
+  "source_data": [
+    {
+      "ppi_id": "KPSD000363",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPSD000363_01",
+  "event_definitions": {
+    "Create sales order item": {
+      "pattern": "ERDAT_I != @initial",
+      "timestamp": "ERDAT_I",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create sales order item with billing according to supplier invoice quantity": {
+          "pattern": "FKREL == 'F'",
+          "id": "10"
+        },
+        "Create sales order item with billing according to sales order item quantity": {
+          "pattern": "FKREL == 'B'",
+          "id": "20"
+        }
+      },
+      "include_other_variants": "Create sales order item with other means"
+    },
+    "Create purchase requisition item": {
+      "pattern": "BADAT != @initial",
+      "timestamp": "BADAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Convert purchase requisition item into purchase order item": {
+      "pattern": "ERDAT_PO != @initial",
+      "timestamp": "ERDAT_PO",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30"
+    },
+    "Receive supplier invoice": {
+      "pattern": "IR_CPUDT != @initial",
+      "timestamp": "IR_CPUDT",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40"
+    },
+    "Create customer invoice": {
+      "pattern": "ERDAT_INV != @initial",
+      "timestamp": "ERDAT_INV",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50"
+    }
+  }
+}

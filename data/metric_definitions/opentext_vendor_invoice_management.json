@@ -1,0 +1,152 @@
+{
+  "metrics": [
+    {
+      "id": "automation_rate_inv_clearing_vim",
+      "name": "Automation rate for invoice clearing",
+      "description": "Percentage of automated invoice clearing events. For example 'Clear Invoice' events that are not performed by a Dialog user",
+      "signalFragment": "SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\t\tWHERE (event_name IN (${itp_clear_invoice_events_vim})\n\t\t\tAND (${itp_automation_condition_vim})))\n\t)\n)\n/ SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\tWHERE (event_name IN (${itp_clear_invoice_events_vim})))\n\t)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "VENDOR_INVOICE_MANAGEMENT"
+      ],
+      "sourceSystems": [
+        "SAP_OPENTEXT"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "manual_invoice_posting_vim",
+      "name": "Manual invoice posting",
+      "description": "Invoices that have been posted manually, for example by a dialog user",
+      "signalFragment": "SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\t\tWHERE (event_name IN (${itp_invoice_posting_events_vim})\n\t\t\tAND (${itp_manual_condition_vim})))))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "VENDOR_INVOICE_MANAGEMENT"
+      ],
+      "sourceSystems": [
+        "SAP_OPENTEXT"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "missing_data_rate_per_doc",
+      "name": "Missing Data Rate per Document",
+      "description": "Percentage of VIM documents with missing data, for example missing mandatory information, company codes, etc.",
+      "signalFragment": "COUNT(DISTINCT \"VIM Document ID\") FILTER (WHERE\n\t\"VIM Missing Mandatory Information\" = 1 OR\n\t\"VIM Missing Company Code\" = 1 OR\n    \"VIM Missing Gross Amount\" = 1 OR\n    \"VIM Missing Date of Supply\" = 1 OR\n    \"VIM Missing Invoice Date\" = 1\n   )\n/COUNT(DISTINCT \"VIM Document ID\") *100\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "VENDOR_INVOICE_MANAGEMENT"
+      ],
+      "sourceSystems": [
+        "SAP_OPENTEXT"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "invalid_data_rate_per_doc",
+      "name": "Invalid Data Rate per Document",
+      "description": "Percentage of VIM documents with invaid data, for example invalid requisitioner, invalid vendor, etc.",
+      "signalFragment": "COUNT(DISTINCT \"VIM Document ID\") FILTER (WHERE\n\t\"VIM Invalid Currency\" = 1 OR\n\t\"VIM Invalid Requisitioner\" = 1 OR\n\t\"VIM Invalid Vendor\" = 1 OR\n\t\"VIM Invalid Vendor VAT Number\" = 1 OR\n\t\"VIM Invalid Tax Info\" = 1 OR\n\t\"VIM Invalid PO ID\" = 1 OR\n\t\"VIM Invalid Requester ID\" = 1 OR\n\t\"VIM Invalid Recipient VAT Number\" = 1\n   )\n/COUNT(DISTINCT \"VIM Document ID\") *100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "VENDOR_INVOICE_MANAGEMENT"
+      ],
+      "sourceSystems": [
+        "SAP_OPENTEXT"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "percentage_sent_back_to_ap",
+      "name": "Percentage of document being sent back to AP",
+      "description": "Percentage of documents that are sent back to AP because of errors",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES('Send Invoice Back to AP'))\n/\nCOUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "VENDOR_INVOICE_MANAGEMENT"
+      ],
+      "sourceSystems": [
+        "SAP_OPENTEXT"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "suspected_duplicate_rate_per_doc",
+      "name": "Suspected Duplicate Rate per Document",
+      "description": "Percentage of suspected duplicates per document",
+      "signalFragment": "COUNT(DISTINCT \"VIM Document ID\") FILTER (WHERE\n\t\"VIM Suspected Duplicate\" = 1\n   )\n/COUNT(DISTINCT \"VIM Document ID\") *100\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "VENDOR_INVOICE_MANAGEMENT"
+      ],
+      "sourceSystems": [
+        "SAP_OPENTEXT"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_validation_time",
+      "name": "Average Validation Time",
+      "description": "Average time of Send for Validation to Validation Complete",
+      "signalFragment": "AVG(\n\t(SELECT FIRST(end_time) \n\tWHERE event_name IN ('Validation Complete')) \n\t-\n\t(SELECT FIRST(end_time) \n    WHERE event_name IN ('Send for Validation'))\n)\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "VENDOR_INVOICE_MANAGEMENT"
+      ],
+      "sourceSystems": [
+        "SAP_OPENTEXT"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "itp_automation_condition_vim",
+      "description": "Condition indicating that an event was automated, for example \"Event Created By User Type\" <> 'Dialog'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Event Created By User Type\" <> 'Dialog'",
+          "sourceSystems": [
+            "SAP_OPENTEXT"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_clear_invoice_events_vim",
+      "description": "Event identifying the clearing of an invoice, for example 'Clear Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_OPENTEXT"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_manual_condition_vim",
+      "description": "Condition indicating that an event was manual, for example \"Event Created By User Type\" = 'Dialog'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Event Created By User Type\" = 'Dialog'",
+          "sourceSystems": [
+            "SAP_OPENTEXT"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_invoice_posting_events_vim",
+      "description": "Events identifying the posting of invoice items, for example 'Post Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Post Invoice'",
+          "sourceSystems": [
+            "SAP_OPENTEXT"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "comment": "KPLE000360 Supplier return delivery processing without classic Warehouse Management ",
+  "bpmn_model": "Supplier return delivery processing without classic Warehouse Management",
+  "source_data": [
+    {
+      "ppi_id": "KPLE000360",
+      "type": "main",
+      "filter": "VGTYP eq 'V' and WERKS_LIKP eq '' and contains(TCODE,'ME2O') ne true"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPLE000360_06",
+  "event_definitions": {
+    "Create return delivery item": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create return delivery item manually via delivery due transaction VL10x": {
+          "pattern": "USTYP == 'A' and TCODE == 'VL10X'",
+          "id": 30
+        },
+        "Create return delivery item automatically": {
+          "pattern": "TCODE == ''or (TCODE != '' and (USTYP == 'B' or USTYP =='C'))",
+          "id": 40
+        },
+        "Create return delivery item via custom transaction": {
+          "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+          "id": 50
+        }
+      },
+      "include_other_variants": "Create return delivery item - others"
+    },
+    "Perform transportation planning for return delivery": {
+      "pattern": "TRSTA != '' and ERDAT != @initial ",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Pick return delivery item": {
+      "pattern": "KODAT_IST != @initial ",
+      "timestamp": "KODAT_IST",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30"
+    },
+    "Process return delivery with packing": {
+      "pattern": "KODAT_IST != @initial and PKSTA != ''",
+      "timestamp": "KODAT_IST",
+      "timestamp_offset_minutes": 100,
+      "id": "EVENT_40"
+    },
+    "Post goods issue": {
+      "pattern": "WADAT_IST != @initial",
+      "timestamp": "WADAT_IST",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50"
+    }
+  }
+}

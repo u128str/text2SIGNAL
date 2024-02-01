@@ -1,0 +1,755 @@
+{
+  "metrics": [
+    {
+      "id": "total_overdue_invoice_amount",
+      "name": "Total overdue invoice amounts",
+      "description": "Sum of all invoice amounts that are open and overdue (converted to USD)",
+      "signalFragment": "SUM(${itp_amount_conv}) FILTER(\n\t WHERE (${itp_clearing_date} IS NULL)\n\t\tAND ${itp_due_date} < DATE_TRUNC('day', NOW()))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "open_overdue_invoices",
+      "name": "Number of open overdue invoices",
+      "description": "Number of invoices that are currently open and overdue",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${itp_clearing_date} IS NULL)\n\t\tAND ${itp_due_date} < DATE_TRUNC('day', NOW()))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "overdue_ratio",
+      "name": "Ratio of overdue invoices",
+      "description": "Percentage of overdue invoices from all open invoices",
+      "signalFragment": "COUNT (case_id) FILTER (\n\tWHERE (${itp_clearing_date} IS NULL AND ${itp_due_date} < DATE_TRUNC('day', NOW()))\n\t)\n/ COUNT (case_id) FILTER(\n\tWHERE (${itp_clearing_date} IS NULL)) * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "dpo",
+      "name": "Days Payables Outstanding",
+      "description": "Days Payables Outstanding - Average time from invoice posting to invoice clearing within a reference period",
+      "signalFragment": "AVG(\n\t(SELECT LAST(${itp_clearing_date}) \n\t\tWHERE ((NOW() - LAST(end_time)) < DURATION ${itp_invoice_clearing_period}))\n\t-(SELECT LAST(${itp_posting_date})\n\t\tWHERE ((NOW() - LAST(end_time)) < DURATION ${itp_invoice_posting_period})))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "automation_rate_inv_clearing",
+      "name": "Automation rate for invoice clearing",
+      "description": "Percentage of automated invoice clearing events. For example 'Clear Invoice' events that are not performed by a Dialog user",
+      "signalFragment": "SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\t\tWHERE (event_name IN (${itp_clear_invoice_events})\n\t\t\tAND (${itp_automation_condition})))\n\t)\n)\n/ SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\tWHERE (event_name IN (${itp_clear_invoice_events})))\n\t)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "late_payment_rate",
+      "name": "Late payment rate",
+      "description": "Percentage of invoices that were cleared more than 1 day after their due dates",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${itp_clearing_date} - ${itp_due_date} \n\t\t> DURATION ${itp_late_payment_condition})\n)\n/COUNT(case_id) FILTER (\n\tWHERE (${itp_clearing_date} IS NOT NULL)\n) * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "early_payment_rate",
+      "name": "Early payment rate",
+      "description": "Percentage of invoices that were cleared more than 5 days before their due dates",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${itp_due_date} - ${itp_clearing_date} \n\t\t> DURATION ${itp_early_payment_condition})\n)\n/COUNT(case_id) FILTER (\n\tWHERE (${itp_clearing_date} IS NOT NULL)\n)* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "on_time_payment_rate",
+      "name": "On-time payment rate",
+      "description": "Percentage of invoices that were cleared less than 5 days before and no later than 1 day after their due dates",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${itp_clearing_date} - ${itp_due_date} \n\t\t< DURATION ${itp_late_payment_condition}\n\tAND ${itp_due_date} - ${itp_clearing_date}\n\t\t< DURATION ${itp_early_payment_condition}\n\t)\n)\n/\nCOUNT(case_id) FILTER (\n\tWHERE (${itp_clearing_date}IS NOT NULL)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "reversed_invoices",
+      "name": "Percentage of reversed invoices",
+      "description": "Percentage of invoices that were reversed counted for example by the number of 'Reverse Invoice' events",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${itp_invoice_reversal_events}))\n/\nCOUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_gr_creation_posting_invoice",
+      "name": "Average time of goods receipt to invoice posting",
+      "description": "Average time from receipt of goods to invoice posting",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) \n\tWHERE event_name IN (${itp_invoice_posting_events})) \n\t-\n\t(SELECT FIRST(end_time) \n\tWHERE event_name IN (${itp_goods_receipt_events})))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "dunning_rate",
+      "name": "Dunning rate",
+      "description": "Percentage of invoices that were dunned",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${itp_dunning_condition})\n\t)\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "duration_of_payment_blocks",
+      "name": "Duration of payment blocks",
+      "description": "Average lead time from setting a payment block to removing the last one",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) FILTER \n\t\t(WHERE event_name IN (${itp_remove_payment_block_events})))\n\t-\n\t(SELECT FIRST(end_time) FILTER\n\t\t(WHERE event_name IN (${itp_set_payment_block_events}))))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "no_touch_invoice",
+      "name": "No-Touch invoice processing rate",
+      "description": "Percentage of cleared invoices where no change events occured",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE NOT (event_name MATCHES(${itp_no_touch_condition})) \n\t\tAND (event_name MATCHES(${itp_clear_invoice_events}))\n)\n/ (COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${itp_clear_invoice_events}))\n\t)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "invoices_without_purchase_order",
+      "name": "Invoices without po",
+      "description": "Invoices without purchase order",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(NOT ${itp_po_creation_to_invoice_posting})\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "baseline_date_changes",
+      "name": "Percentage of baseline date changes",
+      "description": "Percentage of Baseline Date Changes after the Invoice was posted",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${itp_change_baseline_date})\n\t\tAND event_name MATCHES(${itp_posting_to_baseline_update_events}))\n/\nCOUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "missed_cash_discounts",
+      "name": "Missed cash discounts",
+      "description": "Amount of cash discounts missed due to late payments",
+      "signalFragment": "SUM(\n\t(${itp_amount_conv} * ${itp_discount_percentage})\n\t-${itp_discount_applied_to_invoice}\n\t)\nFILTER(\n\tWHERE EVENT_NAME MATCHES (${itp_cd_1_missed})\n\t\tOR EVENT_NAME MATCHES (${itp_cd_2_missed})\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "two_way_match_rate",
+      "name": "Two-way match rate",
+      "description": "Percentage of cases where the invoice amount equals the purchase order net order value",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${itp_two_way_match_condition})\n\t)\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "invoices_without_gr",
+      "name": "Invoices without goods receipt",
+      "description": "Total number of invoices without goods receipts",
+      "signalFragment": "COUNT(case_id)\n\tFILTER (WHERE NOT EVENT_NAME  MATCHES (${itp_goods_receipt_events})\n\t\tAND EVENT_NAME  MATCHES (${itp_invoice_posting_events}))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "payment_block_rate",
+      "name": "Payment block rate",
+      "description": "Percentage of all invoices where a payment block was set",
+      "signalFragment": "COUNT(case_id)\n\tFILTER (WHERE event_name MATCHES (${itp_set_payment_block_events}))\n/ COUNT(case_id) \n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "parked_invoices",
+      "name": "Parked invoices",
+      "description": "Invoices that have been parked before being posted",
+      "signalFragment": "COUNT(case_id) FILTER(\n\tWHERE event_name MATCHES(${itp_parked_invoices}))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "manual_invoice_posting",
+      "name": "Manual invoice posting",
+      "description": "Invoices that have been posted manually, for example by a dialog user",
+      "signalFragment": "SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\t\tWHERE (event_name IN (${itp_invoice_posting_events})\n\t\t\tAND (${itp_manual_condition})))))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "currently_blocked_invoices",
+      "name": "Currently blocked invoices",
+      "description": "Invoices that are currently blocked from being paid",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${itp_set_payment_block_events})\n\t\tAND NOT event_name MATCHES(${itp_remove_payment_block_events})\n\t\tAND NOT event_name MATCHES(${itp_clear_invoice_events}))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "payment_terms_differences",
+      "name": "Payment Terms Differences",
+      "description": "Number of invoices for which the payment terms on the invoice differ from the payment terms on the purchase order",
+      "signalFragment": "COUNT(case_id) FILTER(\n\tWHERE (${itp_invoice_payment_terms}) \n\t\t<> (CASE WHEN ${itp_purchase_order_payment_terms} IS NULL THEN 0 \n\tELSE ${itp_purchase_order_payment_terms} END))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "price_inconsistency_invoice_and_purchase_order",
+      "name": "Price difference on the invoice compared to the purchase order",
+      "description": "Number of invoices with different prices compared to the purchase order",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${itp_different_price_condition}))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "automation_remove_payment_block",
+      "name": "Automatic payment block removal",
+      "description": "Number of invoices where payment blocks where removed by non-dialog users",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (event_name MATCHES(${itp_remove_payment_block_events}))\n\t\tAND NOT (${itp_automatic_condition_nested}))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "purchase_orders_created_after_invoice_receipt",
+      "name": "Late purchase order creation",
+      "description": "Total number of invoices where the purchase order item was created after the invoice creation",
+      "signalFragment": "COUNT(case_id) FILTER(\n\tWHERE (event_name MATCHES(\n(${itp_incompliant_activity_order}))))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "immediate_payment",
+      "name": "Invoices with immediate payment terms",
+      "description": "Number of invoices where the payment terms (BSEG.ZBD1T) are 0 or NULL",
+      "signalFragment": "COUNT(case_id) FILTER(\n\tWHERE ${itp_cash_discount_terms} IS NULL\n\t\tOR ${itp_cash_discount_terms} = 0)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lost_cd_on_early_payment",
+      "name": "Lost cash discount despite in-time payment",
+      "description": "Amount of lost cash discounts in USD even though the invoice was paid in time for cash discount collection",
+      "signalFragment": "SUM(\n\t(${itp_amount_conv} * ${itp_discount_percentage})\n\t-${itp_discount_applied_to_invoice}\n\t)\nFILTER(\n\tWHERE EVENT_NAME MATCHES (${itp_cd_in_time}))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "itp_invoice_clearing_period",
+      "description": "Reference time period to monitor invoice creation to clearing times within, for example the last year: '52weeks'",
+      "defaultValues": [
+        {
+          "defaultValue": "'52weeks'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_invoice_posting_period",
+      "description": "Reference time period to monitor clearing of invoices within, for example the last year: '52weeks'",
+      "defaultValues": [
+        {
+          "defaultValue": "'52weeks'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_automation_condition",
+      "description": "Condition indicating that an event was automated, for example \"Event Created By User Type\" <> 'Dialog'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Event Created By User Type\" <> 'Dialog'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_early_payment_condition",
+      "description": "Number of days an invoice clearing is considered to be too early, for example '5days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'5days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_late_payment_condition",
+      "description": "Number of days an invoice clearing is considered to be too late, for example '1days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'1days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_invoice_reversal_events",
+      "description": "Event identifying the reversal of an invoice, for example 'Reverse Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Reverse Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_clear_invoice_events",
+      "description": "Event identifying the clearing of an invoice, for example 'Clear Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_clearing_date",
+      "description": "Attribute identifying the clearing date of an invoice, for example \"Last Inv. Item Clearing Date\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Inv. Item Clearing Date\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_due_date",
+      "description": "Attribute identifying the due date of an invoice, for example \"Last Inv. Item Due Date\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Inv. Item Due Date\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_amount_conv",
+      "description": "Attribute identifying the amount (converted to USD) of an invoice, for example \"Inv. Converted USD Amount\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Inv. Converted USD Amount\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_posting_date",
+      "description": "Attribute identifying the posting date of an invoice, for example \"Inv. Posting Document Date\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Inv. Posting Document Date\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_invoice_posting_events",
+      "description": "Events identifying the posting of invoice items, for example 'Post Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Post Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_goods_receipt_events",
+      "description": "Events identifying that the goods have been shipped, for example 'Record Goods Issue'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Goods Receipt'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_dunning_condition",
+      "description": "Condition defining that an invoice has been dunned, for example \"Last Inv. Item Dunned On\" IS NOT NULL",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Inv. Item Dunned On\" IS NOT NULL",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_remove_payment_block_events",
+      "description": "Event identifying the removal of a payment block for an invoice, for example 'Remove Payment Block'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Remove Payment Block'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_set_payment_block_events",
+      "description": "Event identifying the setting of a payment block for an invoice, for example 'Set Payment Block'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Set Payment Block'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_no_touch_condition",
+      "description": "Events that need manual intervention on an invoice and contradict the no-touch rate, for example 'Reverse Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "('Change Invoice Header Text'|'Change Tax Date'|'Change Reference Number'|'Change Payment Method'|'Change Payment Term'|'Change Baseline Date'|'Change Payment Days 1'|'Change Cash Discount Percentage 1'|'Change Item Text'|'Set Payment Block'|'Remove Payment Block'|'Change Payment Block'|'Reverse Invoice')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_po_creation_to_invoice_posting",
+      "description": "Purchase order creation followed directly or indirectly by invoice posting, for example 'Create Purchase Order'~> 'Post Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Purchase Order'~> 'Post Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_change_baseline_date",
+      "description": "Events that describe a change in baseline date, for example 'Change Baseline Date'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Change Baseline Date'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_posting_to_baseline_update_events",
+      "description": "Invoice Posting to Baseline date changes event flow, for example 'Post Invoice'~>'Change Baseline Date'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Post Invoice'~>'Change Baseline Date'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_discount_percentage",
+      "description": "Attribute referring to the maximum percentage discount that can be applied to the total amount of an invoice item, for example \"Last Inv. Item Cash Discount Percentage1\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Inv. Item Cash Discount Percentage1\" /100",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_discount_applied_to_invoice",
+      "description": "Attribute referring to the actual cash discount applied when the invoice was paid, for example \"Inv. Converted USD Cash Discount Amount\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Inv. Converted USD Cash Discount Amount\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_cd_1_missed",
+      "description": "Order of events identifying that an invoice was paid after the cash discount due date 1, for example 'Cash Discount 1 Due Date passed'~>'Clear Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Cash Discount 1 Due Date passed'~>'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_cd_2_missed",
+      "description": "Order of events identifying that an invoice was paid after the cash discount due date 2, for example 'Cash Discount 2 Due Date passed'~>'Clear Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Cash Discount 2 Due Date passed'~>'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_two_way_match_condition",
+      "description": "Condition identifying invoices with a two-way attribute match, for example \"PO Item Total Net Order Value\" = \"Inv. Amount in Document Currency\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"PO Item Total Net Order Value\" = \"Inv. Amount in Document Currency\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_parked_invoices",
+      "description": "Event that describes invoices that are parked, for example 'Park Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Park Invoice'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_manual_condition",
+      "description": "Condition indicating that an event was manual, for example \"Event Created By User Type\" = 'Dialog'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Event Created By User Type\" = 'Dialog'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_invoice_payment_terms",
+      "description": "Attribute referring to the invoice payment terms in days, for example \"Last Inv. Item Net Payment Terms Period\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Inv. Item Net Payment Terms Period\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_purchase_order_payment_terms",
+      "description": "Attribute referring to the purchase order payment terms in days, for example \"Last PO Net Payment Days\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last PO Net Payment Days\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_different_price_condition",
+      "description": "Condition showing if there are different prices between purchase order and invoice, for example \"PO Item Total Net Order Value\" \n<> \"Inv. Amount in Document Currency\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"PO Item Total Net Order Value\" \n<> \"Inv. Amount in Document Currency\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_incompliant_activity_order",
+      "description": "Order of events identifying that a purchase order was created after the invoice was created by the vendor, for example 'Vendor Creates Invoice' ~> 'Create PO Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Vendor Creates Invoice' ~> 'Create PO Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_automatic_condition_nested",
+      "description": "Condition indicating that an event was manual, for example \"Event Created By User Type\" MATCHES('Dialog')",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Event Created By User Type\" MATCHES ('Dialog')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_cash_discount_terms",
+      "description": "Terms that determine after which time an invoice needs to be paid, for example \"Last Inv. Item Cash Discount Days 1\" BSEG.ZBD1t",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Inv. Item Cash Discount Days 1\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itp_cd_in_time",
+      "description": "Order of events identifying that an invoice was paid in time for collection of cash discount 1, for example 'Clear Invoice'~>('Cash Discount 1 Due Date passed'|'Cash Discount 2 Due Date passed')",
+      "defaultValues": [
+        {
+          "defaultValue": "'Clear Invoice'~>('Cash Discount 1 Due Date passed'|'Cash Discount 2 Due Date passed')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    }
+  ]
+}

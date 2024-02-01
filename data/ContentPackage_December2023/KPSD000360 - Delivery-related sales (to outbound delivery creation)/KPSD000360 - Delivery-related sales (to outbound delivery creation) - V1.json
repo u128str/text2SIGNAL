@@ -1,0 +1,87 @@
+{
+  "comment": "KPSD000360 Delivery-related sales (to outbound delivery creation)",
+  "source_data": [
+    {
+      "ppi_id": "KPSD000360",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPSD000360_01",
+  "event_definitions": {
+    "Create sales order item": {
+      "pattern": "ERDAT_I != @initial",
+      "timestamp": "ERDAT_I",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create sales order item without reference": {
+          "pattern": "VGTYP == ''",
+          "id": "10"
+        },
+        "Create sales order item with reference to quotation": {
+          "pattern": "VGTYP == 'B'",
+          "id": "20"
+        },
+        "Create sales order item with reference to sales order": {
+          "pattern": "VGTYP == 'C'",
+          "id": "30"
+        },
+        "Create sales order item with reference to contract": {
+          "pattern": "VGTYP == 'G'",
+          "id": "40"
+        },
+        "Create sales order item with reference to sales invoice": {
+          "pattern": "VGTYP == 'M'",
+          "id": "50"
+        },
+        "Create sales order item with reference to intercompany invoice": {
+          "pattern": "VGTYP == '5'",
+          "id": "60"
+        }
+      },
+      "include_other_variants": "Create sales order item - others"
+    },
+    "Release delivery block in sales order header": {
+      "pattern": "LIFSK_RELEASE != @initial",
+      "timestamp": "LIFSK_RELEASE",
+      "timestamp_offset_minutes": 20,
+      "id": "EVENT_20"
+    },
+    "Release delivery block in sales order schedule line": {
+      "pattern": "LIFSP_RELEASE != @initial",
+      "timestamp": "LIFSP_RELEASE",
+      "timestamp_offset_minutes": 20,
+      "id": "EVENT_30"
+    },
+    "Create outbound delivery item": {
+      "pattern": "ERDAT_DEL != @initial",
+      "timestamp": "ERDAT_DEL",
+      "timestamp_offset_minutes": 50,
+      "id": "EVENT_40",
+      "variants": {
+        "Create outbound delivery item immediately when saving order": {
+          "pattern": "TCODE_DEL == 'VA01' or TCODE_DEL == 'VA02'",
+          "id": "10"
+        },
+        "Create outbound delivery item via single transaction VL01/VL01N": {
+          "pattern": "(TCODE_DEL == 'VL01N' or TCODE_DEL == 'VL01') and USTYP == 'A'",
+          "id": "20"
+        },
+        "Create outbound delivery item via transaction VL10X": {
+          "pattern": "TCODE_DEL == 'VL10X' and USTYP == 'A'",
+          "id": "30"
+        },
+        "Create outbound delivery item automatically": {
+          "pattern": "TCODE_DEL == '' and (USTYP == 'B' or USTYP == 'C')",
+          "id": "40"
+        },
+        "Create outbound delivery item via custom transaction": {
+          "pattern": "TCODE_DEL.str.startswith('Z') or TCODE_DEL.str.startswith('Y') or TCODE_DEL.str.startswith('/')",
+          "id": "50"
+        }
+      },
+      "include_other_variants": "Create outbound delivery item - others"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "comment": "KPSD000364 Sales order item (purchase to order) to sales invoice creation - w/o 01VSP2 steps",
+  "source_data": [
+    {
+      "ppi_id": "KPSD000364",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPSD000364_01",
+  "event_definitions": {
+  "Create sales order item": {
+      "pattern": "ERDAT_I != @initial",
+      "timestamp": "ERDAT_I",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10"
+  },
+    "Create purchase requisition item": {
+      "pattern": "BADAT != @initial",
+      "timestamp": "BADAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_30"
+    },
+    "Convert purchase requisition item into purchase order item": {
+      "pattern": "ERDAT_PO != @initial",
+      "timestamp": "ERDAT_PO",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_40"
+    },
+      "Post goods receipt into sales order item stock": {
+      "pattern": "GR_CPUDT != @initial",
+      "timestamp": "GR_CPUDT",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_50"
+    },
+      "Create outbound delivery item": {
+      "pattern": "ERDAT_DEL != @initial",
+      "timestamp": "ERDAT_DEL",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_60"
+    },
+      "Post goods issue from sales order stock": {
+      "pattern": "ERDAT_GI != @initial",
+      "timestamp": "ERDAT_GI",
+      "timestamp_offset_minutes": 200,
+      "id": "EVENT_70"
+    },
+      "Receive supplier invoice": {
+      "pattern": "IR_CPUDT != @initial",
+      "timestamp": "IR_CPUDT",
+      "timestamp_offset_minutes": 240,
+      "id": "EVENT_80"
+    },
+      "Create customer invoice": {
+      "pattern": "ERDAT_INV != @initial",
+      "timestamp": "ERDAT_INV",
+      "timestamp_offset_minutes": 300,
+      "id": "EVENT_90"
+    }
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "metrics": [
+    {
+      "id": "avg_nr_reworks_per_case",
+      "name": "Average number of reworks per case",
+      "description": "Average number, per case, of events that appear at least twice",
+      "signalFragment": "AVG((SELECT COUNT(event_name) - COUNT(DISTINCT event_name)))",
+      "aggregationType": "CASE",
+      "category": "Rework",
+      "version": "1.0.0"
+    },
+    {
+      "id": "percentage_rework_cases",
+      "name": "Percentage of cases affected by rework",
+      "description": "Number of cases affected by rework divided by the total number of cases",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE\n\t(SELECT BOOL_OR (${minimum_loops_condition})\n\t\tFROM(SELECT OCCURRENCE(event_name) AS occurrence) AS sub\n)\n)/COUNT(case_id)*100",
+      "aggregationType": "CASE",
+      "category": "Rework",
+      "version": "1.0.0"
+    },
+    {
+      "id": "percentage_rework_events",
+      "name": "Percentage of events affected by rework",
+      "description": "Number of events in the process that appear at least twice divided by the total number of events",
+      "signalFragment": "SUM(\n(SELECT COUNT(event_name) - COUNT(DISTINCT event_name))\n)\n/\nSUM((SELECT COUNT(event_name))) * 100",
+      "aggregationType": "CASE",
+      "category": "Rework",
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_cycle_time_rework_cases",
+      "name": "Average cycle time for cases affected by rework",
+      "description": "Average cycle time calculated from the first to the last event for cases affected by rework",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) - FIRST(end_time))\n)\n\tFILTER (WHERE (SELECT BOOL_OR (${minimum_loops_condition})\n\t\tFROM(SELECT OCCURRENCE(event_name) AS occurrence) AS sub)\n\t\t)",
+      "aggregationType": "CASE",
+      "category": "Rework",
+      "version": "1.0.0"
+    },
+    {
+      "id": "net_avg_rework_cycle_time",
+      "name": "Net average cycle time spent on rework",
+      "description": "Difference between the average cycle time of the cases that have any rework and the average cycle time of the whole process",
+      "signalFragment": "(AVG(\n\t(SELECT LAST(end_time) - FIRST(end_time))\n)\n\tFILTER (WHERE (SELECT BOOL_OR (${minimum_loops_condition})\n\t\tFROM(SELECT OCCURRENCE(event_name) AS occurrence) AS sub)\n\t\t))\n-\n(AVG(\n\t(SELECT LAST(end_time) - FIRST(end_time))\n))",
+      "aggregationType": "CASE",
+      "category": "Rework",
+      "version": "1.0.0"
+    },
+    {
+      "id": "percentage_cases_no_rework",
+      "name": "Percentage of cases without any rework",
+      "description": "Number of cases not affected by rework divided by the total number of cases",
+      "signalFragment": "100 - (COUNT(case_id) FILTER (WHERE\n\t(SELECT BOOL_OR (${minimum_loops_condition})\n\t\tFROM (SELECT OCCURRENCE(event_name) AS occurrence) AS sub\n)\n)/COUNT(case_id)*100)",
+      "aggregationType": "CASE",
+      "category": "Rework",
+      "version": "1.0.0"
+    },
+    {
+      "id": "fraction_tot_cycle_time_on_rework",
+      "name": "Fraction of total average cycle time spent on rework",
+      "description": "Ratio between net average cycle time spent on rework and total average cycle time",
+      "signalFragment": "((AVG(\n\t(SELECT LAST(end_time) - FIRST(end_time))\n\t)\n\tFILTER (WHERE (SELECT BOOL_OR (${minimum_loops_condition})\n\t\tFROM (SELECT OCCURRENCE(event_name) AS occurrence) AS sub)\n\t\t))\n-\n(AVG(\n\t(SELECT LAST(end_time) - FIRST(end_time))\n\t))\n)\n/(AVG(\n\t(SELECT LAST(end_time) - FIRST(end_time))\n\t))",
+      "aggregationType": "CASE",
+      "category": "Rework",
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "minimum_loops_condition",
+      "description": "Minimum number of multiple occurrences for events to be considered as rework, for example: occurrence > 1",
+      "defaultValues": [
+        {
+          "defaultValue": "occurrence > 1",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH",
+            "PROCURE_TO_PAY",
+            "INVOICE_TO_CASH",
+            "INVOICE_TO_PAY",
+            "MAKE_TO_STOCK",
+            "ACQUIRE_TO_ONBOARD",
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "occurrence > 1",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "occurrence > 1",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "occurrence > 1",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "occurrence > 1",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "occurrence > 1",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    }
+  ]
+}

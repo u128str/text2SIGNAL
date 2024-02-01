@@ -1,0 +1,521 @@
+{
+  "metrics": [
+    {
+      "id": "lto_sapsalescloud_total_opp_expected_revenue_amount",
+      "name": "Total amount of opportunity expected revenue",
+      "description": "Total amount of the expected revenue considering all opportunities",
+      "signalFragment": "SUM(${lto_sapsalescloud_opportunity_expected_revenue})\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_total_opp_lost_expected_revenue_amount",
+      "name": "Total amount of opportunity expected revenue lost",
+      "description": "Total amount of the expected revenue considering only opportunity lost",
+      "signalFragment": "SUM(${lto_sapsalescloud_opportunity_expected_revenue}) FILTER (\n\tWHERE ${lto_sapsalescloud_opp_lost_condition})\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_total_opp_won_expected_revenue_amount",
+      "name": "Total amount of opportunity expected revenue won",
+      "description": "Total amount of the expected revenue considering only opportunity won",
+      "signalFragment": "SUM(${lto_sapsalescloud_opportunity_expected_revenue}) FILTER (\n\tWHERE ${lto_sapsalescloud_opp_won_condition})\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_lead_conversion_rate",
+      "name": "Lead Conversion Rate",
+      "description": "Percentage of converted lead: ((number of leads converted to opportunities) / (number of leads processed)) X 100",
+      "signalFragment": "COUNT(case_id)\nFILTER(WHERE event_name MATCHES (${lto_sapsalescloud_lead_converted_events}))/count(case_id) * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_avg_opp_lost_time",
+      "name": "Average opportunity lost time",
+      "description": "Average time from creating the opportunity to loosing the opportunity",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) \n\tWHERE event_name IN (${lto_sapsalescloud_opp_lost_events})) \n\t-\n\t(SELECT FIRST(end_time) \n\tWHERE event_name IN (${lto_sapsalescloud_opp_created_events}))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_avg_lead_response_time",
+      "name": "Average lead response time",
+      "description": "Average time from lead creation to working on lead",
+      "signalFragment": "AVG(\n\t(SELECT FIRST(end_time) FILTER (\n\t\tWHERE NOT event_name IN (${lto_sapsalescloud_lead_created_events})))\n\t-(SELECT FIRST(end_time) FILTER (\n\t\tWHERE event_name IN (${lto_sapsalescloud_lead_created_events})))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_total_nr_won_opp",
+      "name": "Total number of won opportunities",
+      "description": "Total number of won opportunities",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${lto_sapsalescloud_opp_won_condition})\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_opp_wo_lead",
+      "name": "Opportunities without lead",
+      "description": "Total number of opportunities without lead",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE ${lto_sapsalescloud_lead_identifier} IS NULL\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_total_nr_open_opp",
+      "name": "Total number of open opportunities",
+      "description": "Total number of currently open opportunities",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_AND( NOT event_name IN (${lto_sapsalescloud_close_opp_events})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_lead_converted_w_qualification",
+      "name": "Leads Converted with Qualification",
+      "description": "Number of leads converted with qualification",
+      "signalFragment": "count(case_id)\nfilter(WHERE event_name MATCHES(${lto_sapsalescloud_lead_convert_qualified_events}))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_total_nr_closed_opp",
+      "name": "Total number of closed opportunities",
+      "description": "Total number of currently closed opportunities",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR(event_name IN (${lto_sapsalescloud_close_opp_events})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_win_loss_ratio",
+      "name": "Win/loss ratio",
+      "description": "Ratio of won to lost opportunities. A value > 1 indicates that there are more opportunities won than lost.",
+      "signalFragment": "(COUNT(case_id) FILTER (\n\tWHERE (${lto_sapsalescloud_opp_won_condition}))\n)\n/\n(COUNT(case_id) FILTER (\n\tWHERE (${lto_sapsalescloud_opp_lost_condition}))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_avg_lead_conversion_time",
+      "name": "Average lead conversion time",
+      "description": "Average time from lead creation to lead conversion",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) \n\tWHERE event_name IN (${lto_sapsalescloud_lead_converted_events})) \n\t-\n\t(SELECT FIRST(end_time) \n\tWHERE event_name IN (${lto_sapsalescloud_lead_created_events}))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_avg_opp_won_time",
+      "name": "Average opportunity win time",
+      "description": "Average time from creating the opportunity to winning the opportunity",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) \n\tWHERE event_name IN (${lto_sapsalescloud_opp_won_events})) \n\t-\n\t(SELECT FIRST(end_time) \n\tWHERE event_name IN (${lto_sapsalescloud_opp_created_events}))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_lead_converted_wo_qualification",
+      "name": "Leads Converted without Qualification",
+      "description": "Number of leads converted without qualification",
+      "signalFragment": "count(case_id)\nfilter(WHERE event_name MATCHES(${lto_sapsalescloud_lead_converted_events}))\n-\ncount(case_id)\nfilter(WHERE event_name MATCHES(${lto_sapsalescloud_lead_convert_qualified_events}))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_total_nr_qualified_lead",
+      "name": "Total number of qualified leads",
+      "description": "Total number of qualified leads",
+      "signalFragment": "COUNT(CASE_ID) FILTER (\n\tWHERE EVENT_NAME MATCHES (${lto_sapsalescloud_lead_qualified_events}))\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_total_nr_lead_converted",
+      "name": "Total of leads converted",
+      "description": "Total of leads converted",
+      "signalFragment": "COUNT (CASE_ID) FILTER (WHERE EVENT_NAME MATCHES (${lto_sapsalescloud_lead_converted_events}))\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_no_touch_opp",
+      "name": "No-touch Opportunity",
+      "description": "Percentage of opportunities without interactions",
+      "signalFragment": "COUNT (\"case_id\") FILTER (\n\tWHERE ${lto_sapsalescloud_attr_number_tasks} = 0\n      AND ${lto_sapsalescloud_attr_number_appointments} = 0\n      AND ${lto_sapsalescloud_attr_number_emails} = 0\n      AND ${lto_sapsalescloud_attr_number_phone_calls} = 0\n      AND ${lto_sapsalescloud_attr_number_visits} = 0\n      )\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_win_ratio",
+      "name": "Win ratio",
+      "description": "Percentage of won to all the opportunities in the sales cloud system",
+      "signalFragment": "((COUNT(case_id) FILTER (\n\tWHERE (${lto_sapsalescloud_opp_won_condition}))\n)\n/\n(COUNT(case_id))*100\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_no_touch_opp_won",
+      "name": "No-touch Won Opportunity",
+      "description": "Total number of won opportunities without interactions",
+      "signalFragment": "COUNT (\"case_id\") FILTER (\n\tWHERE ${lto_sapsalescloud_opp_won_condition}\n      AND ${lto_sapsalescloud_attr_number_visits} = 0\n      )\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_total_nr_opp_w_lead",
+      "name": "Opportunity with leads",
+      "description": "Number of opportunities created as a follow-up of the lead process",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE ${lto_sapsalescloud_lead_identifier} IS NOT NULL\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_avg_touchpoint_per_opp",
+      "name": "Average number of touchpoints per opportunity",
+      "description": "Average number of touchpoints, for example appointments, email, phone calls and task per opportunities",
+      "signalFragment": "AVG(${lto_sapsalescloud_attr_number_tasks} +\n    ${lto_sapsalescloud_attr_number_appointments} +\n    ${lto_sapsalescloud_attr_number_emails} +\n    ${lto_sapsalescloud_attr_number_phone_calls} +\n    ${lto_sapsalescloud_attr_number_visits})\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_avg_employee_change_opp",
+      "name": "Average number of employee changes per opportunity",
+      "description": "Average number of employee changes per opportunity",
+      "signalFragment": "AVG(${lto_sapsalescloud_attr_number_employee_changes}) \n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_total_nr_lead_declined",
+      "name": "Total of leads declined",
+      "description": "Total of leads declined or rejected",
+      "signalFragment": "COUNT (CASE_ID) FILTER (WHERE EVENT_NAME MATCHES (${lto_sapsalescloud_lead_declined_events}))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sapsalescloud_avg_contacts_person_opp",
+      "name": "Average number of contact persons per opportunity",
+      "description": "Average number of contact persons per opportunity",
+      "signalFragment": "AVG(${lto_sapsalescloud_attr_number_contacted_people})",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "lto_sapsalescloud_close_opp_events",
+      "description": "Events indicating that an opportunity was closed, for example 'Opportunity: Won'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Opportunity: Won','Opportunity: Lost'",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_opportunity_expected_revenue",
+      "description": "Attribute that identifies a the expected revenue of the opportunity, for example \"Opportunity Expected Revenue Amount\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Opportunity Expected Revenue Amount\"",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_lead_identifier",
+      "description": "Attribute that identifies a lead, for example \"Is Lead\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Is Lead\"",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_lead_created_events",
+      "description": "Events indicating that a lead was created, for example 'Lead: Open'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Lead: Open'",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_lead_converted_events",
+      "description": "Events that indicating that a lead was converted, for example 'Lead: Converted'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Lead: Converted'",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_lead_qualified_events",
+      "description": "Events that indicating that a lead was qualified, for example 'Lead: Qualified'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Lead: Qualified'",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_lead_declined_events",
+      "description": "Events that indicating that a lead was declined or rejected, for example 'Lead: Declined'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Lead: Declined'",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_opp_created_events",
+      "description": "Events indicating that a opportunity was created, for example 'Opportunity: Identify opportunity'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Opportunity: Identify opportunity'",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_opp_won_events",
+      "description": "Events indicating that a opportunity was won, for example 'Opportunity: Won'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Opportunity: Won'",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_opp_lost_events",
+      "description": "Events indicating that a opportunity was lost, for example 'Opportunity: Lost'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Opportunity: Lost'",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_opp_lost_condition",
+      "description": "Condition indicating that an opportunity is lost, for example \"Opportunity Status\" = 'Lost'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Opportunity Status\" = 'Lost'",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_opp_won_condition",
+      "description": "Condition indicating that an opportunity is won, for example \"Opportunity Status\" = 'Won'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Opportunity Status\" = 'Won'",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_attr_number_tasks",
+      "description": "Attribute that identifies the number of tasks created for a specific opportunity , for example \"Number of Tasks\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Number of Tasks\"",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_attr_number_appointments",
+      "description": "Attribute that identifies the number of appointments created for a specific opportunity , for example \"Number of Appointments\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Number of Appointments\"",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_attr_number_emails",
+      "description": "Attribute that identifies the number of e-mail sent to a customer for a specific opportunity , for example \"Number of E-mails\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Number of E-mails\"",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_attr_number_phone_calls",
+      "description": "Attribute that identifies the number of phone calls made to a customer for a specific opportunity , for example \"Number of Phones\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Number of Phones\"",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_attr_number_visits",
+      "description": "Attribute that identifies the number of visits made to a customer for a specific opportunity , for example \"Number of Visits\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Number of Visits\"",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_attr_number_employee_changes",
+      "description": "Attribute that identifies the number of employee changes for a specific opportunity , for example \"Number of Employees Change\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Number of Employees Change\"",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_attr_number_contacted_people",
+      "description": "Attribute that identifies the number of contacted people related a specific opportunity , for example \"Number of Contacts\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Number of Contacts\"",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sapsalescloud_lead_convert_qualified_events",
+      "description": "Condition that indicating that a case was converted after being qualified, for example 'Lead: Qualified' ~> 'Lead: Converted'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Lead: Qualified' ~> 'Lead: Converted'",
+          "sourceSystems": [
+            "SAP_SALES_CLOUD"
+          ]
+        }
+      ]
+    }
+  ]
+}

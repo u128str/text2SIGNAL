@@ -1,0 +1,79 @@
+{
+  "comment": "KPSD000366 Intercompany Sales",
+  "source_data": [
+    {
+      "ppi_id": "KPSD000366",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPSD000366_01",
+  "event_definitions": {
+  "Create sales order item": {
+      "pattern": "ERDAT_I != @initial",
+      "timestamp": "ERDAT_I",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10"
+  },
+    "Create outbound delivery item": {
+      "pattern": "ERDAT_DEL != @initial",
+      "timestamp": "ERDAT_DEL",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Post goods issue": {
+      "pattern": "ERDAT_GI != @initial",
+      "timestamp": "ERDAT_GI",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30"
+    },
+      "Create customer invoice": {
+      "pattern": "ERDAT_INV != @initial",
+      "timestamp": "ERDAT_INV",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40"
+    },
+      "Create customer FI-AR item": {
+      "pattern": "CPUDT_AR != @initial",
+      "timestamp": "CPUDT_AR",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50"
+    },
+      "Clear customer FI-AR item": {
+      "pattern": "AUGDT_AR != @initial",
+      "timestamp": "AUGDT_AR",
+      "timestamp_offset_minutes": 200,
+      "id": "EVENT_60"
+    },
+      "Create intercompany invoice": {
+      "pattern": "ERDAT_INV_ICO != @initial",
+      "timestamp": "ERDAT_INV_ICO",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_70"
+    },
+      "Create intercompany FI-AR item": {
+      "pattern": "CPUDT_AR_ICO != @initial",
+      "timestamp": "CPUDT_AR_ICO",
+      "timestamp_offset_minutes": 200,
+      "id": "EVENT_80"
+    },
+      "Create intercompany FI-AP item": {
+      "pattern": "CPUDT_AP_ICO != @initial",
+      "timestamp": "CPUDT_AP_ICO",
+      "timestamp_offset_minutes": 240,
+      "id": "EVENT_90"
+    },
+      "Clear intercompany FI-AP item": {
+      "pattern": "AUGDT_AP_ICO != @initial",
+      "timestamp": "AUGDT_AP_ICO",
+      "timestamp_offset_minutes": 280,
+      "id": "EVENT_100"
+    },
+      "Clear intercompany FI-AR item": {
+      "pattern": "AUGDT_AR_ICO != @initial",
+      "timestamp": "AUGDT_AR_ICO",
+      "timestamp_offset_minutes": 320,
+      "id": "EVENT_110"
+    }
+  }
+}

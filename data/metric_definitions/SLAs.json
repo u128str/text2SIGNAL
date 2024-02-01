@@ -1,0 +1,130 @@
+{
+  "metrics": [
+    {
+      "id": "sla_breach_ratio",
+      "name": "SLA breach ratio on process level, based on SLA events",
+      "description": "Percentage of cases where the SLA was breached, based on events related to SLA breaches",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT FIRST(event_name)\n\t\t\tWHERE event_name IN (${sla_breach_events})) IS NOT NULL)\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "category": "SLAs",
+      "sourceSystems": [
+        "SERVICENOW"
+      ],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "direction": "DOWN",
+      "version": "1.0.0"
+    },
+    {
+      "id": "sla_violations",
+      "name": "Number of SLA breaches based on SLA events",
+      "description": "Number of cases where the SLA was breached, based on events related to SLA breaches",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT FIRST(event_name) \n\t\t\tWHERE event_name IN (${sla_breach_events})) IS NOT NULL)",
+      "aggregationType": "CASE",
+      "category": "SLAs",
+      "sourceSystems": [
+        "SERVICENOW"
+      ],
+      "direction": "DOWN",
+      "version": "1.0.0"
+    },
+    {
+      "id": "actual_to_target_sla_ratio",
+      "name": "Average actual to target SLA ratio",
+      "description": "Ratio between the average incident resolution duration to target SLA duration",
+      "signalFragment": "AVG(\n\t((SELECT LAST(end_time) WHERE event_name IN (${sla_closure_events}))\n\t-(SELECT FIRST(end_time) WHERE event_name IN (${sla_creation_events})))\n) / (DURATION ${target_sla_time})\n*100",
+      "aggregationType": "CASE",
+      "category": "SLAs",
+      "sourceSystems": [
+        "SERVICENOW"
+      ],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "direction": "DOWN",
+      "version": "1.0.0"
+    },
+    {
+      "id": "percentage_sla_meet_expectations",
+      "name": "Percentage of incident resolutions that meet SLA expectations",
+      "description": "Percentage of incident resolutions that met their target",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE (\n\tSELECT LAST(end_time) FILTER (WHERE event_name IN (${sla_closure_events}))\n\t-\n\tFIRST(end_time) FILTER (WHERE event_name IN (${sla_creation_events}))\n\t) < DURATION ${target_sla_time}\n)\n/count(case_id) *100",
+      "aggregationType": "CASE",
+      "category": "SLAs",
+      "sourceSystems": [
+        "SERVICENOW"
+      ],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "direction": "UP",
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "sla_breach_events",
+      "description": "Events indicating the breach of an SLA, for example 'Incident Resolution SLA Breached'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Incident Resolution SLA Breached','Incident Response SLA Breached'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sla_creation_events",
+      "description": "Events defining the start events of a case, for example 'Create Incident'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Incident'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sla_closure_events",
+      "description": "Events defining the closing events of a case, for example 'Close Incident'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Close Incident'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "target_sla_time",
+      "description": "SLA time expectation, for example '15 days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'15days'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        }
+      ]
+    }
+  ]
+}

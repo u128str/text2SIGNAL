@@ -1,0 +1,91 @@
+{"comment": "KPPURCH562 Intercompany replenishment with logistics execution - def file based on ST-A/PI 01V",
+  "source_data": [
+    {
+      "ppi_id": "KPPURCH562",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPPURCH562_01",
+  "event_definitions": {
+    "Create stock transport order item": {
+      "pattern": "BEDAT != @initial",
+      "timestamp": "BEDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create stock transport order item with reference to stock transport requisition & with availability check": {
+          "pattern": "BANFN != '' and MNG02 != 0",
+          "id": "10"
+        },
+        "Create stock transport order item with reference to stock transport requisition & without availability check": {
+          "pattern": "BANFN != '' and MNG02 == 0",
+          "id": "20"
+        },
+        "Create stock transport order item without reference to stock transport requisition & with availability check": {
+          "pattern": "BANFN == '' and MNG02 != 0",
+          "id": "30"
+        },
+        "Create stock transport order item without reference to stock transport requisition & without availability check": {
+          "pattern": "BANFN == '' and MNG02 == 0",
+          "id": "40"
+         }
+      },
+      "include_other_variants": "Create stock transport order item - others"
+    },
+    "Create replenishment delivery": {
+      "pattern": "CPUDT_DEL != @initial",
+      "timestamp": "CPUDT_DEL",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Post goods issue in supplying plant for stock transport order item": {
+      "pattern": "CPUDT_GI != @initial",
+      "timestamp": "CPUDT_GI",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30"
+    },
+    "Post goods receipt in receiving plant for stock transport order item": {
+      "pattern": "CPUDT_GR != @initial",
+      "timestamp": "CPUDT_GR",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40"
+    },
+    "Create intercompany invoice for replenishment delivery": {
+      "pattern": "ERDAT_INV != @initial",
+      "timestamp": "ERDAT_INV",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50"
+    },
+    "Create supplier invoice": {
+      "pattern": "CPUDT_IR != @initial",
+      "timestamp": "CPUDT_IR",
+      "timestamp_offset_minutes": 200,
+      "id": "EVENT_60"
+    },
+    "Create open item in FI-AR": {
+      "pattern": "CPUDT_FIAR != @initial",
+      "timestamp": "CPUDT_FIAR",
+      "timestamp_offset_minutes": 240,
+      "id": "EVENT_70"
+    },
+    "Create open item in FI-AP": {
+      "pattern": "CPUDT_FIAP != @initial",
+      "timestamp": "CPUDT_FIAP",
+      "timestamp_offset_minutes": 280,
+      "id": "EVENT_80"
+    },
+    "Clear open item in FI-AP": {
+      "pattern": "AUGDT_FIAP != @initial",
+      "timestamp": "AUGDT_FIAP",
+      "timestamp_offset_minutes": 320,
+      "id": "EVENT_90"
+    },
+    "Clear open item in FI-AR": {
+      "pattern": "AUGDT_FIAR != @initial",
+      "timestamp": "AUGDT_FIAR",
+      "timestamp_offset_minutes": 360,
+      "id": "EVENT_100"
+    }
+  }
+}

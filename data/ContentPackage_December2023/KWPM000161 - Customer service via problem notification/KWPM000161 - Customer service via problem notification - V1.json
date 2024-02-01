@@ -1,0 +1,117 @@
+{
+  "comment": "KWPM000161 Customer service via problem notification",
+  "bpmn_model": "Customer service via problem notification",
+  "source_data": [
+    {
+      "ppi_id": "KWPM000161",
+      "type": "main",
+      "filter": "HERKZ eq '04'"
+    }
+  ],
+  "version": "1",
+  "process_name": "KWPM000161_02",
+  "event_definitions": {
+    "Create service notification": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create service notification via general notification transaction IW51": {
+          "pattern": "CDTCODE == 'IW51'",
+          "id": "10"
+        },
+        "Create service notification via malfunction notification transaction IW54": {
+          "pattern": "CDTCODE == 'IW54'",
+          "id": "20"
+        },
+        "Create service notification via service order": {
+          "pattern": "CDTCODE.str.startswith('IW3')",
+          "id": "30"
+        },
+        "Create service notification via custom transaction": {
+          "pattern": "CDTCODE.str.startswith('Z') or CDTCODE.str.startswith('Y') or CDTCODE.str.startswith('/')",
+          "id": "40"
+        },
+        "Create service notification via manual maintenance plan scheduling": {
+          "pattern": "CDTCODE.str.startswith('IP1')",
+          "id": "50"
+        },
+        "Create service notification via interface or automatically": {
+          "pattern": "CDTCODE == ''",
+          "id": "60"
+        },
+        "Create service notification via sales document item": {
+          "pattern": "CDTCODE.str.startswith('VA')",
+          "id": "70"
+        }
+      },
+        "include_other_variants": "Create service notification via other transactions"
+      },
+      "Set notification \"in process\"": {
+        "pattern": "INPROCESS_DATE != @initial",
+        "timestamp": "INPROCESS_DATE",
+        "timestamp_offset_minutes": 40,
+        "id": "EVENT_20",
+        "variants": {
+          "Set notification immediately in process via general notification transaction IW51": {
+            "pattern": "INPROCESS_TCODE == 'IW51'",
+            "id": "10"
+          },
+          "Set notification immediately in process via malfunction transaction IW54": {
+            "pattern": "INPROCESS_TCODE == 'IW54'",
+            "id": "20"
+          },
+          "Set notification immediately in process via service order": {
+            "pattern": "INPROCESS_TCODE == 'IW32'",
+            "id": "30"
+          },
+          "Set notification in process via custom transaction": {
+            "pattern": "INPROCESS_TCODE.str.startswith('Z') or INPROCESS_TCODE.str.startswith('Y') or INPROCESS_TCODE.str.startswith('/')",
+            "id": "40"
+          },
+          "Set notification in process via manual maintenance plan scheduling ": {
+            "pattern": "INPROCESS_TCODE.str.startswith('IP1')",
+            "id": "50"
+          },
+          "Set notification in process via interface or automatically ": {
+            "pattern": "INPROCESS_TCODE == ''",
+            "id": "60"
+          },
+          "Set notification in process via general notification transaction IW52": {
+            "pattern": "INPROCESS_TCODE == 'IW52'",
+            "id": "70"
+          },
+          "Set notification in process via sales document item": {
+            "pattern": "INPROCESS_TCODE.str.startswith('VA')",
+            "id": "80"
+          }
+        },
+          "include_other_variants": "Set notification in process via other transactions"
+        },
+        "Create service order": {
+          "pattern": "ERDAT_AUFK != @initial",
+          "timestamp": "ERDAT_AUFK",
+          "timestamp_offset_minutes": 70,
+          "id": "EVENT_30"
+        },
+        "Release service order": {
+          "pattern": "IDAT1 != @initial",
+          "timestamp": "IDAT1",
+          "timestamp_offset_minutes": 100,
+          "id": "EVENT_40"
+        },
+        "Set service order to technically completed": {
+          "pattern": "IDAT2 != @initial",
+          "timestamp": "IDAT2",
+          "timestamp_offset_minutes": 120,
+          "id": "EVENT_50"
+        },
+        "Set service notification to completed": {
+          "pattern": "QMDAB != @initial",
+          "timestamp": "QMDAB",
+          "timestamp_offset_minutes": 150,
+          "id": "EVENT_60"
+        }
+      }
+    }

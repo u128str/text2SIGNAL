@@ -1,0 +1,74 @@
+{
+  "comment": "KPLE000361 Processing of outbound deliveries without order reference and with classic Warehouse Management",
+  "bpmn_model": "Processing of outbound deliveries without order reference and with classic Warehouse Management",
+  "source_data": [
+    {
+      "ppi_id": "KPLE000361",
+      "type": "main",
+      "filter": "VGTYP eq '' and contains(TCODE,'ME2O') ne true"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPLE000361_04",
+  "event_definitions": {
+    "Create outbound delivery item": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create outbound delivery item via single transaction VL01NO": {
+          "pattern": "TCODE == 'VL01NO' and USTYP == 'A'",
+          "id": 10
+        },
+        "Create outbound delivery item for handling unit movement via VLMOVE": {
+          "pattern": " USTYP == 'A' and TCODE == 'VLMOVE'",
+          "id": 20
+        },
+        "Create outbound delivery item via goods movement posting with MIGO": {
+          "pattern": "USTYP == 'A' and TCODE.str.startswith('MIGO')",
+          "id": 30
+        },
+        "Create outbound delivery item automatically": {
+          "pattern": "TCODE == ''or (TCODE != '' and (USTYP == 'B' or USTYP =='C'))",
+          "id": 40
+        },
+        "Create outbound delivery item via custom transaction": {
+          "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+          "id": 50
+        }
+      },
+      "include_other_variants": "Create outbound delivery item via other transactions"
+    },
+    "Perform transportation planning for outbound delivery": {
+      "pattern": "TRSTA != '' and ERDAT != @initial ",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Create transfer order item and confirm without difference": {
+      "pattern": "LVSTA == 'C' and KOSTA == 'C' and BDATU != @initial ",
+      "timestamp": "BDATU",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30"
+    },
+    "Create transfer order item and confirm with difference": {
+      "pattern": "LVSTA == 'C' and KOSTA == 'B' and BDATU != @initial ",
+      "timestamp": "BDATU",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_40"
+    },
+    "Process outbound delivery with packing": {
+      "pattern": "BDATU != @initial and PKSTA != ''",
+      "timestamp": "BDATU",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_50"
+    },
+    "Post goods issue": {
+      "pattern": "WADAT_IST != @initial",
+      "timestamp": "WADAT_IST",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_60"
+    }
+  }
+}

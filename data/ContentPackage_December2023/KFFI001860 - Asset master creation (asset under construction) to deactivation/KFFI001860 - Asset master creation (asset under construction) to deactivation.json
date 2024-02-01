@@ -1,0 +1,82 @@
+{
+  "comment": "KFFI001860 - Asset master creation (asset under construction) to deactivation",
+  "bpmn_model": "Asset master creation (asset under construction) to deactivation",
+  "source_data": [
+    {
+      "ppi_id": "KFFI001860",
+      "type": "main"
+    }
+  ],
+  "process_name": "KFFI001860_01",
+  "version": "1",
+  "event_definitions": {
+    "Create asset master": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 20,
+      "id": "EVENT_10"
+    },
+    "Capitalize asset": {
+      "pattern": "AKTIV != @initial",
+      "timestamp": "AKTIV",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Enter asset acquisition": {
+      "pattern": "CPUDT_ACQUI != @initial",
+      "timestamp": "CPUDT_ACQUI",
+      "timestamp_offset_minutes": 60,
+      "id": "EVENT_30",
+      "variants": {
+        "Enter asset acquisition using Controlling settlement": {
+          "pattern": "VORGN_ACQUI == 'ZUCO' and not (TCODE_ACQUI.str.startswith('Z') or TCODE_ACQUI.str.startswith('Y') or TCODE_ACQUI.str.startswith('/'))",
+          "id": "10"
+        },
+        "Enter asset acquisition using purchase order": {
+          "pattern": "EBELN_ACQUI != ''",
+          "id": "20"
+        },
+        "Enter asset acquisition using accounting posting": {
+          "pattern": "VORGN_ACQUI == 'ZUGA' and TCODE_ACQUI.str.startswith('FB')",
+          "id": "30"
+        },
+        "Enter asset acquisition using clearing account": {
+          "pattern": "VORGN_ACQUI == 'ZUGA' and TCODE_ACQUI == 'ABZON'",
+          "id": "40"
+        },
+        "Enter asset acquisition using a custom transaction": {
+          "pattern": "VORGN_ACQUI == 'ZUCO' and (TCODE_ACQUI.str.startswith('Z') or TCODE_ACQUI.str.startswith('Y') or TCODE_ACQUI.str.startswith('/'))",
+          "id": "50"
+        }
+      },
+      "include_other_variants": "Enter asset acquisition - others"
+    },
+    "Settle asset": {
+      "pattern": "CPUDT_SETTL != @initial",
+      "timestamp": "CPUDT_SETTL",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_40",
+      "variants": {
+        "Settle independent asset": {
+          "pattern": "VORGN_SETTL == 'AUUA' and AWTYP_SETTL == 'AIBU'",
+          "id": "10"
+        },
+        "Settle investment measure": {
+          "pattern": "VORGN_SETTL == 'AUUA' and AWTYP_SETTL == 'AUAK'",
+          "id": "20"
+        },
+        "Settle asset to non-asset receiver": {
+          "pattern": "VORGN_SETTL == 'AUUS'",
+          "id": "40"
+        }
+      },
+      "include_other_variants": "Settle asset - others"
+    },
+    "Deactivate asset": {
+      "pattern": "DEAKT != @initial",
+      "timestamp": "DEAKT",
+      "timestamp_offset_minutes": 100,
+      "id": "EVENT_50"
+    }
+  }
+}

@@ -1,0 +1,2088 @@
+{
+  "metrics": [
+    {
+      "id": "system-count-99",
+      "name": "Number of systems in analysis",
+      "signalFragment": "COUNT(DISTINCT \"kpiIns_ID\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": ""
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "completion-score-99",
+      "name": "Completion Score",
+      "signalFragment": "AVG(CASE WHEN \"COMPLETION_CNT\" = 'TRUE' THEN 1 ELSE 0 END) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_10_10-99",
+      "name": "Incomplete asset master but can be posted",
+      "signalFragment": "AVG (\"2 - Blocker - Incomplete asset master but can be posted\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_10_20-99",
+      "name": "Incomplete asset master and can't be posted",
+      "signalFragment": "AVG (\"2 - Blocker - Incomplete asset master and can't be posted\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_10_30-99",
+      "name": "Asset master created after capitalization",
+      "signalFragment": "AVG (\"2 - Blocker - Asset master created after capitalization\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_10_40-99",
+      "name": "Assets marked for deletion",
+      "signalFragment": "AVG (\"2 - Blocker - Assets marked for deletion\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_10_50-99",
+      "name": "Assets locked for acquisition postings",
+      "signalFragment": "AVG (\"2 - Blocker - Assets locked for acquisition postings\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_10_60-99",
+      "name": "Assets without any postings",
+      "signalFragment": "AVG (\"2 - Blocker - Assets without any postings\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_10_70-99",
+      "name": "Assets with capitalization date but no acquisition posting",
+      "signalFragment": "AVG (\"2 - Blocker - Assets with capitalization date but no acquisition posting\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_20_10-99",
+      "name": "Asset acquisition using clearing account (transaction ABZON)",
+      "signalFragment": "AVG (\"2 - Blocker - Asset acquisition using clearing account (transaction ABZON)\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-info-ctx_20_20-99",
+      "name": "Asset acquisition using accounting posting",
+      "signalFragment": "AVG (\"3 - Info - Asset acquisition using accounting posting\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-info-ctx_20_30-99",
+      "name": "Asset acquisition using purchase order",
+      "signalFragment": "AVG (\"3 - Info - Asset acquisition using purchase order\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-info-ctx_20_40-99",
+      "name": "Asset acquisition using Controlling settlement",
+      "signalFragment": "AVG (\"3 - Info - Asset acquisition using Controlling settlement\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_20_50-99",
+      "name": "Asset acquisition with capitalization date in the past",
+      "signalFragment": "AVG (\"2 - Blocker - Asset acquisition with capitalization date in the past\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_30_10-99",
+      "name": "Assets with no planned useful life maintained",
+      "signalFragment": "AVG (\"2 - Blocker - Assets with no planned useful life maintained\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_30_20-99",
+      "name": "Assets with planned useful life of 999 years",
+      "signalFragment": "AVG (\"2 - Blocker - Assets with planned useful life of 999 years\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-info-ctx_30_40-99",
+      "name": "Assets with planned useful life of 1-5 years",
+      "signalFragment": "AVG (\"3 - Info - Assets with planned useful life of 1-5 years\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-info-ctx_30_50-99",
+      "name": "Assets with planned useful life of 6-10 years",
+      "signalFragment": "AVG (\"3 - Info - Assets with planned useful life of 6-10 years\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-info-ctx_30_60-99",
+      "name": "Assets with planned useful life of more than 10 years",
+      "signalFragment": "AVG (\"3 - Info - Assets with planned useful life of more than 10 years\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_40_10-99",
+      "name": "Assets with reversal posting using transaction AB08 or FB08",
+      "signalFragment": "AVG (\"2 - Blocker - Assets with reversal posting using transaction AB08 or FB08\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-info-ctx_40_20-99",
+      "name": "Assets with retirement posting",
+      "signalFragment": "AVG (\"3 - Info - Assets with retirement posting\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-info-ctx_40_30-99",
+      "name": "Assets with retirement posting using clearing account (transaction ABAON)",
+      "signalFragment": "AVG (\"3 - Info - Assets with retirement posting using clearing account (transaction ABAON)\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-info-ctx_40_40-99",
+      "name": "Assets with retirement posting using transaction ABAVN",
+      "signalFragment": "AVG (\"3 - Info - Assets with retirement posting using transaction ABAVN\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-blocker-ctx_50_10-99",
+      "name": "Assets not deactivated and planned retirement in the past",
+      "signalFragment": "AVG (\"2 - Blocker - Assets not deactivated and planned retirement in the past\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-step_20_10_cnt-99",
+      "name": "First acquisition posting created (completion rate)",
+      "signalFragment": "AVG (\"STEP - First acquisition posting created\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-step_20_10_tltavg-99",
+      "name": "First acquisition posting created (total lead time)",
+      "signalFragment": "AVG (\"4 - Lead time from start - First acquisition posting created\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": " days"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-step_30_10_cnt-99",
+      "name": "Depreciation calculation started (completion rate)",
+      "signalFragment": "AVG (\"STEP - Depreciation calculation started\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-step_30_10_tltavg-99",
+      "name": "Depreciation calculation started (total lead time)",
+      "signalFragment": "AVG (\"4 - Lead time from start - Depreciation calculation started\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": " days"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-step_50_10_cnt-99",
+      "name": "Asset master deactivated (completion rate)",
+      "signalFragment": "AVG (\"STEP - Asset master deactivated\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861-step_50_10_tltavg-99",
+      "name": "Asset master deactivated (total lead time)",
+      "signalFragment": "AVG (\"4 - Lead time from start - Asset master deactivated\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": " days"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_10-99",
+      "name": "Create asset master",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create asset master')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_20-99",
+      "name": "Capitalize asset",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Capitalize asset')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_30-10-99",
+      "name": "Enter asset acquisition using Controlling settlement",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Enter asset acquisition using Controlling settlement')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_30-20-99",
+      "name": "Enter asset acquisition using purchase order",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Enter asset acquisition using purchase order')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_30-30-99",
+      "name": "Enter asset acquisition using accounting posting",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Enter asset acquisition using accounting posting')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_30-40-99",
+      "name": "Enter asset acquisition using clearing account",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Enter asset acquisition using clearing account')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_30-50-99",
+      "name": "Enter asset acquisition using a custom transaction",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Enter asset acquisition using a custom transaction')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_30-60-99",
+      "name": "Enter asset acquisition using internal asset transfer",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Enter asset acquisition using internal asset transfer')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_30-70-99",
+      "name": "Enter asset acquisition using intercompany asset transfer",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Enter asset acquisition using intercompany asset transfer')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_30-00-99",
+      "name": "Enter asset acquisition - others",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Enter asset acquisition - others')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_40-10-99",
+      "name": "Retire asset from sale with customer",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Retire asset from sale with customer')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_40-20-99",
+      "name": "Retire asset by scrapping",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Retire asset by scrapping')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_40-40-99",
+      "name": "Retire asset from sale without customer",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Retire asset from sale without customer')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_40-50-99",
+      "name": "Retire asset via custom transaction",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Retire asset via custom transaction')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_40-60-99",
+      "name": "Retire asset using intercompany asset transfer",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Retire asset using intercompany asset transfer')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_40-70-99",
+      "name": "Retire asset using internal asset transfer",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Retire asset using internal asset transfer')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001861_01-event_40-00-99",
+      "name": "Retire asset - others",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Retire asset - others')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    }
+  ],
+  "metricsVariables": [],
+  "processVariables": [],
+  "investigation": {
+    "name": "99. Process Quantity Structure",
+    "rootWidget": {
+      "name": "root widget",
+      "id": "root-chapter-01",
+      "visualization": {
+        "type": "CHAPTER"
+      },
+      "filters": [],
+      "children": [
+        {
+          "name": "Throughput volume",
+          "id": "throughput-volume-1",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "PARAMETERIZED",
+                "attribute": "CASE",
+                "aggregation": "COUNT",
+                "parameter": {
+                  "type": "SEMANTIC_TYPE",
+                  "semanticType": "CASE"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Number of process variants",
+          "id": "number-of-process-variants-1",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "PARAMETERIZED",
+                "attribute": "VARIANT",
+                "aggregation": "COUNT",
+                "parameter": {
+                  "type": "SEMANTIC_TYPE",
+                  "semanticType": "VARIANT"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Number of systems in analysis",
+          "id": "system-count-99",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "METRIC",
+                "metric": "system-count-99"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Completion Score",
+          "id": "completion-score-99",
+          "visualization": {
+            "type": "VALUE",
+            "unit": {
+              "type": "SUFFIX",
+              "suffix": "%"
+            },
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "METRIC",
+                "metric": "completion-score-99"
+              }
+            ]
+          }
+        },
+        {
+          "name": "KFFI001861 - Process Insights Context Metrics",
+          "id": "kffi001861---process-insights-context-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "Incomplete asset master but can be posted",
+              "id": "kffi001861-blocker-ctx_10_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_10_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Incomplete asset master and can\u2019t be posted",
+              "id": "kffi001861-blocker-ctx_10_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_10_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Asset master created after capitalization",
+              "id": "kffi001861-blocker-ctx_10_30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_10_30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets marked for deletion",
+              "id": "kffi001861-blocker-ctx_10_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_10_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets locked for acquisition postings",
+              "id": "kffi001861-blocker-ctx_10_50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_10_50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets without any postings",
+              "id": "kffi001861-blocker-ctx_10_60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_10_60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets with capitalization date but no acquisition posting",
+              "id": "kffi001861-blocker-ctx_10_70-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_10_70-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Asset acquisition using clearing account (transaction ABZON)",
+              "id": "kffi001861-blocker-ctx_20_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_20_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Asset acquisition using accounting posting",
+              "id": "kffi001861-info-ctx_20_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-info-ctx_20_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Asset acquisition using purchase order",
+              "id": "kffi001861-info-ctx_20_30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-info-ctx_20_30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Asset acquisition using Controlling settlement",
+              "id": "kffi001861-info-ctx_20_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-info-ctx_20_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Asset acquisition with capitalization date in the past",
+              "id": "kffi001861-blocker-ctx_20_50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_20_50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets with no planned useful life maintained",
+              "id": "kffi001861-blocker-ctx_30_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_30_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets with planned useful life of 999 years",
+              "id": "kffi001861-blocker-ctx_30_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_30_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets with planned useful life of 1-5 years",
+              "id": "kffi001861-info-ctx_30_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-info-ctx_30_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets with planned useful life of 6-10 years",
+              "id": "kffi001861-info-ctx_30_50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-info-ctx_30_50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets with planned useful life of more than 10 years",
+              "id": "kffi001861-info-ctx_30_60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-info-ctx_30_60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets with reversal posting using transaction AB08 or FB08",
+              "id": "kffi001861-blocker-ctx_40_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_40_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets with retirement posting",
+              "id": "kffi001861-info-ctx_40_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-info-ctx_40_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets with retirement posting using clearing account (transaction ABAON)",
+              "id": "kffi001861-info-ctx_40_30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-info-ctx_40_30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets with retirement posting using transaction ABAVN",
+              "id": "kffi001861-info-ctx_40_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-info-ctx_40_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Assets not deactivated and planned retirement in the past",
+              "id": "kffi001861-blocker-ctx_50_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-blocker-ctx_50_10-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        },
+        {
+          "name": "KFFI001861 - Process Insights Milestone Metrics",
+          "id": "kffi001861---process-insights-milestone-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "First acquisition posting created (completion rate)",
+              "id": "kffi001861-step_20_10_cnt-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-step_20_10_cnt-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "First acquisition posting created (total lead time)",
+              "id": "kffi001861-step_20_10_tltavg-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": " days"
+                },
+                "rounding": {
+                  "numberOfDecimals": 1,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-step_20_10_tltavg-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Depreciation calculation started (completion rate)",
+              "id": "kffi001861-step_30_10_cnt-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-step_30_10_cnt-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Depreciation calculation started (total lead time)",
+              "id": "kffi001861-step_30_10_tltavg-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": " days"
+                },
+                "rounding": {
+                  "numberOfDecimals": 1,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-step_30_10_tltavg-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Asset master deactivated (completion rate)",
+              "id": "kffi001861-step_50_10_cnt-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-step_50_10_cnt-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Asset master deactivated (total lead time)",
+              "id": "kffi001861-step_50_10_tltavg-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": " days"
+                },
+                "rounding": {
+                  "numberOfDecimals": 1,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861-step_50_10_tltavg-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        },
+        {
+          "name": "Event Metrics",
+          "id": "event-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "Create asset master",
+              "id": "kffi001861_01-event_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Capitalize asset",
+              "id": "kffi001861_01-event_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Enter asset acquisition using Controlling settlement",
+              "id": "kffi001861_01-event_30-10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_30-10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Enter asset acquisition using purchase order",
+              "id": "kffi001861_01-event_30-20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_30-20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Enter asset acquisition using accounting posting",
+              "id": "kffi001861_01-event_30-30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_30-30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Enter asset acquisition using clearing account",
+              "id": "kffi001861_01-event_30-40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_30-40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Enter asset acquisition using a custom transaction",
+              "id": "kffi001861_01-event_30-50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_30-50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Enter asset acquisition using internal asset transfer",
+              "id": "kffi001861_01-event_30-60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_30-60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Enter asset acquisition using intercompany asset transfer",
+              "id": "kffi001861_01-event_30-70-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_30-70-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Enter asset acquisition - others",
+              "id": "kffi001861_01-event_30-00-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_30-00-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Retire asset from sale with customer",
+              "id": "kffi001861_01-event_40-10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_40-10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Retire asset by scrapping",
+              "id": "kffi001861_01-event_40-20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_40-20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Retire asset from sale without customer",
+              "id": "kffi001861_01-event_40-40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_40-40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Retire asset via custom transaction",
+              "id": "kffi001861_01-event_40-50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_40-50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Retire asset using intercompany asset transfer",
+              "id": "kffi001861_01-event_40-60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_40-60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Retire asset using internal asset transfer",
+              "id": "kffi001861_01-event_40-70-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_40-70-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Retire asset - others",
+              "id": "kffi001861_01-event_40-00-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001861_01-event_40-00-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        }
+      ],
+      "dataSource": null
+    },
+    "metricsBar": [],
+    "eventToShapeMappings": {
+      "mappings": []
+    }
+  }
+}

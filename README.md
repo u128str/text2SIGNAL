@@ -12,7 +12,6 @@ However, due to the aforementioned issues, using `pip` with `requirements.txt` i
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
 ```
 
 #### Poetry setup
@@ -29,3 +28,10 @@ pip install -r requirements.txt
 - Run `poetry install` to install a virtual environment with all dependencies.
 - Add libraries you are adding to the project (i.e., direct imports) to `pyproject.toml` and run `poetry lock --no-update` to update `poetry.lock` without changing the dependencies.
 - Activate the virtual environment with `poetry shell`.
+
+
+```
+poetry export -f requirements.txt > requirements.txt
+python -m pip install -r requirements.txt
+poetry install
+```

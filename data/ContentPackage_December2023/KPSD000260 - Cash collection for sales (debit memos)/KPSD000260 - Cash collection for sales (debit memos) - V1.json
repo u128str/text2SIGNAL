@@ -1,0 +1,116 @@
+{ "comment" : "KPSD000260 Cash collection for sales (debit memos)",
+  "bpmn_model": "Cash collection for sales (debit memos)",
+  "source_data": [
+    {
+      "ppi_id": "KPSD000260",
+      "type": "main",
+      "filter": "VBTYP eq 'P'"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPSD000260_02",
+  "event_definitions": {
+    "Prepare debit memo": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Prepare order-related debit memo": {
+        "pattern": "FKTYP == 'A'",
+        "id": "10"
+        },
+        "Prepare periodic billing debit memo": {
+        "pattern": "FKTYP == 'D'",
+         "id": "20"
+        },
+        "Prepare debit memo via billing interface": {
+        "pattern": "FKTYP == 'X'",
+        "id": "30"
+        }
+      },
+      "include_other_variants": "Prepare debit memo with other means"
+      },
+      "Create debit memo": {
+      "pattern": "CPUDT != @initial",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20",
+      "variants": {
+        "Create debit memo manually via single transaction VF01": {
+        "pattern": "TCODE == 'VF01' and USTYP == 'A'",
+        "id": "10"
+        },
+        "Create debit memo via manual billing due processing": {
+        "pattern": "TCODE == 'VF04'",
+        "id": "20"
+        },
+        "Create debit memo automatically": {
+        "pattern": "TCODE == '' or ((TCODE == 'VF01' or TCODE == 'VF02') and (USTYP ==  'B' or USTYP == 'C'))",
+        "id": "30"
+        },
+        "Create debit memo via custom transaction": {
+        "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+        "id": "40"
+         }
+        },
+      "include_other_variants": "Create debit memo via other transactions"
+      },
+      "Post debit memo to FI": {
+      "pattern": "CPUDT != @initial",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30",
+      "variants": {
+        "Post debit memo automatically to FI": {
+        "pattern": "TCODE != 'VFX3' and TCODE != 'VF02' and RFBSK == 'C'",
+        "id": "10"
+        },
+        "Post debit memo to FI after block": {
+          "pattern": "RFBSK == 'A'",
+          "id": "20"
+        },
+        "Post debit memo manually to FI after error resolution via VFX3": {
+        "pattern": "TCODE == 'VFX3' or TCODE == 'VF02'",
+        "id": "30"
+        }
+       },
+      "include_other_variants": "Post debit memo with other means"
+    },
+    "Dun debit memo": {
+      "pattern": "MADAT_B != @initial",
+      "timestamp": "MADAT_B",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40"
+    },
+      "Clear FI-AR item": {
+      "pattern": "AUGDT != @initial",
+      "timestamp": "AUGDT",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50",
+      "variants": {
+        "Clear FI-AR item via payment run F110": {
+          "pattern": "TCODE_AUGBL == 'F110' or TCODE_AUGBL == ''",
+          "id": "10"
+        },
+        "Clear FI-AR item via account maintenance transaction FB1D": {
+          "pattern": "TCODE_AUGBL.str.startswith('FB1')",
+          "id": "20"
+        },
+        "Clear FI-AR item via manual payment": {
+          "pattern": "TCODE_AUGBL.str.startswith('FBZ')",
+          "id": "30"
+        },
+        "Clear FI-AR item via transaction FB05": {
+          "pattern": "TCODE_AUGBL == 'FB05'",
+          "id": "40"
+        },
+        "Clear FI-AR item via reversal": {
+          "pattern": "TCODE_AUGBL == 'FB08' or TCODE_AUGBL == 'VF11'",
+          "id": "50"
+        }
+      },
+      "include_other_variants": "Clear FI-AR item via other transactions"
+    }
+  }
+}

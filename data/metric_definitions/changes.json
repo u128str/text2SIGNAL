@@ -1,0 +1,166 @@
+{
+  "metrics": [
+    {
+      "id": "avg_nr_changes_per_case",
+      "name": "Average number of changes per case",
+      "description": "Average number of change events per case",
+      "signalFragment": "AVG(\n\t(SELECT COUNT(event_name) FILTER (\n\t\tWHERE event_name ${change_events})))",
+      "aggregationType": "CASE",
+      "category": "Changes",
+      "version": "1.0.0"
+    },
+    {
+      "id": "percentage_change_events_per_case",
+      "name": "Percentage of change events per case",
+      "description": "Average percentage of change events per case",
+      "signalFragment": "AVG(\n\t(SELECT COUNT(event_name) FILTER (\n\t\tWHERE event_name ${change_events})\n\t) / (SELECT COUNT(event_name))\n\t) * 100",
+      "aggregationType": "CASE",
+      "category": "Changes",
+      "version": "1.0.0"
+    },
+    {
+      "id": "percentage_cases_with_changes",
+      "name": "Percentage of cases with changes",
+      "description": "Percentage of cases that contain change events",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR(event_name ${change_events})))\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "category": "Changes",
+      "version": "1.0.0"
+    },
+    {
+      "id": "percentage_cases_with_manual_changes",
+      "name": "Percentage of cases with manual changes",
+      "description": "Percentage of cases that contain change events executed manually",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR(event_name ${change_events}) AND BOOL_OR(${manual_changes_condition})))\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "category": "Changes",
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "change_events",
+      "description": "Events referring to changes made to the case, for example ILIKE '%Update%'",
+      "defaultValues": [
+        {
+          "defaultValue": "ILIKE '%Update%'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "PROCURE_TO_PAY",
+            "INVOICE_TO_CASH",
+            "ACQUIRE_TO_ONBOARD"
+          ]
+        },
+        {
+          "defaultValue": "ILIKE '%Change%'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH",
+            "INVOICE_TO_PAY",
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "ILIKE '%Update%'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": " = 'Incident On Hold'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "ILIKE '%Change%'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "ILIKE '%Change%'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "manual_changes_condition",
+      "description": "Attributes indicating that an event was executed manually, for example \"Event Created By User Type\" = 'Dialog'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"EventCreatedByUserType\" = 'Dialog'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "\"Event Created By User Type\" = 'Dialog'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "PROCURE_TO_PAY",
+            "INVOICE_TO_CASH",
+            "INVOICE_TO_PAY",
+            "ACQUIRE_TO_ONBOARD",
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "\"Event Created By User Type\" = 'Dialog'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "\"Event Created by User Type\" = 'Dialog'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "\"Event Created by User Type\" = 'Dialog'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "comment": "Return order item creation to goods receipt posting",
+  "source_data": [
+    {
+      "ppi_id": "KPSD000380",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPSD000380_01",
+    "event_definitions": {
+    "Create returns order item": {
+      "pattern": "ERDAT_I != @initial",
+      "timestamp": "ERDAT_I",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create returns order item without reference": {
+        "pattern": "VGTYP == ''",
+        "id": "10"
+        },
+        "Create returns order item with reference to sales order": {
+          "pattern": "VGTYP == 'C'",
+          "id": "20"
+        },
+        "Create returns order item with reference to sales invoice": {
+          "pattern": "VGTYP == 'M'",
+          "id": "30"
+        }
+       },
+      "include_other_variants": "Create returns order item via other means"
+    },
+    "Create returns delivery item": {
+      "pattern": "ERDAT_DEL != @initial",
+      "timestamp": "ERDAT_DEL",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Post goods receipt": {
+      "pattern": "CPUDT_GI != @initial",
+      "timestamp": "CPUDT_GI",
+      "timestamp_offset_minutes": 70,
+      "id": "EVENT_30",
+      "variants": {
+        "Post goods receipt into returns stock": {
+          "pattern": "BWART_GI =='651'",
+          "id": "10"
+        },
+        "Post goods receipt into unrestricted-use stock": {
+          "pattern": "BWART_GI =='653'",
+          "id": "20"
+        },
+        "Post goods receipt into quality inspection stock": {
+          "pattern": "BWART_GI =='655'",
+          "id": "30"
+        },
+        "Post goods receipt into blocked stock": {
+          "pattern": "BWART_GI =='657'",
+          "id": "40"
+        },
+        "Post goods receipt into consignment return": {
+          "pattern": "BWART_GI =='632'",
+          "id": "50"
+        }
+       },
+      "include_other_variants": "Post goods receipt - others"
+    },
+    "Create credit memo": {
+      "pattern": "ERDAT_INV != @initial",
+      "timestamp": "ERDAT_INV",
+      "timestamp_offset_minutes": 110,
+      "id": "EVENT_40",
+      "variants": {
+        "Create credit memo item via order-related billing": {
+          "pattern": "FKTYP_INV =='A'",
+          "id": "10"
+        },
+        "Create credit memo item via delivery-related billing": {
+          "pattern": "FKTYP_INV =='L'",
+          "id": "20"
+        },
+        "Create no credit memo item due to missing billing relevance": {
+          "pattern": "FKTYP_INV ==''",
+          "id": "30"
+       }
+      },
+      "include_other_variants": "Create credit memo - Others"
+    }
+  }
+}

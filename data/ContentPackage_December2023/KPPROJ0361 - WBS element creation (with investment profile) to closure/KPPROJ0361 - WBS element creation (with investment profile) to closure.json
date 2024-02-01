@@ -1,0 +1,80 @@
+{
+    "comment": "KPPROJ0361 - WBS element creation (with investment profile) to closure",
+    "bpmn_model": "WBS element creation (with investment profile) to closure",
+    "source_data": [
+        {
+            "ppi_id": "KPPROJ0361",
+            "type": "main"
+        }
+    ],
+    "process_name": "KPPROJ0361_01",
+    "version": "1",
+    "event_definitions": {
+        "Create WBS element": {
+            "pattern": "ERDAT != @initial",
+            "timestamp": "ERDAT",
+            "timestamp_offset_minutes": 20,
+            "id": "EVENT_10"
+        },
+        "Release WBS element": {
+            "pattern": "RELEASE_DATE != @initial",
+            "timestamp": "RELEASE_DATE",
+            "timestamp_offset_minutes": 40,
+            "id": "EVENT_20",
+            "variants": {
+                "Release WBS element using a custom transaction": {
+                    "pattern": "RELEASE_TCODE.str.startswith('Z') or RELEASE_TCODE.str.startswith('Z') or RELEASE_TCODE.str.startswith('/')",
+                    "id": "10"
+                },
+                "Release WBS element using single processing transactions": {
+                    "pattern": "RELEASE_TCODE == 'CJ01' or RELEASE_TCODE == 'CJ02' or RELEASE_TCODE == 'CJ11' or RELEASE_TCODE == 'CJ12'",
+                    "id": "20"
+                },
+                "Release WBS element using Project Builder": {
+                    "pattern": "RELEASE_TCODE == 'CJ20' or RELEASE_TCODE == 'CJ20N'",
+                    "id": "30"
+                }
+            },
+            "include_other_variants": "Release WBS element - others"
+        },
+        "Activate asset": {
+            "pattern": "FIRST_SETTLEMENT != @initial",
+            "timestamp": "FIRST_SETTLEMENT",
+            "timestamp_offset_minutes": 60,
+            "id": "EVENT_30"
+        },
+        "Settle WBS elements (first time)": {
+            "pattern": "AKTIV != @initial",
+            "timestamp": "AKTIV",
+            "timestamp_offset_minutes": 80,
+            "id": "EVENT_40"
+        },
+        "Technically complete asset": {
+            "pattern": "TADAT != @initial",
+            "timestamp": "TADAT",
+            "timestamp_offset_minutes": 100,
+            "id": "EVENT_50"
+        },
+        "Close WBS element": {
+            "pattern": "CLOSE_DATE != @initial",
+            "timestamp": "CLOSE_DATE",
+            "timestamp_offset_minutes": 120,
+            "id": "EVENT_60",
+            "variants": {
+                "Close WBS element using single processing transactions": {
+                    "pattern": "CLOSE_TCODE == 'CJ01' or CLOSE_TCODE == 'CJ02' or CLOSE_TCODE == 'CJ11' or CLOSE_TCODE == 'CJ12'",
+                    "id": "10"
+                },
+                "Close WBS element using Project Builder": {
+                    "pattern": "CLOSE_TCODE == 'CJ20' or CLOSE_TCODE == 'CJ20N'",
+                    "id": "20"
+                },
+                "Close WBS element using custom transaction": {
+                    "pattern": "CLOSE_TCODE.str.startswith('Y') or CLOSE_TCODE.str.startswith('Z') or CLOSE_TCODE.str.startswith('/')",
+                    "id": "30"
+                }
+            },
+            "include_other_variants": "Close WBS element - others"
+        }
+    }
+}

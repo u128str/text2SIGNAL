@@ -1,0 +1,66 @@
+{
+  "comment": "KPLE000361 Supplier return delivery processing with classic Warehouse Management",
+  "bpmn_model": "Supplier return delivery processing with classic Warehouse Management",
+  "source_data": [
+    {
+      "ppi_id": "KPLE000361",
+      "type": "main",
+      "filter": "VGTYP eq 'V' and WERKS_LIKP eq '' and contains(TCODE, 'ME2O') ne true"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPLE000361_06",
+  "event_definitions": {
+    "Create return delivery item": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create return delivery item manually via delivery due transaction VL10x": {
+          "pattern": "USTYP == 'A' and TCODE == 'VL10X'",
+          "id": 30
+        },
+        "Create return delivery item automatically": {
+          "pattern": "TCODE == ''or (TCODE != '' and (USTYP == 'B' or USTYP =='C'))",
+          "id": 40
+        },
+        "Create return delivery item via custom transaction": {
+          "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+          "id": 50
+        }
+      },
+      "include_other_variants": "Create return delivery item via other transactions"
+    },
+    "Perform transportation planning for return delivery": {
+      "pattern": "TRSTA != '' and ERDAT != @initial ",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Create transfer order item and confirm without difference": {
+      "pattern": "BDATU != @initial and LVSTA == 'C' and KOSTA == 'C'",
+      "timestamp": "BDATU",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30"
+    },
+    "Create transfer order item and confirm with difference": {
+      "pattern": "BDATU != @initial and LVSTA == 'C' and KOSTA == 'B'",
+      "timestamp": "BDATU",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_40"
+    },
+    "Process return delivery with packing": {
+      "pattern": "BDATU != @initial and PKSTA != ''",
+      "timestamp": "BDATU",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_50"
+    },
+    "Post goods issue": {
+      "pattern": "WADAT_IST != @initial",
+      "timestamp": "WADAT_IST",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_60"
+    }
+  }
+}

@@ -1,0 +1,210 @@
+Query 1
+-------
+category = 'Cycle Time'
+name = 'Average cycle time across all cases'
+details = 'Average duration from first to last end_time of each case'
+query = 'SELECT AVG((SELECT LAST(end_time) - FIRST(end_time)))
+         FROM THIS_PROCESS
+'
+expected_result =
+Average Cycle Time
+2061973225
+comment = 'Result is a duration (23d 20h) expressed in milliseconds'
+
+Query 2
+-------
+category = 'Cycle Time'
+name = 'Median Cycle Time between specific events'
+details = 'Median cycle time for a returns processing, ie the median cycle time between creating a return request and receiving the return. Cycle time is the time between two recorded events, in this case the first recorded instance of the 'Create Return Request' event, and last recorded instance of the 'Return Received' event across all cases.'
+query = 'SELECT MEDIAN(
+			   (SELECT LAST(end_time)
+			    WHERE event_name = 'Receive Return')
+			    -
+               (SELECT FIRST(end_time)
+                WHERE event_name = 'Create Return Request')
+             ) AS "Return Cycle Time"
+        FROM THIS_PROCESS
+'
+expected_result =
+Median Return Cycle Time
+592882500
+comment = 'Result is a duration (6d 20h) expressed in milliseconds'
+
+Query 3
+-------
+category = 'Variants'
+name = 'Top X Variants'
+details = 'Top 5 process variants with their Average Cycle Times, ranked according to Case Count. A process variant is a unique sequence of recorded events in a process (sometimes referred to as a trace).'
+query = 'SELECT event_name AS "Variant",
+  	       COUNT(DISTINCT case_id) as "Case Count",
+           AVG((SELECT LAST(end_time) - FIRST(end_time))) AS "Average Cycle Time"
+        FROM THIS_PROCESS
+        GROUP BY 1
+        ORDER BY 2 DESC
+        LIMIT 5
+'
+expected_result =
+Variant	Case Count	Average Cycle Time
+["Create Sales Inquiry","Calculate Credit Score","Calculate Risk Class","Request Credit Limit","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Receive Payment"]	706	862537161.5
+["Create Sales Inquiry","Calculate Credit Score","Calculate Risk Class","Request Credit Limit","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Dunning","Receive Payment"]	104	3854504404
+["Create Sales Inquiry","Calculate Credit Score","Calculate Risk Class","Request Credit Limit","Create Sales Quotation","Create Sales Order","Review of Sales Order","Release Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Receive Payment"]	95	1269803537
+["Create Sales Inquiry","Calculate Credit Score","Calculate Risk Class","Request Credit Limit","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Credit Memo Request","Change Invoice","Receive Payment"]	94	2218075979
+["Create Sales Inquiry","Calculate Credit Score","Calculate Risk Class","Request Credit Limit","Create Sales Quotation","Create Sales Order","Change Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Receive Payment"]	93	1060717312
+comment = 'Nested Table Result'
+
+
+Query 4
+-------
+category = 'Variants'
+name = 'Top X Variants by Percentile'
+details = 'Maximum cycle time of 90% of all cases within each variant. For the purposes of the demo, we limit the results to the top 5 results. A process variant is a unique sequence of recorded events in a process (sometimes referred to as a trace).'
+query = 'SELECT event_name AS "Variant",
+	         PERCENTILE_DISC(0.9) WITHIN GROUP(ORDER BY (SELECT LAST(end_time) - FIRST(end_time))) AS "90th Percentile Cycle Time per Variant"
+         FROM THIS_PROCESS
+         GROUP BY 1
+         ORDER BY 2 DESC
+         LIMIT 5
+'
+expected_result =
+Variant	90th Percentile Cycle Time per Variant
+["Create Sales Inquiry","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Dunning","Create Dunning","Create Dispute Case"]	9250556000
+["Create Sales Inquiry","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Dunning","Create Dispute Case"]	9003795000
+["Create Sales Inquiry","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Dunning","Create Dunning","Receive Payment"]	8281168000
+["Create Sales Inquiry","Calculate Credit Score","Calculate Risk Class","Request Credit Limit","Create Sales Quotation","Create Sales Order","Review of Sales Order","Release Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Dunning","Create Dunning","Receive Payment"]	7549302000
+["Create Sales Inquiry","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Dunning","Create Dispute Case"]	7507394000
+comment = 'Nested Table Result (tab separated). 90th Percentile Cycle Time per Variant expressed in milliseconds'
+
+Query 5
+-------
+category = 'Rework / Repeated Events'
+name = 'Cases with X repeated events'
+details = 'cases with rework. Rework is identified by a number of repeated process steps exceeding a given threshold. In this example, we show cases that have at least 1 event that is repeated at least 3 times.'
+query = 'SELECT case_id, "event_name", "end_time", "Risk Class"
+          FROM THIS_PROCESS
+          WHERE (SELECT MAX(occ)
+                 FROM (SELECT OCCURRENCE(event_name) AS occ) AS sub) > 3
+          ORDER BY 1
+'
+expected_result =
+case_id	event_name	end_time	Risk Class
+1386	["Create Sales Inquiry","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Receive Return","Cancel Invoice"]	[1554251585000.0,1554308340000.0,1554375263000.0,1554443976000.0,1554492611000.0,1554613471000.0,1554683769000.0,1555434208000.0,1555500074000.0,1555552561000.0,1555674328000.0,1555743651000.0,1556753171000.0,1556822680000.0,1556871134000.0,1556964960000.0,1557031945000.0,1557844912000.0,1557937996000.0,1557989344000.0,1558082304000.0,1558139070000.0,1558926987000.0,1559519059000.0,1559691870000.0]	Not evaluated
+1539	["Create Sales Inquiry","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Dunning","Create Dunning","Create Dispute Case"]	[1556103705000.0,1556170339000.0,1556232348000.0,1556314626000.0,1556366219000.0,1556490171000.0,1556552889000.0,1557387921000.0,1557453216000.0,1557503486000.0,1557615738000.0,1557683256000.0,1558546525000.0,1558631985000.0,1558674185000.0,1558784202000.0,1558836294000.0,1559805458000.0,1559873536000.0,1559929374000.0,1560021638000.0,1560079448000.0,1561769449000.0,1563528992000.0,1565354261000.0]	Not evaluated
+1906	["Create Sales Inquiry","Create Sales Quotation","Create Sales Order","Review of Sales Order","Release Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Credit Memo Request","Create Dispute Case"]	[1561336450000.0,1561393877000.0,1561474846000.0,1561669147000.0,1561870908000.0,1561956212000.0,1562007432000.0,1562117119000.0,1562184795000.0,1563117529000.0,1563198659000.0,1563248539000.0,1563352136000.0,1563410924000.0,1564486001000.0,1564553045000.0,1564612498000.0,1564728115000.0,1564793129000.0,1565619683000.0,1565705051000.0,1565757843000.0,1565859529000.0,1565921421000.0,1566585602000.0,1567641420000.0]	Not evaluated
+222	["Create Sales Inquiry","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Dunning","Create Dispute Case"]	[1546503916000.0,1546564113000.0,1546627890000.0,1546705856000.0,1546764526000.0,1546851794000.0,1546917944000.0,1547826514000.0,1547895272000.0,1547942949000.0,1548033724000.0,1548103167000.0,1548997836000.0,1549066649000.0,1549109824000.0,1549209271000.0,1549262334000.0,1550337330000.0,1550414761000.0,1550467437000.0,1550584683000.0,1550635570000.0,1552441976000.0,1554011310000.0]	Not evaluated
+2358	["Create Sales Inquiry","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Receive Return","Cancel Invoice"]	[1569313716000.0,1569380738000.0,1569457025000.0,1569535717000.0,1569593184000.0,1569718105000.0,1569785662000.0,1570660027000.0,1570739627000.0,1570786296000.0,1570904025000.0,1570963666000.0,1571963674000.0,1572056082000.0,1572116504000.0,1572234608000.0,1572287017000.0,1573256102000.0,1573329190000.0,1573382312000.0,1573474944000.0,1573527536000.0,1574378059000.0,1575036113000.0,1575234538000.0]	Not evaluated
+72	["Create Sales Inquiry","Create Sales Quotation","Create Sales Order","Review of Sales Order","Release Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Receive Payment"]	[1546321963000.0,1546369734000.0,1546432992000.0,1546667834000.0,1546833494000.0,1546921357000.0,1546968154000.0,1547078281000.0,1547127423000.0,1548214173000.0,1548291980000.0,1548351395000.0,1548472432000.0,1548545282000.0,1549650056000.0,1549729306000.0,1549772933000.0,1549881061000.0,1549933783000.0,1550802606000.0,1550884775000.0,1550936212000.0,1551038647000.0,1551091040000.0,1551383775000.0]	Not evaluated
+732	["Create Sales Inquiry","Create Sales Quotation","Create Sales Order","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Return Request","Create Delivery","Execute Picking","Post Goods Issue","Create Invoice","Create Dunning","Create Dispute Case"]	[1548516080000.0,1548569068000.0,1548634745000.0,1548721355000.0,1548767614000.0,1548894646000.0,1548948041000.0,1550014701000.0,1550101285000.0,1550149567000.0,1550250125000.0,1550306073000.0,1551237717000.0,1551315078000.0,1551359495000.0,1551481316000.0,1551552602000.0,1552508502000.0,1552602481000.0,1552657075000.0,1552782120000.0,1552848183000.0,1553681575000.0,1553759096000.0,1553810976000.0,1553914915000.0,1553966356000.0,1555680357000.0,1557519875000.0]	Not evaluated
+comment = 'Nested Table Result (tab separated). end_time represented in UNIX timestamp format (milliseconds since UNIX epoch date)'
+
+Query 6
+-------
+category = 'Compliance'
+name = 'Compliance Rate for Standard Invoice Processing'
+details ='compliance rate for standard invoicing with payment received. Compliance rate represents the count of cases exhibiting specific patterns / behaviours / sequences of events, divided by the total number of cases. In this example we combine SIGNAL FILTER and MATCHES expressions count cases exhibiting a specific event pattern.'
+query = 'SELECT (
+          		COUNT(1) FILTER (WHERE event_name MATCHES ('Create Invoice'~> 'Receive Payment'))
+                 /
+                 COUNT(1)
+                 ) * 100 AS "Standard Invoicing Compliance Rate"
+
+          FROM THIS_PROCESS
+'
+expected_result =
+Standard Invoicing Compliance Rate
+69.05254448
+comment = 'Numeric result'
+
+Query 7
+-------
+category = 'Pattern Matching / Deviations'
+name = 'Count of nnpaid invoices with no risk assessment (Standard Process Deviation)'
+details = 'Count of cases where invoice payment has not been received and customer risk class has not been assessed. We calculate this by counting the cases exhibiting specific behaviours, specifically where the case level attribute 'Risk Class' = 'Not Evaluated' and the event 'Create Invoice' is not followed by the event 'Receive Payment' or 'Cancel Invoice'. A behaviour is an expression evaluating case or event level attributes and can be used in a pattern matching expression.'
+query = 'SELECT COUNT(1) AS "Case Count"
+          FROM THIS_PROCESS
+          WHERE "Risk Class" = 'Not evaluated'
+          AND
+          BEHAVIOUR
+                   (event_name = 'Create Invoice') AS create_invoice,
+                   ("Risk Class" = 'Not evaluated') AS no_risk_evaluation
+          MATCHES (no_risk_evaluation ~> create_invoice)
+          AND
+          NOT event_name MATCHES ('Create Invoice' ~> 'Receive Payment')
+          AND
+          NOT event_name MATCHES ('Create Invoice' ~> 'Cancel Invoice')
+'
+expected_result =
+Case Count
+102
+comments = 'Numeric value result'
+
+Query 8
+-------
+category = 'Pattern Matching / Deviations'
+name = 'Unpaid Invoices by Risk Class (Standard Process Deviation)'
+details = 'Count of cases where invoice payment has not been received according to customer risk class. We calculate this by counting the cases exhibiting specific behaviours, specifically the event 'Create Invoice' is not followed by the event 'Receive Payment' or 'Cancel Invoice', and group the result by the case level attribute 'Risk Class'. A behaviour is an expression evaluating case or event level attributes and can be used in a pattern matching expression.'
+query = 'SELECT "Risk Class",
+	             COUNT(1) AS "Case Count"
+          FROM THIS_PROCESS
+          WHERE event_name
+          MATCHES ('Create Invoice')
+          AND
+          NOT event_name
+          MATCHES ('Create Invoice'
+          		~> 'Receive Payment')
+          AND
+          NOT event_name
+          MATCHES ('Create Invoice'
+          		~> 'Cancel Invoice')
+          GROUP BY 1
+          ORDER BY 2 DESC
+'
+expected_result =
+Risk Class	Case Count
+Not evaluated	102
+High	44
+Medium	34
+Low	16
+comments = 'Flat table result'
+
+Query 9
+-------
+category = 'Time series'
+name = 'Active cases per month over time period'
+details = 'Count of active cases per time period, meaning cases that were started at or before that period but not yet ended. In this example we consider the time period aggregated by months. We calculate this by calculating a running count of first (case opened) and last (case closed) events per month. We then use the LAG function to subtract the previous period closed cases from the current period opened cases running count to get the total number of active cases started at or before the month but not yet ended.'
+query = 'SELECT "Month"
+	   ,count_started AS "Cases Started During Current & Previous Months"
+       	   ,count_finished AS "Cases Completed During Current & Previous Months"
+       	   ,IF(count_started IS NOT NULL, count_started, 0) - IF(LAG(count_finished) OVER (ORDER BY "Month") IS NOT NULL, LAG(count_finished) OVER (ORDER BY "Month"), 0) AS "Active Cases"
+  	FROM (SELECT "Month"
+            	    , SUM(count_started) OVER (ORDER BY "Month") AS count_started
+            	    , SUM(count_finished) OVER (ORDER BY "Month") AS count_finished
+              FROM (SELECT "Month"
+                          , COUNT(1) FILTER (WHERE started = 1) AS count_started
+                          , COUNT(1) FILTER (WHERE started = 0) AS count_finished
+                    FROM (SELECT date_trunc('month', (SELECT FIRST(end_time))) AS "Month"
+                               , 1 AS started
+                          FROM THIS_PROCESS
+                          UNION ALL
+                          SELECT date_trunc('month', (SELECT LAST(end_time))) AS "Month"
+			       , 0 AS started
+                          FROM THIS_PROCESS) AS sub
+                    GROUP BY 1
+                    FILL TIMESERIES('month')
+             ) AS sub2
+       ) AS sub3
+'
+expected_result = 
+Month	Cases Started During Current & Previous Months	Cases Completed During Current & Previous Months	Active Cases
+01.01.19	804	395	804
+01.02.19	1110	825	715
+01.03.19	1370	1152	545
+01.04.19	1582	1416	430
+01.05.19	1775	1632	359
+01.06.19	1943	1814	311
+01.07.19	2103	1976	289
+01.08.19	2252	2139	276
+01.09.19	2387	2289	248
+01.10.19	2417	2383	128
+01.11.19	2417	2411	34
+01.12.19	2417	2417	6
+comments = 'Flat table result'

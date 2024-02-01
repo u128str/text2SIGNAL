@@ -1,0 +1,133 @@
+{
+  "comment": "KFFI000960 Supplier payment without purchasing",
+  "bpmn_model": "Supplier payment without purchase order",
+  "source_data": [
+    {
+      "ppi_id": "KFFI000960",
+      "type": "main",
+      "filter": "AWTYP eq 'CTE' or AWTYP eq 'BKPF' or AWTYP eq 'RMRP' or AWTYP eq 'BKPFF' or AWTYP eq 'IBKPF'"
+    }
+  ],
+  "process_name": "KFFI000960_01",
+  "version": "1",
+  "event_definitions": {
+    "Issue supplier invoice": {
+      "pattern": "BLDAT != @initial",
+      "timestamp": "BLDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10"
+    },
+    "Create invoice": {
+      "pattern": "CPUDT != @initial",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20",
+      "variants": {
+        "Create invoice via post document transaction FB01": {
+          "pattern": "TCODE == 'FB01'",
+          "id": "10"
+        },
+        "Create invoice via post invoice transaction FB60": {
+          "pattern": "TCODE == 'FB60'",
+          "id": "20"
+        },
+        "Create invoice via fast entry transaction FB10": {
+          "pattern": "TCODE == 'FB10'",
+          "id": "30"
+        },
+        "Create invoice via parking function FBVB": {
+          "pattern": "TCODE == 'FBVB'",
+          "id": "40"
+        },
+        "Create invoice via clearing transaction FB05": {
+          "pattern": "TCODE == 'FB05'",
+          "id": "50"
+        },
+        "Create invoice via transaction MIRO": {
+          "pattern": "TCODE == 'MIRO'",
+          "id": "60"
+        },
+        "Create invoice via custom transaction": {
+          "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+          "id": "70"
+        },
+        "Create invoice via interface": {
+          "pattern": "TCODE == ''",
+          "id": "80"
+        },
+        "Create invoice via supplier consignment": {
+          "pattern": "TCODE == 'MRKO'",
+          "id": "90"
+        }
+      },
+      "include_other_variants": "Create invoice - others"
+    },
+    "Block invoice": {
+      "pattern": "CPUDT != @initial",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30",
+      "variants": {
+        "Move invoice immediately to free for payment": {
+          "pattern": "ZLSPR == '' and PREV_BLOCKED == ''",
+          "id": "10"
+        },
+        "Block invoice manually in finance": {
+          "pattern": "ZLSPR != '' or PREV_BLOCKED != ''",
+          "id": "20"
+        }
+      },
+      "include_other_variants": "Block invoice - others"
+    },
+    "Release invoice": {
+      "pattern": "UDATE_RELEASE != @initial and PREV_BLOCKED != ''",
+      "timestamp": "UDATE_RELEASE",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_50",
+      "variants": {
+        "Release payment block via finance transaction": {
+          "pattern": "TCODE_RELEASE.str.startswith('FB')",
+          "id": "10"
+        },
+        "Release payment block via custom transaction": {
+          "pattern": "(TCODE_RELEASE.str.startswith('Z') or TCODE_RELEASE.str.startswith('Y') or TCODE_RELEASE.str.startswith('/'))",
+          "id": "20"
+        },
+        "Release payment block via finance workflow": {
+          "pattern": "PREV_BLOCKED != 'R' and TCODE_RELEASE == ''",
+          "id": "30"
+        }
+      },
+      "include_other_variants": "Release payment block - others"
+    },
+    "Clear FI-AP items": {
+      "pattern": "AUGDT != @initial",
+      "timestamp": "AUGDT",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_60",
+      "variants": {
+        "Clear FI-AP items via payment run": {
+          "pattern": "TCODE_AUGBL == 'F110' or TCODE_AUGBL == ''",
+          "id": "10"
+        },
+        "Clear FI-AP items via account maintenance transaction FB1K": {
+          "pattern": "TCODE_AUGBL.str.startswith('FB1')",
+          "id": "20"
+        },
+        "Clear FI-AP items via manual payment": {
+          "pattern": "TCODE_AUGBL.str.startswith('FBZ')",
+          "id": "30"
+        },
+        "Clear FI-AP items via transaction FB05": {
+          "pattern": "CPUDT_AUGBL != @initial and TCODE_AUGBL == 'FB05'",
+          "id": "40"
+        },
+        "Clear FI-AP items via reversal": {
+          "pattern": "TCODE_AUGBL == 'FB08'",
+          "id": "50"
+        }
+      },
+      "include_other_variants": "Clear FI-AP items - others"
+    }
+  }
+}

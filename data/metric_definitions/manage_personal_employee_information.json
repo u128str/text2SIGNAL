@@ -1,0 +1,71 @@
+{
+  "metrics": [
+    {
+      "id": "average_time_completed_prior_to_effective_date",
+      "name": "Average Time Completed Prior To Effective Date",
+      "description": "Determines how long before the effective date the record was created. A negative value means that the record was created retroactively.",
+      "signalFragment": "AVG(\n(SELECT FIRST(\"Effective Date\")) \n- \n(SELECT LAST(\"Created Date\"))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MANAGE_PERSONAL_EMPLOYEE_INFORMATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "average_time_resubmit_workflow_request",
+      "name": "Average Time for Employee to Resubmit Workflow Request",
+      "description": "Counts the average time from when a workflow was rejected by HR until the employee resubmits a workflow request",
+      "signalFragment": "AVG ((SELECT LAST (END_TIME) FILTER (\n WHERE EVENT_NAME IN ('Personal Data Change WF Resubmitted'))) \n- (SELECT FIRST (END_TIME) FILTER (\n WHERE EVENT_NAME IN ('Personal Data Change WF Rejected'))))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MANAGE_PERSONAL_EMPLOYEE_INFORMATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "average_time_to_approve_workflow_request",
+      "name": "Average Time to Approve Workflow Request",
+      "description": "Counts the average time from the initiation of a workflow to change personal data by the employee to the approval of the workflow request by the HR department",
+      "signalFragment": "AVG ((SELECT LAST (END_TIME) FILTER (\n WHERE EVENT_NAME IN ('Personal Data Change WF Approved'))) \n- (SELECT FIRST (END_TIME) FILTER (\n WHERE EVENT_NAME IN ('Personal Data Change WF Initiated'))))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MANAGE_PERSONAL_EMPLOYEE_INFORMATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "average_time_to_reject_workflow_request",
+      "name": "Average Time to Reject Workflow Request",
+      "description": "Counts the average time from the initiation of a workflow to change personal data by the employee to the rejection of the workflow request by the HR department",
+      "signalFragment": "AVG ((SELECT LAST (END_TIME) FILTER (\n WHERE EVENT_NAME IN ('Personal Data Change WF Rejected'))) \n- (SELECT FIRST (END_TIME) FILTER (\n WHERE EVENT_NAME IN ('Personal Data Change WF Initiated'))))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MANAGE_PERSONAL_EMPLOYEE_INFORMATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "average_time_workflow_initiated_prior_to_effective_date",
+      "name": "Average Time Workflow Initiated Prior to Effective Date",
+      "description": "Determines how long before the effective date the workflow request was initiated. A negative value means that the record was created retroactively.",
+      "signalFragment": "AVG(\"Effective Date\" - \"Workflow Created Date\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MANAGE_PERSONAL_EMPLOYEE_INFORMATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "rate_of_personal_data_changes_initiated_by_employee",
+      "name": "Rate of Personal Data Changes Initiated by Employee",
+      "description": "Determines the rate of cases with personal data changes initiated by the employee.",
+      "signalFragment": "SUM(\n\t(SELECT COUNT(CASE_ID) FILTER (\n \tWHERE (EVENT_NAME IN ('Personal Data Change WF Initiated'))))) \n/ COUNT (CASE_ID) \n*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MANAGE_PERSONAL_EMPLOYEE_INFORMATION"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": []
+}

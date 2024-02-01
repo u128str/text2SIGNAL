@@ -1,0 +1,92 @@
+{
+  "comment": "KFFI001060 Cash collection for non sales (invoices)",
+  "bpmn_model": "Cash collection for non-sales (invoices)",
+  "source_data": [
+    {
+      "ppi_id": "KFFI001060",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KFFI001060_01",
+  "event_definitions": {
+    "Issue customer invoice": {
+      "pattern": "BLDAT != @initial ",
+      "timestamp": "BLDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10"
+    },
+    "Create Invoice": {
+      "pattern": "CPUDT != @initial",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20",
+      "variants": {
+        "Create invoice via post document transaction FB01": {
+          "pattern": "TCODE == 'FB01'",
+          "id": "10"
+        },
+        "Create invoice via post outgoing invoice transaction FB70": {
+          "pattern": "TCODE == 'FB70'",
+          "id": "20"
+        },
+        "Create invoice via recurring entry transaction FBD5": {
+          "pattern": "TCODE == 'FBD5'",
+          "id": "30"
+        },
+        "Create invoice via custom transaction": {
+          "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+          "id": "40"
+        },
+        "Create invoice via parking function FBVB": {
+          "pattern": "TCODE == 'FBVB'",
+          "id": "50"
+        },
+        "Create invoice via interface": {
+          "pattern": "TCODE == ''",
+          "id": "60"
+        },
+        "Create invoice via reference document posting transaction FBR2": {
+          "pattern": "TCODE == 'FBR2'",
+          "id": "70"
+        }
+      },
+      "include_other_variants": "Create invoice - others"
+    },
+    "Dun invoice": {
+      "pattern": "MADAT != @initial",
+      "timestamp": "MADAT",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30"
+    },
+    "Clear FI-AR items": {
+      "pattern": "AUGDT != @initial",
+      "timestamp": "AUGDT",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40",
+      "variants": {
+        "Clear FI-AR items via payment run F110": {
+          "pattern": "TCODE_AUGBL == 'F110' or TCODE_AUGBL == ''",
+          "id": "10"
+        },
+        "Clear FI-AR items via account maintenance transaction FB1D": {
+          "pattern": "TCODE_AUGBL.str.startswith('FB1')",
+          "id": "20"
+        },
+        "Clear FI-AR items via manual payment": {
+          "pattern": "TCODE_AUGBL.str.startswith('FBZ')",
+          "id": "30"
+        },
+        "Clear FI-AR items via transaction FB05": {
+          "pattern": "CPUDT_AUGBL != @initial and TCODE_AUGBL == 'FB05'",
+          "id": "40"
+        },
+        "Clear FI-AR items via reversal": {
+          "pattern": "TCODE_AUGBL == 'FB08' or TCODE_AUGBL == 'FV11'",
+          "id": "50"
+        }
+      },
+      "include_other_variants": "Clear FI-AR items - others"
+    }
+  }
+}

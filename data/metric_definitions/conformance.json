@@ -1,0 +1,535 @@
+{
+  "metrics": [
+    {
+      "id": "conformance_level",
+      "name": "Conformance level",
+      "description": "Percentage of cases without conformance issues",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${conformance_condition})) \n/ COUNT(case_id) \n* 100",
+      "aggregationType": "CASE",
+      "category": "Conformance",
+      "version": "1.0.0"
+    },
+    {
+      "id": "non_conformant_cases",
+      "name": "Non-conformant cases",
+      "description": "Total number of non-conformant cases",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE NOT (event_name MATCHES(${conformance_condition})))",
+      "aggregationType": "CASE",
+      "category": "Conformance",
+      "version": "1.0.0"
+    },
+    {
+      "id": "cases_compliance_risk",
+      "name": "Cases at compliance risk",
+      "description": "Number of cases that might face penalty due to compliance violation",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (NOT event_name MATCHES(${conformance_condition})\n\tAND (SELECT BOOL_OR( event_name IN (${compliance_milestone_events})))\n\tAND (SELECT\n\t\tLAST(end_time) FILTER (WHERE event_name IN (${compliance_end_events}))\n\t\t-\n\t\tFIRST(end_time) FILTER (WHERE event_name IN (${compliance_start_events}))\n\t) < DURATION ${compliance_threshold_time}\n\t)\n)",
+      "aggregationType": "CASE",
+      "category": "Conformance",
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "conformance_condition",
+      "description": "Sequence of events that describes the \"to-be\" process, for example, using the MATCHES function syntax ^ 'Create Sales Order Item' ~> 'Create Outbound Delivery Item' ~> 'Clear Invoice' $",
+      "defaultValues": [
+        {
+          "defaultValue": "^ 'Create Sales Order Item'\n\t~> 'Create Outbound Delivery Item'\n\t~> 'Post Goods Issue'\n\t~> 'Create Invoice Item'\n\t~> 'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "^ 'Create PR Item'\n\t~> 'Release PR Item'\n\t~> 'Create PO Item'\n\t~> 'Release PO'\n\t~> 'Create Goods Receipt'\n\t~> ('Record Invoice Receipt'|'Create FI Invoice')\n\t~> 'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "PROCURE_TO_PAY"
+          ]
+        },
+        {
+          "defaultValue": "^ 'Create Invoice'\n\t~> 'Post Invoice'\n\t~> 'Clear Invoice'\n\t~> 'Due Date passed'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INVOICE_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "^ 'Vendor Creates Invoice'\\n\\t~> 'Post Invoice'\\n\\t~> 'Clear Invoice'\\n\\t~> 'Due Date passed'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INVOICE_TO_PAY"
+          ]
+        },
+        {
+          "defaultValue": "^ 'Create PR Item'\n\t~> 'Create PO Item'\n\t~> 'Create Goods Receipt'\n\t~> 'Create Asset Item'\n\t~> 'Capitalize Asset Item''\n\t~> 'Create FI Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ACQUIRE_TO_ONBOARD"
+          ]
+        },
+        {
+          "defaultValue": "^ 'Create Inspection Lot'\n\t~> 'Begin Result Recording'\n\t~> 'Complete Result Recording'\n\t~> 'Create Usage Decision'~> ('Material Movement Free'|'Material Movement Restricted')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "^ 'Create Process Order'\n\t~> 'Released'\n\t~> 'Confirmed'\n\t~> 'Technically completed'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "MAKE_TO_STOCK"
+          ]
+        },
+        {
+          "defaultValue": "^ 'Create Incident'\n\t~> ('Assign Incident to User'|'Assign Incident to Network Group'|'Assign Incident to Service Desk Group')\n\t~> 'Incident in Progress'\n\t~> 'Incident Resolved'\n\t~> 'Close Incident'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "^ 'Create Lead'\n\t~> 'Assign Lead Owner'\n\t~> 'Create Opportunity'\n\t~> ('Update Opportunity Stage to: Closed Won'\n\t\t|'Update Opportunity Stage to: 06 Closed Won (Onboarding)'\n\t\t|'Update Opportunity Stage to: Closed Lost'\n\t\t|'Update Opportunity Stage to: Dead'\n\t\t|'Update Opportunity Stage to: Dead - No Opportunity'\n\t\t|'Update Opportunity Stage to: Dead - No Decision'\n\t\t|'Update Opportunity Stage to: Dead - Duplicate'\n\t\t|'Update Opportunity Stage to: 00 Dead - Lost')",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "^ 'Create Meter Reading Order'\n\t~> 'Obtain Meter Reading Data'\n\t~> 'Data Plausibility Check Passed'\n\t~> 'Create Billing Document'\n\t~> 'Create Invoice Document'\n\t~> 'Receive Incoming Payment'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "^ 'Create Sales Order Item'\n\t~> 'Create LE Outbound Delivery Item'\n\t~> 'Create Outbound Delivery Order Item'\n\t~> 'Create Warehouse Task'\n\t~> 'Confirm Warehouse Task'\n\t~> 'Post Goods Issue'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "^ 'Create Freight Order'\n\t~> 'Send Freight Order to Vendor'\n\t~> 'Create Freight Settlement Document'\n\t~> 'Create Carrier Invoice'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "compliance_start_events",
+      "description": "Events defining the starting point of the process for the compliance check, for example 'Create Sales Order Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Sales Order Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Create PR Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "PROCURE_TO_PAY",
+            "ACQUIRE_TO_ONBOARD"
+          ]
+        },
+        {
+          "defaultValue": "'Create Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INVOICE_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Create PO Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INVOICE_TO_PAY"
+          ]
+        },
+        {
+          "defaultValue": "'Create Process Order'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "MAKE_TO_STOCK"
+          ]
+        },
+        {
+          "defaultValue": "'Create Inspection Lot'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "'Create Incident'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "'Create Lead'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "'Create Meter Reading Order'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Create Sales Order Item'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "'Create Freight Order'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "compliance_end_events",
+      "description": "Events defining the end point of the process for the compliance check, for example 'Clear Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH",
+            "PROCURE_TO_PAY",
+            "INVOICE_TO_CASH",
+            "INVOICE_TO_PAY"
+          ]
+        },
+        {
+          "defaultValue": "'Capitalize Asset Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ACQUIRE_TO_ONBOARD"
+          ]
+        },
+        {
+          "defaultValue": "ILIKE 'Material Movement%'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "'Technically completed'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "MAKE_TO_STOCK"
+          ]
+        },
+        {
+          "defaultValue": "'Close Incident'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "('Update Opportunity Stage to: Closed Won'\n\t\t|'Update Opportunity Stage to: 06 Closed Won (Onboarding)'\n\t\t|'Update Opportunity Stage to: Closed Lost'\n\t\t|'Update Opportunity Stage to: Dead'\n\t\t|'Update Opportunity Stage to: Dead - No Opportunity'\n\t\t|'Update Opportunity Stage to: Dead - No Decision'\n\t\t|'Update Opportunity Stage to: Dead - Duplicate'\n\t\t|'Update Opportunity Stage to: 00 Dead - Lost')",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "'Receive Incoming Payment'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Post Goods Issue'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "'Post Carrier Invoice'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "compliance_milestone_events",
+      "description": "Events through which the case must flow in order to check for compliance, for example 'Post Goods Issue'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Post Goods Issue'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Create Goods Receipt'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "PROCURE_TO_PAY",
+            "INVOICE_TO_PAY",
+            "ACQUIRE_TO_ONBOARD"
+          ]
+        },
+        {
+          "defaultValue": "'Post Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INVOICE_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Released'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "MAKE_TO_STOCK"
+          ]
+        },
+        {
+          "defaultValue": "'Create Usage Decision'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "'Incident Resolved'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "'Create Opportunity'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "'Obtain Meter Reading Data'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Confirm Warehouse Task'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "'Create Freight Settlement Document'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "compliance_threshold_time",
+      "description": "Threshold compliance time, for example '25 days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'25days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH",
+            "PROCURE_TO_PAY",
+            "INVOICE_TO_CASH",
+            "INVOICE_TO_PAY",
+            "MAKE_TO_STOCK",
+            "ACQUIRE_TO_ONBOARD",
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "'25days'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "'25days'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "'25days'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'25days'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "'25days'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    }
+  ]
+}

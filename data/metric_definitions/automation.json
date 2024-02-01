@@ -1,0 +1,194 @@
+{
+  "metrics": [
+    {
+      "id": "automation_rate",
+      "name": "Automation rate over cases",
+      "description": "Number of automated events divided by all events",
+      "signalFragment": "SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\t\tWHERE (${automation_condition}))\n\t)\n\t)\n/ SUM((SELECT COUNT(event_name)))\n* 100",
+      "aggregationType": "CASE",
+      "category": "Automation",
+      "version": "1.0.0"
+    },
+    {
+      "id": "automation_rate_potential",
+      "name": "Automation rate potential",
+      "description": "Percentage of events that could be automated",
+      "signalFragment": "SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\t\tWHERE (${automation_potential_condition}))\n\t)\n\t)\n/ SUM((SELECT COUNT(event_name)))\n* 100",
+      "aggregationType": "CASE",
+      "category": "Automation",
+      "version": "1.0.0"
+    },
+    {
+      "id": "automation_rate_events",
+      "name": "Automation rate over events",
+      "description": "Number of automated events divided by all events",
+      "signalFragment": "count(event_name) FILTER \n(WHERE (${automation_condition})) \n/ count(event_name) * 100",
+      "aggregationType": "EVENT",
+      "category": "Automation",
+      "releaseDate": "2022-12-08",
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "automation_condition",
+      "description": "Attributes indicating that an event was automated, for example \"Event Created By User Type\" IN ('System','Service','Communications Data')",
+      "defaultValues": [
+        {
+          "defaultValue": "\"EventCreatedByUserType\" IN ('System','Service','Communications Data')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "\"Event Created By User Type\" IN ('System','Service','Communications Data')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "PROCURE_TO_PAY",
+            "INVOICE_TO_CASH",
+            "INVOICE_TO_PAY",
+            "ACQUIRE_TO_ONBOARD"
+          ]
+        },
+        {
+          "defaultValue": "\"Event Created By User Type\" IN ('System','Service','Communications Data','Batch Job')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "MAKE_TO_STOCK"
+          ]
+        },
+        {
+          "defaultValue": "\"Event Created By User Type\" IN ('System','Service','Communications Data')",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "\"Event Created by User Type\" IN ('System','Service','Communications Data')",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "\"Event Created By User Type\" IN ('System','Service')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "\"Event Created by User Type\" IN ('System','Service','Communications Data')",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "automation_potential_condition",
+      "description": "Attributes indicating that an event was not automated yet thereby excluding events that cannot be automated. For example \"Event Created By User Type\" = 'Dialog' AND (event_name <> 'Create Invoice Item')",
+      "defaultValues": [
+        {
+          "defaultValue": "(\"EventCreatedByUserType\" = 'Dialog') \nAND\n(event_name <> 'Create Invoice Item')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "(\"Event Created By User Type\" = 'Dialog') \nAND\n(event_name <> 'Create FI Invoice')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "PROCURE_TO_PAY",
+            "ACQUIRE_TO_ONBOARD"
+          ]
+        },
+        {
+          "defaultValue": "(\"Event Created By User Type\" = 'Dialog') \nAND\n(event_name <> 'Create Invoice')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INVOICE_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "(\"Event Created By User Type\" = 'Dialog') \nAND\n(event_name <> 'Vendor Creates Invoice')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INVOICE_TO_PAY"
+          ]
+        },
+        {
+          "defaultValue": "(\"Event Created By User Type\" = 'Dialog') \nAND\n(event_name <> 'Create Invoice Document')",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "(\"Event Created By User Type\" = 'Dialog') \nAND\n(event_name <> 'Actual start time')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "MAKE_TO_STOCK"
+          ]
+        },
+        {
+          "defaultValue": "(\"Event Created by User Type\" = 'Dialog') \nAND\n(event_name <> 'Create Sales Order Item')",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "(\"Event Created by User Type\" = 'Dialog') \nAND\n(event_name <> 'Create Carrier Invoice')",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{ "comment": "Debit memo request item creation to FI-AR item clearing",
+  "bpmn_model": "Debit memo request item creation to FI-AR item clearing",
+  "source_data": [
+    {
+      "ppi_id": "KPSD000460",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPSD000460_01",
+  "event_definitions": {
+    "Create debit memo request": {
+      "pattern": "ERDAT_I != @initial",
+      "timestamp": "ERDAT_I",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create debit memo request item with order-related billing according to order quantity": {
+        "pattern": "FKREL == 'B'",
+        "id": "10"
+        },
+        "Create debit memo request item with order-related billing according to target quantity": {
+        "pattern": "FKREL == 'C'",
+         "id": "20"
+        },
+        "Create debit memo request item with order-related billing according to delivery quantity": {
+        "pattern": "FKREL == 'G'",
+        "id": "30"
+        }
+      },
+      "include_other_variants": "Create debit memo request item via other means"
+      },
+      "Create debit memo": {
+      "pattern": "ERDAT_INV != @initial",
+      "timestamp": "ERDAT_INV",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20",
+      "variants": {
+        "Create debit memo manually via single transaction VF01": {
+        "pattern": "TCODE == 'VF01' and AUTOMATION_INV == 'M'",
+        "id": "10"
+        },
+        "Create debit memo via manual billing due processing": {
+        "pattern": "TCODE == 'VF04'",
+        "id": "20"
+        },
+        "Create debit memo automatically": {
+        "pattern": "TCODE == '' or ((TCODE == 'VF01' or TCODE == 'VF02') and AUTOMATION_INV == 'A')",
+        "id": "30"
+        },
+        "Create debit memo via custom transaction": {
+        "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+        "id": "40"
+         },
+        "Create debit memo automatically from shipment": {
+        "pattern": "TCODE == 'VTFAKT'",
+        "id": "40"
+          }
+        },
+      "include_other_variants": "Create debit memo via other transactions"
+      },
+      "Post debit memo to FI": {
+      "pattern": "CPUDT != @initial",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30",
+      "variants": {
+        "Post debit memo automatically to FI": {
+        "pattern": "TCODE != 'VFX3' and TCODE != 'VF02' and RFBSK == 'C'",
+        "id": "10"
+        },
+        "Post debit memo to FI after block": {
+          "pattern": "RFBSK == 'A'",
+          "id": "20"
+        },
+        "Post debit memo manually to FI after error resolution via VFX3": {
+        "pattern": "TCODE == 'VFX3' or TCODE == 'VF02'",
+        "id": "30"
+        }
+       },
+      "include_other_variants": "Post debit memo with other means"
+    },
+    "Dun debit memo": {
+      "pattern": "MADAT_B != @initial",
+      "timestamp": "MADAT_B",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40"
+    },
+      "Clear FI-AR item": {
+      "pattern": "AUGDT != @initial",
+      "timestamp": "AUGDT",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50",
+      "variants": {
+        "Clear FI-AR item via payment run F110": {
+          "pattern": "TCODE_AUGBL == 'F110' or TCODE_AUGBL == ''",
+          "id": "10"
+        },
+        "Clear FI-AR item via account maintenance transaction FB1*": {
+          "pattern": "TCODE_AUGBL.str.startswith('FB1')",
+          "id": "20"
+        },
+        "Clear FI-AR item via manual payment": {
+          "pattern": "TCODE_AUGBL.str.startswith('FBZ')",
+          "id": "30"
+        },
+        "Clear FI-AR item via transaction FB05": {
+          "pattern": "TCODE_AUGBL == 'FB05'",
+          "id": "40"
+        },
+        "Clear FI-AR item via reversal": {
+          "pattern": "TCODE_AUGBL == 'FB08' or TCODE_AUGBL == 'VF11'",
+          "id": "50"
+        }
+      },
+      "include_other_variants": "Clear FI-AR item via other transactions"
+    }
+  }
+}

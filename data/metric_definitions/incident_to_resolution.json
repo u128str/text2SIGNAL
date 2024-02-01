@@ -1,0 +1,216 @@
+{
+  "metrics": [
+    {
+      "id": "total_incident_number",
+      "name": "Total number of created incidents",
+      "description": "Total number of created incidents",
+      "signalFragment": "COUNT(case_id)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INCIDENT_TO_RESOLUTION"
+      ],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "version": "1.0.0"
+    },
+    {
+      "id": "open_incident_number",
+      "name": "Total number of open incidents",
+      "description": "Total number of open incidents",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE \n\t(SELECT BOOL_AND(\n NOT event_name IN (${incident_closure_events})))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INCIDENT_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "resolved_incident_number",
+      "name": "Total number of resolved incidents",
+      "description": "Total number of resolved incidents",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE \n\t(SELECT BOOL_OR(\n event_name IN (${incident_closure_events})))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INCIDENT_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_response_time",
+      "name": "Average response time",
+      "description": "Average time from incident creation to first response",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN (${response_events}))\n\t-(SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${incident_creation_events}))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INCIDENT_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_resolution_time",
+      "name": "Average resolution time",
+      "description": "Average time from incident creation to its resolution",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN (${resolution_events}))\n\t-(SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${incident_creation_events}))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INCIDENT_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "first_call_resolution_rate",
+      "name": "First call resolution rate",
+      "description": "Percentage of incidents that are resolved without any rework. Rework is defined here as any case that contains the same event name more than once.",
+      "signalFragment": "COUNT(case_id) FILTER(\n\tWHERE (SELECT COUNT(DISTINCT event_name)) = (SELECT COUNT(event_name))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INCIDENT_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itr_sla_breach_ratio",
+      "name": "SLA breach ratio",
+      "description": "Percentage of cases that have breached the SLAs",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE \n\t (SELECT BOOL_OR(\n event_name IN (${itr_sla_breach_events})))\n)/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INCIDENT_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_ticket_reassignment_rate",
+      "name": "Average ticket reassignment rate",
+      "description": "Average number of reassignments per case",
+      "signalFragment": "(SUM(${incident_reassignments})\n/ COUNT(case_id))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INCIDENT_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_rework_rate",
+      "name": "Average rework rate",
+      "description": "Percentage of cases with rework",
+      "signalFragment": "(COUNT(case_id) FILTER (\n\tWHERE (${rework_condition}))\n/ COUNT(case_id))\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INCIDENT_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "high_priority_incident_ratio",
+      "name": "High priority incident ratio",
+      "description": "Percentage of cases with high priority",
+      "signalFragment": "(COUNT(case_id) FILTER (\n\tWHERE (${high_priority})) \n/ COUNT(case_id))\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INCIDENT_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "incident_closure_events",
+      "description": "Events defining the closing events of a case, for example 'Close Incident'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Close Incident'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "incident_creation_events",
+      "description": "Events defining the start events of a case, for example 'Create Problem', 'Create Incident'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Incident'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "response_events",
+      "description": "Events defining the response to a recently opened case, for example 'Assign ticket', 'Create ticket'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Assign Incident to User'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "resolution_events",
+      "description": "Events defining the resolution of a case, for example 'Close Incident', 'Mark Incident as Resolved'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Close Incident', 'Mark Incident as Resolved'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itr_sla_breach_events",
+      "description": "Events that mark the time when the SLA was breached, for example 'Incident Resolution SLA Breached'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Incident Response SLA Breached','Incident Resolution SLA Breached'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "incident_reassignments",
+      "description": "Attribute referring to the reassignment count for incidents, for example, in ServiceNow it is called \"IncidentReassignmentCount\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"IncidentReassignmentCount\"",
+          "sourceSystems": [
+            "SERVICENOW"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "rework_condition",
+      "description": "Condition defining a rework event, for example \"COUNT(event_name) > COUNT(DISTINCT event_name)\" and \"IncidentReassignmentCount >= 1\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"IncidentReassignmentCount\" >= 1",
+          "sourceSystems": [
+            "SERVICENOW"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "high_priority",
+      "description": "Condition defining cases with high priority, for example \"IncidentPriority = 1\" or \"IncidentCategory = 'Urgent'\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"IncidentPriority\" = 1 OR \"IncidentCategory\" = 'Urgent'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "comment": "KPPURCH460 Supplier payment from purchase order",
+  "bpmn_model": "Supplier payment from purchasing",
+  "source_data": [
+    {
+      "ppi_id": "KPPURCH460",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPPURCH460_01",
+  "event_definitions": {
+    "Create purchase order": {
+      "pattern": "AEDAT != @initial",
+      "timestamp": "AEDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10"
+    },
+    "Issue supplier invoice": {
+      "pattern": "BLDAT != @initial",
+      "timestamp": "BLDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Create Invoice": {
+      "pattern": "CPUDT != @initial",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30",
+      "variants": {
+        "Create invoice via BAPI interface": {
+          "pattern": "IVTYP == 'B'",
+          "id": "10"
+        },
+        "Create invoice via EDI/IDoc": {
+          "pattern": "IVTYP == '4'",
+          "id": "20"
+        },
+        "Create invoice via evaluated receipt settlement": {
+          "pattern": "IVTYP == '1'",
+          "id": "30"
+        },
+        "Create invoice via background invoice verification": {
+          "pattern": "IVTYP == '3'",
+          "id": "40"
+        },
+        "Create invoice online via dialog user": {
+          "pattern": "IVTYP == '' and USTYP == 'A'",
+          "id": "50"
+        },
+        "Create invoice via system user": {
+          "pattern": "IVTYP == '' and (USTYP =='B' or USTYP == 'C')",
+          "id": "60"
+        },
+        "Create invoice via SRM or Ariba": {
+          "pattern": "IVTYP == 'D' or IVTYP == 'I'",
+          "id": "70"
+        },
+        "Create invoice via account maintenance": {
+          "pattern": "IVTYP == 'C'",
+          "id": "80"
+        },
+        "Create invoice via parking function": {
+          "pattern": "IVTYP == 'A'",
+          "id": "90"
+        }
+      },
+      "include_other_variants": "Create invoice - others"
+    },
+    "Move invoice immediately to free for payment": {
+      "pattern": "CPUDT != @initial and ZLSPR_FIAP == '' and PREV_BLOCKED == ''",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40"
+    },
+    "Block invoice automatically via invoice verification": {
+      "pattern": "CPUDT != @initial and (ZLSPR_FIAP == 'R' or PREV_BLOCKED == 'R')",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_50"
+    },
+    "Block invoice manually in finance": {
+      "pattern": "CPUDT != @initial and ZLSPR_FIAP != '' and ZLSPR_FIAP != 'R' and PREV_BLOCKED != 'R' and PREV_BLOCKED != ''",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_60"
+    },
+    "Release Payment Block": {
+      "pattern": "UDATE_RELEASE != @initial and PREV_BLOCKED != ''",
+      "timestamp": "UDATE_RELEASE",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_70",
+      "variants": {
+        "Release payment block via invoice verification": {
+          "pattern": "PREV_BLOCKED == 'R' and (TCODE_RELEASE == '' or TCODE_RELEASE == 'MRBR')",
+          "id": "10"
+        },
+        "Release payment block via finance transaction": {
+          "pattern": "TCODE_RELEASE.str.startswith('FB')",
+          "id": "20"
+        },
+        "Release payment block via custom transaction": {
+          "pattern": "TCODE_RELEASE.str.startswith('Z') or TCODE_RELEASE.str.startswith('Y') or TCODE_RELEASE.str.startswith('/')",
+          "id": "30"
+        },
+        "Release payment block via finance workflow": {
+          "pattern": "PREV_BLOCKED != 'R' and TCODE_RELEASE ==''",
+          "id": "40"
+        }
+      },
+      "include_other_variants": "Release payment block - others"
+    },
+    "Clear FI-AP items": {
+      "pattern": "AUGDT_FIAP != @initial and STBLG == ''",
+      "timestamp": "AUGDT_FIAP",
+      "timestamp_offset_minutes": 200,
+      "id": "EVENT_80",
+      "variants": {
+        "Clear FI-AP items via payment run": {
+          "pattern": "TCODE_AUGBL == 'F110' or TCODE_AUGBL == ''",
+          "id": "10"
+        },
+        "Clear FI-AP items via account maintenance transaction FB1K": {
+          "pattern": "TCODE_AUGBL.str.startswith('FB1')",
+          "id": "20"
+        },
+        "Clear FI-AP items via manual payment": {
+          "pattern": "TCODE_AUGBL.str.startswith('FBZ')",
+          "id": "30"
+        },
+        "Clear FI-AP items via transaction FB05": {
+          "pattern": "TCODE_AUGBL == 'FB05'",
+          "id": "40"
+        },
+        "Clear FI-AP items via reversal": {
+          "pattern": "TCODE_AUGBL == 'FB08'",
+          "id": "50"
+        }
+      },
+      "include_other_variants": "Clear FI-AP items - others"
+    }
+  }
+}

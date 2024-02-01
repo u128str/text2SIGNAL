@@ -1,0 +1,4 @@
+SELECT
+  c_caseid,  c_eventname,
+  from_unixtime(c_time / 1000) AS c_time
+FROM kffi000960_01_event_log_v1

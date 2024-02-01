@@ -1,0 +1,105 @@
+{
+  "comment": "KPPURCH268 Procurement for orders with expected goods receipt - without KWQM000161",
+  "source_data": [
+    {
+      "ppi_id": "KPPURCH268",
+      "type": "main",
+      "filter": "KNTTP eq 'F'"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPPURCH268_04",
+  "event_definitions": {
+    "Create purchase order item": {
+      "pattern": "AEDAT_H != @initial",
+      "timestamp": "AEDAT_H",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create purchase order item in dialog": {
+          "pattern": "(STATU == '9' or STATU == '') and USTYP == 'A'",
+          "id": "10"
+        },
+        "Create purchase order item from SAP SRM": {
+          "pattern": "STATU == 'K'",
+          "id": "20"
+        },
+        "Create purchase order item from Kanban": {
+          "pattern": "STATU == 'F'",
+          "id": "30"
+        },
+        "Create purchase order item from SAP SCM": {
+          "pattern": "STATU == '1'",
+          "id": "35"
+        },
+        "Convert purchase requisition items into purchase order item": {
+          "pattern": "STATU == 'B'",
+          "id": "40"
+        },
+        "Create purchase order item via BAPI interface or function module": {
+          "pattern": "STATU == 'I' or STATU == 'X'",
+          "id": "50"
+        },
+        "Create purchase order item automatically": {
+          "pattern": "STATU == '9' and (USTYP == 'B' or USTYP == 'C')",
+          "id": "60"
+        },
+        "Create purchase order item via ALE interface": {
+          "pattern": "STATU == 'J'",
+          "id": "70"
+        }
+      },
+      "include_other_variants": "Create purchase order item via other means"
+    },
+    "Assign purchase requisition to purchase order item": {
+      "pattern": "AEDAT_H != @initial and PR_EXISTS == 'X' ",
+      "timestamp": "AEDAT_H",
+      "timestamp_offset_minutes": 50,
+      "id": "EVENT_20"
+    },
+    "Release Purchase Order item": {
+      "pattern": "AEDAT_H != @initial",
+      "timestamp": "AEDAT_H",
+      "timestamp_offset_minutes": 100,
+      "id": "EVENT_30",
+      "variants": {
+        "Approve purchase order": {
+          "pattern": "(PROCSTAT == '03' or PROCSTAT == '05')",
+          "id": "10"
+        },
+        "Release purchase order without approval": {
+          "pattern": "(PROCSTAT == '02' or PROCSTAT == '')",
+          "id": "20"
+        }
+      },
+      "include_other_variants": "Release Purchase Order item via other means"
+    },
+    "Post goods receipt": {
+      "pattern": "GR_CPUDT != @initial",
+      "timestamp": "GR_CPUDT",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40",
+      "variants": {
+        "Post goods receipt into unrestricted-use stock": {
+          "pattern": "INSMK == ''",
+          "id": "10"
+        },
+        "Post goods receipt into quality inspection stock": {
+          "pattern": "INSMK == 'X'",
+          "id": "20"
+        },
+        "Post goods receipt into blocked stock": {
+          "pattern": "INSMK == 'S'",
+          "id": "30"
+        }
+      },
+      "include_other_variants": "Post goods receipt - others"
+    },
+    "Post invoice receipt for purchase order": {
+      "pattern": "IR_CPUDT != @initial",
+      "timestamp": "IR_CPUDT",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50"
+    }
+  }
+}

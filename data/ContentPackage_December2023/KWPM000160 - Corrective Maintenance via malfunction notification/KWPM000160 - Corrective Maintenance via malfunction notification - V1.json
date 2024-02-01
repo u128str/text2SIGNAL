@@ -1,0 +1,117 @@
+{
+  "comment": "KWPM000160 Corrective Maintenance via malfunction notification",
+  "bpmn_model": "Corrective Maintenance via malfunction notification",
+  "source_data": [
+    {
+      "ppi_id": "KWPM000160",
+      "type": "main",
+      "filter": "HERKZ eq '02'"
+    }
+  ],
+  "version": "1",
+  "process_name": "KWPM000160_02",
+  "event_definitions": {
+    "Create maintenance notification": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create maintenance notification via general notification transaction IW21": {
+          "pattern": "CDTCODE == 'IW21'",
+          "id": "10"
+        },
+        "Create maintenance notification via malfunction notification transaction IW24": {
+          "pattern": "CDTCODE == 'IW24'",
+          "id": "20"
+        },
+        "Create maintenance notification via maintenance order": {
+          "pattern": "CDTCODE.str.startswith('IW3')",
+          "id": "30"
+        },
+        "Create maintenance notification via custom transaction": {
+          "pattern": "CDTCODE.str.startswith('Z') or CDTCODE.str.startswith('Y') or CDTCODE.str.startswith('/')",
+          "id": "40"
+        },
+        "Create maintenance notification via simplified view": {
+          "pattern": "CDTCODE.str.startswith('IQS2')",
+          "id": "50"
+        },
+        "Create maintenance notification via manual maintenance plan scheduling": {
+          "pattern": "CDTCODE.str.startswith('IP1')",
+          "id": "60"
+        },
+        "Create maintenance notification via interface or automatically": {
+          "pattern": "CDTCODE == ''",
+          "id": "70"
+        }
+      },
+      "include_other_variants": "Create maintenance notification via other transactions"
+    },
+    "Set notification in process": {
+      "pattern": "INPROCESS_DATE != @initial",
+      "timestamp": "INPROCESS_DATE",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20",
+      "variants": {
+        "Set notification immediately in process via general notification transaction IW21": {
+          "pattern": "INPROCESS_TCODE == 'IW21'",
+          "id": "10"
+        },
+        "Set notification immediately in process via general malfunction transaction IW24": {
+          "pattern": "INPROCESS_TCODE == 'IW24'",
+          "id": "20"
+        },
+        "Set notification in process by creating an order via IW34": {
+          "pattern": "INPROCESS_TCODE == 'IW34'",
+          "id": "30"
+        },
+        "Set notification immediately in process via maintenance order": {
+          "pattern": "INPROCESS_TCODE == 'IW32'",
+          "id": "40"
+        },
+        "Set notification in process via manual maintenance plan scheduling": {
+          "pattern": "INPROCESS_TCODE.str.startswith('IP1')",
+          "id": "50"
+        },
+        "Set notification in process via custom transaction": {
+          "pattern": "INPROCESS_TCODE.str.startswith('Z') or INPROCESS_TCODE.str.startswith('Y') or INPROCESS_TCODE.str.startswith('/')",
+          "id": "60"
+        },
+        "Set notification in process via general notification transaction IW22": {
+          "pattern": "INPROCESS_TCODE == 'IW22'",
+          "id": "70"
+        },
+        "Set notification in process via interface or automatically": {
+          "pattern": "INPROCESS_TCODE == ''",
+          "id": "80"
+        }
+      },
+      "include_other_variants": "Set notification in process via other transactions"
+    },
+    "Create maintenance order": {
+      "pattern": "ERDAT_AUFK != @initial",
+      "timestamp": "ERDAT_AUFK",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30"
+    },
+    "Release maintenance order": {
+      "pattern": "IDAT1 != @initial",
+      "timestamp": "IDAT1",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40"
+    },
+    "Set maintenance order to technically completed": {
+      "pattern": "IDAT2 != @initial",
+      "timestamp": "IDAT2",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50"
+    },
+    "Set maintenance notification to completed": {
+      "pattern": "QMDAB != @initial",
+      "timestamp": "QMDAB",
+      "timestamp_offset_minutes": 200,
+      "id": "EVENT_60"
+    }
+  }
+}

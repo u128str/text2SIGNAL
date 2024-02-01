@@ -1,0 +1,199 @@
+{
+  "metrics": [
+    {
+      "id": "accepted_usage_decisions_rate",
+      "name": "Accepted usage decisions rate",
+      "description": "Percentage of accepted usage decisions",
+      "signalFragment": "COUNT(case_id) FILTER (\n WHERE\n (SELECT COUNT(event_name) WHERE (\"UD Code\"='A')) > 0\n\t AND event_name MATCHES ('Create Usage Decision')\n)/\n COUNT(case_id) FILTER (\n\t WHERE event_name MATCHES ('Create Usage Decision'))*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "result_recording_cycle_time",
+      "name": "Result recording cycle time",
+      "description": "Time from begin to complete result recording",
+      "signalFragment": "AVG(\n\t(SELECT FIRST(end_time) FILTER(\n\tWHERE event_name = 'Complete Result Recording'))\n\t-\n\t(SELECT LAST(end_time) FILTER(\n\tWHERE event_name='Begin Result Recording'))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "cases_with_free_and_restricted_material_movement",
+      "name": "Cases with free and restricted material movement",
+      "description": "Number of cases with both free and restricted material movement",
+      "signalFragment": "COUNT (CASE_ID) FILTER (\n WHERE EVENT_NAME MATCHES ('Material Movement Free')\n AND EVENT_NAME MATCHES ('Material Movement Restricted')) \n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "result_recording_to_usage_decision_lead_time",
+      "name": "Result recording to usage decision lead time",
+      "description": "Time from complete result recording to create usage decision",
+      "signalFragment": "AVG(\n\t(SELECT FIRST(end_time) FILTER(\n\tWHERE event_name='Create Usage Decision'))\n\t-\n\t(SELECT LAST(end_time) FILTER(\n\tWHERE event_name = 'Complete Result Recording'))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "free_material_movement_rate",
+      "name": "Free material movement rate",
+      "description": "Percentage of cases with free material movement",
+      "signalFragment": "COUNT (event_name) FILTER (\n\tWHERE event_name IN ('Material Movement Free')\n )\n/\nCOUNT (event_name) FILTER (\n\tWHERE event_name ILIKE 'Material Movement%'\n)\n*100",
+      "aggregationType": "EVENT",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "rejected_usage_decisions_rate",
+      "name": "Rejected usage decisions rate",
+      "description": "Percentage of rejected usage decisions",
+      "signalFragment": "COUNT(case_id) FILTER (\n WHERE\n(SELECT COUNT(event_name) WHERE (\"UD Code\" = 'R')) > 0\n\t AND event_name MATCHES ('Create Usage Decision')\n) /\n  COUNT(case_id) FILTER (\n\t WHERE event_name MATCHES ('Create Usage Decision'))*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "restricted_material_movement_rate",
+      "name": "Restricted material movement rate",
+      "description": "Percentage of cases with restricted material movement",
+      "signalFragment": "COUNT (event_name) FILTER (\n\tWHERE event_name IN ('Material Movement Restricted')\n )\n /\nCOUNT (event_name) FILTER (\n\tWHERE event_name ILIKE 'Material Movement%'\n)\n*100",
+      "aggregationType": "EVENT",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "automation_rate_material_movement",
+      "name": "Automation rate material movement",
+      "description": "Percentage of automated material movement events",
+      "signalFragment": "SUM((SELECT\n\tCOUNT(event_name) FILTER (\n\t\tWHERE ((${itq_automation_condition})\n\t\tAND event_name ILIKE 'Material Movement%'\n\t)))) / \nSUM((SELECT\n\tCOUNT(event_name) FILTER (\n    \tWHERE (\"Event Created By User Type\" IS NOT NULL)\n\t\tAND event_name ILIKE 'Material Movement%'))\n) * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "automation_rate_usage_decision",
+      "name": "Automation rate usage decision",
+      "description": "Percentage of automated usage decision creation events",
+      "signalFragment": "SUM((SELECT COUNT(event_name) FILTER (\n\t\tWHERE (${itq_automation_condition})\n\t)))\n/ \nSUM((SELECT COUNT(event_name) FILTER (\n\t\tWHERE (\"Event Created By User Type\" IS NOT NULL)))\n) * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "delayed_inspections_rate",
+      "name": "Delayed inspections rate",
+      "description": "Percentage inspection with planned inspection end date before usage decision date",
+      "signalFragment": "COUNT(case_id) FILTER(\n WHERE (\"Planned Inspection End Date\"<\n\t\t\t(SELECT LAST(END_TIME) FILTER (\n\tWHERE EVENT_NAME IN ('Create Usage Decision'))\n\t\t\t)))\n \t/ COUNT(case_id) FILTER(\n\tWHERE event_name MATCHES('Create Usage Decision'))*100\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "number_of_delayed_inspections",
+      "name": "Number of delayed inspections",
+      "description": "Number of cases where create usage decision accrued after the planned inspection end date",
+      "signalFragment": "COUNT(case_id) FILTER(\nWHERE (\"Planned Inspection End Date\"<\n\t  (SELECT LAST(END_TIME) FILTER (\n WHERE EVENT_NAME IN ('Create Usage Decision')))))\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "average_cycle_time_of_delayed_inspections",
+      "name": "Average cycle time of delayed inspections",
+      "description": "Average cycle time of cases where usage decision accrued after the planned Inspection end date",
+      "signalFragment": "\tAVG(\n\t\t(SELECT LAST(END_TIME) FILTER (\n \t\t WHERE EVENT_NAME IN ('Create Usage Decision')))\n\t\t\t-\"Planned Inspection End Date\"\n\t) FILTER(\n\t  \t\tWHERE(\"Planned Inspection End Date\"<\n\t\t\t\t(SELECT LAST(END_TIME) FILTER (\n \t\tWHERE EVENT_NAME IN ('Create Usage Decision'))\n\t)))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INSPECT_TO_QUALITY"
+      ],
+      "sourceSystems": [
+        "SAP_ECC",
+        "SAP_S4HANA"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "itq_automation_condition",
+      "description": "User type indicating that an event is performed automatically and not by an employee, for example 'System'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Event Created By User Type\" IN ('System','Service')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    }
+  ]
+}

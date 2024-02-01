@@ -1,0 +1,1533 @@
+{
+  "metrics": [
+    {
+      "id": "system-count-99",
+      "name": "Number of systems in analysis",
+      "signalFragment": "COUNT(DISTINCT \"kpiIns_ID\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": ""
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "completion-score-99",
+      "name": "Completion Score",
+      "signalFragment": "AVG(CASE WHEN \"COMPLETION_CNT\" = 'TRUE' THEN 1 ELSE 0 END) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_10_10-99",
+      "name": "Sales order items rejected",
+      "signalFragment": "AVG (\"2 - Blocker - Sales order items rejected\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_10_20-99",
+      "name": "Sales order items not confirmed",
+      "signalFragment": "AVG (\"2 - Blocker - Sales order items not confirmed\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_10_30-99",
+      "name": "Sales order items blocked for delivery",
+      "signalFragment": "AVG (\"2 - Blocker - Sales order items blocked for delivery\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_10_40-99",
+      "name": "Sales order items incomplete for delivery",
+      "signalFragment": "AVG (\"2 - Blocker - Sales order items incomplete for delivery\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_20_10-99",
+      "name": "Delivery created after planned material availability",
+      "signalFragment": "AVG (\"2 - Blocker - Delivery created after planned material availability\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_20_25-99",
+      "name": "Sales order items incomplete for goods movement",
+      "signalFragment": "AVG (\"2 - Blocker - Sales order items incomplete for goods movement\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_30_20-99",
+      "name": "Goods issue posted after planned goods issue date",
+      "signalFragment": "AVG (\"2 - Blocker - Goods issue posted after planned goods issue date\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_30_30-99",
+      "name": "Sales order items blocked for billing",
+      "signalFragment": "AVG (\"2 - Blocker - Sales order items blocked for billing\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_30_40-99",
+      "name": "Sales order items incomplete for billing",
+      "signalFragment": "AVG (\"2 - Blocker - Sales order items incomplete for billing\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_30_50-99",
+      "name": "Unbilled sales order items with planned billing date in the past",
+      "signalFragment": "AVG (\"2 - Blocker - Unbilled sales order items with planned billing date in the past\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_30_60-99",
+      "name": "Unbilled sales order items without proof of delivery",
+      "signalFragment": "AVG (\"2 - Blocker - Unbilled sales order items without proof of delivery\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-info-ctx_30_70-99",
+      "name": "Sales order item posting from sales order stock",
+      "signalFragment": "AVG (\"3 - Info - Sales order item posting from sales order stock\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-info-ctx_30_80-99",
+      "name": "Sales order item posting from project stock",
+      "signalFragment": "AVG (\"3 - Info - Sales order item posting from project stock\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-info-ctx_30_90-99",
+      "name": "Sales order item posting from customer consignment stock",
+      "signalFragment": "AVG (\"3 - Info - Sales order item posting from customer consignment stock\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_40_30-99",
+      "name": "Invoice posted after planned billing date",
+      "signalFragment": "AVG (\"2 - Blocker - Invoice posted after planned billing date\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_40_40-99",
+      "name": "Sales order items where header was previously blocked for billing",
+      "signalFragment": "AVG (\"2 - Blocker - Sales order items where header was previously blocked for billing\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-blocker-ctx_40_50-99",
+      "name": "Sales order items previously blocked for billing",
+      "signalFragment": "AVG (\"2 - Blocker - Sales order items previously blocked for billing\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-info-ctx_40_60-99",
+      "name": "Sales order items billed after proof of delivery",
+      "signalFragment": "AVG (\"3 - Info - Sales order items billed after proof of delivery\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-step_20_10_cnt-99",
+      "name": "Delivery items created (completion rate)",
+      "signalFragment": "AVG (\"STEP - Delivery items created\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-step_20_10_tltavg-99",
+      "name": "Delivery items created (total lead time)",
+      "signalFragment": "AVG (\"4 - Lead time from start - Delivery items created\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": " days"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-step_30_10_cnt-99",
+      "name": "Goods issue posted (completion rate)",
+      "signalFragment": "AVG (\"STEP - Goods issue posted\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-step_30_10_tltavg-99",
+      "name": "Goods issue posted (total lead time)",
+      "signalFragment": "AVG (\"4 - Lead time from start - Goods issue posted\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": " days"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-step_40_10_cnt-99",
+      "name": "Customer invoice items created (completion rate)",
+      "signalFragment": "AVG (\"STEP - Customer invoice items created\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361-step_40_10_tltavg-99",
+      "name": "Customer invoice items created (total lead time)",
+      "signalFragment": "AVG (\"4 - Lead time from start - Customer invoice items created\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": " days"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361_01-event_10-99",
+      "name": "Create sales order item",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create sales order item')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361_01-event_40-99",
+      "name": "Create outbound delivery item",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create outbound delivery item')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361_01-event_50-99",
+      "name": "Post goods issue",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Post goods issue')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361_01-event_60-99",
+      "name": "Release billing block in sales order header",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Release billing block in sales order header')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361_01-event_70-99",
+      "name": "Release billing block in sales order item",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Release billing block in sales order item')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kpsd000361_01-event_80-99",
+      "name": "Create customer invoice",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create customer invoice')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    }
+  ],
+  "metricsVariables": [],
+  "processVariables": [],
+  "investigation": {
+    "name": "99. Process Quantity Structure",
+    "rootWidget": {
+      "name": "root widget",
+      "id": "root-chapter-01",
+      "visualization": {
+        "type": "CHAPTER"
+      },
+      "filters": [],
+      "children": [
+        {
+          "name": "Throughput volume",
+          "id": "throughput-volume-1",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "PARAMETERIZED",
+                "attribute": "CASE",
+                "aggregation": "COUNT",
+                "parameter": {
+                  "type": "SEMANTIC_TYPE",
+                  "semanticType": "CASE"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Number of process variants",
+          "id": "number-of-process-variants-1",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "PARAMETERIZED",
+                "attribute": "VARIANT",
+                "aggregation": "COUNT",
+                "parameter": {
+                  "type": "SEMANTIC_TYPE",
+                  "semanticType": "VARIANT"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Number of systems in analysis",
+          "id": "system-count-99",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "METRIC",
+                "metric": "system-count-99"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Completion Score",
+          "id": "completion-score-99",
+          "visualization": {
+            "type": "VALUE",
+            "unit": {
+              "type": "SUFFIX",
+              "suffix": "%"
+            },
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "METRIC",
+                "metric": "completion-score-99"
+              }
+            ]
+          }
+        },
+        {
+          "name": "KPSD000361 - Process Insights Context Metrics",
+          "id": "kpsd000361---process-insights-context-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "Sales order items rejected",
+              "id": "kpsd000361-blocker-ctx_10_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_10_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order items not confirmed",
+              "id": "kpsd000361-blocker-ctx_10_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_10_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order items blocked for delivery",
+              "id": "kpsd000361-blocker-ctx_10_30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_10_30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order items incomplete for delivery",
+              "id": "kpsd000361-blocker-ctx_10_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_10_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Delivery created after planned material availability",
+              "id": "kpsd000361-blocker-ctx_20_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_20_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order items incomplete for goods movement",
+              "id": "kpsd000361-blocker-ctx_20_25-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_20_25-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Goods issue posted after planned goods issue date",
+              "id": "kpsd000361-blocker-ctx_30_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_30_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order items blocked for billing",
+              "id": "kpsd000361-blocker-ctx_30_30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_30_30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order items incomplete for billing",
+              "id": "kpsd000361-blocker-ctx_30_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_30_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Unbilled sales order items with planned billing date in the past",
+              "id": "kpsd000361-blocker-ctx_30_50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_30_50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Unbilled sales order items without proof of delivery",
+              "id": "kpsd000361-blocker-ctx_30_60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_30_60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order item posting from sales order stock",
+              "id": "kpsd000361-info-ctx_30_70-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-info-ctx_30_70-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order item posting from project stock",
+              "id": "kpsd000361-info-ctx_30_80-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-info-ctx_30_80-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order item posting from customer consignment stock",
+              "id": "kpsd000361-info-ctx_30_90-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-info-ctx_30_90-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Invoice posted after planned billing date",
+              "id": "kpsd000361-blocker-ctx_40_30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_40_30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order items where header was previously blocked for billing",
+              "id": "kpsd000361-blocker-ctx_40_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_40_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order items previously blocked for billing",
+              "id": "kpsd000361-blocker-ctx_40_50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-blocker-ctx_40_50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Sales order items billed after proof of delivery",
+              "id": "kpsd000361-info-ctx_40_60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-info-ctx_40_60-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        },
+        {
+          "name": "KPSD000361 - Process Insights Milestone Metrics",
+          "id": "kpsd000361---process-insights-milestone-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "Delivery items created (completion rate)",
+              "id": "kpsd000361-step_20_10_cnt-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-step_20_10_cnt-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Delivery items created (total lead time)",
+              "id": "kpsd000361-step_20_10_tltavg-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": " days"
+                },
+                "rounding": {
+                  "numberOfDecimals": 1,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-step_20_10_tltavg-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Goods issue posted (completion rate)",
+              "id": "kpsd000361-step_30_10_cnt-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-step_30_10_cnt-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Goods issue posted (total lead time)",
+              "id": "kpsd000361-step_30_10_tltavg-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": " days"
+                },
+                "rounding": {
+                  "numberOfDecimals": 1,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-step_30_10_tltavg-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Customer invoice items created (completion rate)",
+              "id": "kpsd000361-step_40_10_cnt-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-step_40_10_cnt-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Customer invoice items created (total lead time)",
+              "id": "kpsd000361-step_40_10_tltavg-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": " days"
+                },
+                "rounding": {
+                  "numberOfDecimals": 1,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361-step_40_10_tltavg-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        },
+        {
+          "name": "Event Metrics",
+          "id": "event-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "Create sales order item",
+              "id": "kpsd000361_01-event_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361_01-event_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create outbound delivery item",
+              "id": "kpsd000361_01-event_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361_01-event_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Post goods issue",
+              "id": "kpsd000361_01-event_50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361_01-event_50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Release billing block in sales order header",
+              "id": "kpsd000361_01-event_60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361_01-event_60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Release billing block in sales order item",
+              "id": "kpsd000361_01-event_70-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361_01-event_70-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create customer invoice",
+              "id": "kpsd000361_01-event_80-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kpsd000361_01-event_80-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        }
+      ],
+      "dataSource": null
+    },
+    "metricsBar": [],
+    "eventToShapeMappings": {
+      "mappings": []
+    }
+  }
+}

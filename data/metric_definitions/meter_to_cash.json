@@ -1,0 +1,408 @@
+{
+  "metrics": [
+    {
+      "id": "conformance_level",
+      "name": "Conformance level",
+      "description": "Percentage of cases without conformance issues",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE NOT event_name MATCHES ((${no_happy_path_events}))\n\t)\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "customer_self_readings",
+      "name": "Number of meter readings performed by customer",
+      "description": "Number of meter readings performed by customer (self-reading)",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (\n\t\tSELECT BOOL_OR(event_name IN (${obtain_readings_events})\n\t\tAND ${self_reading_condition}))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "onsite_readings",
+      "name": "Number of meter readings performed on-site",
+      "description": "Number of meter readings performed on-site by utility",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (\n\t\tSELECT BOOL_OR(event_name IN (${obtain_readings_events})\n\t\tAND ${utility_reading_condition}))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "readings_after_invoicing",
+      "name": "Number of meter reading data obtained after invoicing",
+      "description": "Number of meter reading data obtained after invoicing period",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (\n\t\t(SELECT BOOL_OR(event_name IN (${obtain_readings_events})))\n\t\tAND ${after_invoicing_condition}\n\t)\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "non_reachable_smart_meters",
+      "name": "Number of non-reachable smart meters",
+      "description": "Number of smart meter devices for which no data was transmitted for 10+ days",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE (\n\tSELECT LAST(end_time) FILTER (WHERE event_name IN (${obtain_readings_events}))\n\t-\n\tFIRST(end_time) FILTER (WHERE event_name IN (${create_reading_orders_events}))\n\t) > DURATION ${non_reachable_smart_meters_period}\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "missing_meter_readings",
+      "name": "Number of missing meter readings",
+      "description": "Number of meter readings for which the scheduled reading date is passed, but no data was obtained",
+      "signalFragment": "COUNT (case_id) FILTER (\n\t\tWHERE ${overdue_reading_date_condition}\n\t\tAND (SELECT BOOL_AND(NOT event_name IN (${obtain_readings_events})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ratio_timely_late_readings",
+      "name": "Ratio between timely and late meter readings",
+      "description": "Ratio between timely and late meter readings",
+      "signalFragment": "(COUNT(case_id) FILTER (\n\tWHERE (\n\t\t(SELECT BOOL_OR(event_name IN (${obtain_readings_events})))\n\t\tAND ${timely_meter_reading_condition})\n\t)\n/\nCOUNT(case_id) FILTER (\n\tWHERE (\n\t\t(SELECT BOOL_OR(event_name IN (${obtain_readings_events})))\n\t\tAND ${late_meter_reading_condition})\n\t)\n)*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "timely_readings_percent",
+      "name": "Percentage of timely meter readings",
+      "description": "Percentage of total meter readings completed on-time",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (\n\t\t(SELECT BOOL_OR(event_name IN (${obtain_readings_events})))\n\t\tAND ${timely_meter_reading_condition})\n\t)\n/\nCOUNT(case_id) *100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "late_readings_percent",
+      "name": "Percentage of late meter readings",
+      "description": "Percentage of total meter readings completed late",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (\n\t\t(SELECT BOOL_OR(event_name IN (${obtain_readings_events})))\n\t\tAND ${late_meter_reading_condition})\n\t)\n/\nCOUNT(case_id) *100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "manual_changes_meter_readings",
+      "name": "Number of manual changes to meter readings",
+      "description": "Number of manual changes on the obtained meter reading data",
+      "signalFragment": "COUNT(case_id) FILTER (\n\t\tWHERE (SELECT BOOL_OR(event_name IN (${change_readings_events}))\n\t\tAND BOOL_OR(${mtc_manual_changes_condition}))\n\t\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "meter_readings_invoice_cancellation",
+      "name": "Percentage of meter readings with cancellations of invoice or billing",
+      "description": "Percentage of meter readings with cancellations of invoice or billing",
+      "signalFragment": "COUNT(case_id) FILTER (\n\t\tWHERE (SELECT BOOL_OR(event_name IN (${invoice_billing_cancellation_events})))\n\t\t)\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "nr_meter_orders_dunning",
+      "name": "Number of meter reading orders that resulted in a dunning notice",
+      "description": "Number of meter reading orders that resulted in a dunning notice",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${order_dunning_condition})\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "percentage_meter_orders_dunning",
+      "name": "Percentage of meter reading orders that resulted in a dunning notice",
+      "description": "Percentage of meter reading orders that resulted in a dunning notice",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${order_dunning_condition})\n\t)\n/ COUNT(case_id)*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "nr_meter_orders_paid_after_dunning",
+      "name": "Number of meter reading orders that were paid after dunning notice",
+      "description": "Number of meter reading orders that were paid after dunning notice",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${order_paid_after_dunning_condition})\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "percentage_meter_orders_paid_after_dunning",
+      "name": "Percentage of meter reading orders that were paid after dunning notice",
+      "description": "Percentage of meter reading orders that were paid after dunning notice",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${order_paid_after_dunning_condition})\n\t)\n/ COUNT(case_id)*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_time_create_order_obtain_data",
+      "name": "Average time from 'Create Meter Reading Order' to 'Obtain Meter Reading Data'",
+      "description": "Average time from meter reading order creation to meter reading data obtained",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN (${obtain_readings_events}))\n\t-(SELECT FIRST(end_time)\n\tWHERE event_name IN (${create_reading_orders_events}))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "value_open_invoices",
+      "name": "Value of open invoices",
+      "description": "Value of currently open invoices which were not yet paid",
+      "signalFragment": "SUM(\"LastInvoiceAmount\")\n-\n(SUM(\"LastInvoiceAmount\") FILTER (\n\t\tWHERE (SELECT BOOL_OR(event_name IN (${receive_payment_events})\n\t\tAND NOT event_name IN (${invoice_billing_cancellation_events})))\n\t))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "volume_overdue_invoices",
+      "name": "Volume of overdue invoices",
+      "description": "Volume of currently open invoices which were not yet paid and are overdue",
+      "signalFragment": "COUNT(case_id) FILTER (\n\t\tWHERE ${overdue_invoice_condition}\n\t\tAND (SELECT BOOL_AND(NOT event_name IN (${receive_payment_events}, ${invoice_billing_cancellation_events})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "METER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "no_happy_path_events",
+      "description": "Events that should not be part of the \"to be\" process. For example: 'Change Meter Reading Data'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Change Meter Reading Data' |\n'Meter Reading performed by Utility' |\n'Meter Reading performed by Customer' |\n'Interpolate Meter Reading' |\n'Assign Meter Reader' |\n'Data Plausbility Check Initially Failed' |\n'Data Plausibility Check Failed' |\n'Data Plausibility Check Passed' |\n'Cancel Billing Document' |\n'Cancel Invoice Document' |\n'Create Dunning Notice' |\n'Billing Doc Plausibility Check Failed' |\n'Invoice Doc Plausibility Check Failed'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "obtain_readings_events",
+      "description": "Events identifying when meter readings data have been obtained. For example: 'Obtain Meter Reading Data'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Obtain Meter Reading Data'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "self_reading_condition",
+      "description": "Condition defining that the reading was performed by the customer. For example: \"MeterReadingTypeActual\" = 'Customer'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"MeterReadingTypeActual\" = 'Customer'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "utility_reading_condition",
+      "description": "Condition defining that the reading was performed by utility. For example: \"MeterReadingTypeActual\" = 'Utility'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"MeterReadingTypeActual\" = 'Utility'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "after_invoicing_condition",
+      "description": "Condition defining that a given event happens after invoicing. For example: LAST(end_time)) > \"LastInvoiceBillingKeyDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "(SELECT LAST(end_time)) > \"LastInvoiceBillingKeyDate\"",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "create_reading_orders_events",
+      "description": "Events identifying when meter reading orders are created. For example: 'Create Meter Reading Order'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Meter Reading Order'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "non_reachable_smart_meters_period",
+      "description": "Reference time period over which a smart meter is considered non-reachable. For example: '10days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'10days'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "overdue_reading_date_condition",
+      "description": "Condition defining that the scheduled reading date passed. For example: \"MeterReadingScheduledReadingDate\" < NOW()",
+      "defaultValues": [
+        {
+          "defaultValue": "\"MeterReadingScheduledReadingDate\" < NOW()",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "timely_meter_reading_condition",
+      "description": "Condition defining that the meter reading was done timely compared to the reference event timestamp. For example: LAST(end_time)) <= \"MeterReadingScheduledReadingDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "(SELECT LAST(end_time)) <= \"MeterReadingScheduledReadingDate\"",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "late_meter_reading_condition",
+      "description": "Condition defining that the meter reading was done late compared to the reference event timestamp. For example: LAST(end_time)) > \"MeterReadingScheduledReadingDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "(SELECT LAST(end_time)) > \"MeterReadingScheduledReadingDate\"",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "change_readings_events",
+      "description": "Events identifying when meter readings are changed. For example: 'Change Meter Reading Data'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Change Meter Reading Data'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mtc_manual_changes_condition",
+      "description": "Attributes indicating that an event was executed manually. For example: \"EventCreatedByUserType\" = 'Dialog'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"EventCreatedByUserType\" = 'Dialog'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invoice_billing_cancellation_events",
+      "description": "Events identifying when invoice or billing documents are cancelled. For example: 'Cancel Billing Document','Cancel Invoice Document'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Cancel Billing Document','Cancel Invoice Document'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "order_dunning_condition",
+      "description": "Condition defining that the meter reading order resulted in a dunning notice. For example: 'Create Meter Reading Order' ~> 'Create Dunning Notice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Meter Reading Order' ~> 'Create Dunning Notice'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "order_paid_after_dunning_condition",
+      "description": "Condition defining that the meter reading order resulted in a dunning notice and afterwards it was paid. For example: 'Create Meter Reading Order' ~> 'Create Dunning Notice' ~> 'Receive Incoming Payment'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Meter Reading Order' ~> 'Create Dunning Notice' ~> 'Receive Incoming Payment'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "receive_payment_events",
+      "description": "Events identifying when an invoice has been cleared. For example: 'Receive Incoming Payment'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Receive Incoming Payment'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "overdue_invoice_condition",
+      "description": "Condition defining that the invoice due date passed. For example: \"LastInvoicePaymentDueDate\" < NOW()",
+      "defaultValues": [
+        {
+          "defaultValue": "\"LastInvoicePaymentDueDate\" < NOW()",
+          "sourceSystems": [
+            "SAP_ISU"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "comment": "KPLE000362 Inbound Delivery Processing without Order Reference without classic Warehouse Management",
+  "bpmn_model": "Inbound delivery processing without order reference without classic Warehouse Management",
+  "source_data": [
+    {
+      "ppi_id": "KPLE000362",
+      "type": "main",
+      "filter": "VGTYP eq '' and LVSTA eq ''"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPLE000362_06",
+  "event_definitions": {
+    "Create outbound delivery item": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create inbound delivery item via single transaction VL31": {
+          "pattern": "TCODE == 'VL31' and USTYP == 'A'",
+          "id": 10
+        },
+        "Create inbound delivery item via single transaction VL31N": {
+          "pattern": "TCODE == 'VL31N' and USTYP == 'A'",
+          "id": 20
+        },
+        "Create inbound delivery item manually via goods movement posting with MIGO": {
+          "pattern": "TCODE == 'MIGO' and USTYP == 'A'",
+          "id": 30
+        },
+        "Create inbound delivery item via IDoc processing": {
+          "pattern": "TCODE.str.startswith('BD') or TCODE.str.startswith('WE')",
+          "id": 40
+        },
+        "Create inbound delivery item via goods movement posting with MB1x": {
+          "pattern": "TCODE.str.startswith('MB1') and USTYP == 'A'",
+          "id": 50
+        },
+        "Create inbound delivery item automatically": {
+          "pattern": "TCODE == '' or (TCODE != '' and (USTYP == 'B' or USTYP =='C'))",
+          "id": 60
+        },
+        "Create inbound delivery item via custom transaction": {
+          "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+          "id": 70
+        }
+      },
+      "include_other_variants": "Create inbound delivery item via other transactions"
+    },
+    "Perform transportation planning for inbound delivery": {
+      "pattern": "ERDAT != @initial and TRSTA != ''",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Perform inbound delivery with packing": {
+      "pattern": "ERDAT != @initial and PKSTA != ''",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 100,
+      "id": "EVENT_30"
+    },
+    "Post goods receipt": {
+      "pattern": "WADAT_IST != @initial",
+      "timestamp": "WADAT_IST",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40"
+    }
+  }
+}

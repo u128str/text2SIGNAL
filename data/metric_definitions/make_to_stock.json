@@ -1,0 +1,232 @@
+{
+  "metrics": [
+    {
+      "id": "mts_production_qty_accuracy",
+      "name": "Production quantity accuracy",
+      "description": "Rate between total process order quantities and total goods receipt quantities",
+      "signalFragment": "AVG(\n\t\"Produced Delivered Quantity\"/\"Total Order Quantity\")\n\tFILTER(WHERE \"Delivery Completed\" IS NOT NULL)\n*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_po_specific_status",
+      "name": "Process orders specific status",
+      "description": "Total process orders with a specific status",
+      "signalFragment": "COUNT(event_name)\n\tFILTER(WHERE event_name MATCHES(${mts_po_status_event_name}))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_po_without_plo",
+      "name": "Process orders without planned orders",
+      "description": "Total process orders created without planned order reference",
+      "signalFragment": "COUNT(case_id)\n\tFILTER(WHERE \"Planned Order Number\" IS NULL)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_planning_rate",
+      "name": "Planning rate",
+      "description": "Process orders with planned order reference and total process orders",
+      "signalFragment": "COUNT(case_id)\n\tFILTER(WHERE \"Planned Order Number\" IS NOT NULL)\n/ \nCOUNT(case_id)\n*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_num_goods_receipts",
+      "name": "Number of goods receipts",
+      "description": "Total number of single goods receipt postings",
+      "signalFragment": "SUM((\n\tSELECT COUNT(event_name)\n\tFILTER(WHERE event_name LIKE 'GR%')))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_automation_rate_specific_event",
+      "name": "Automation rate specific event",
+      "description": "Automation rate for a specific event",
+      "signalFragment": "SUM(\n\t(SELECT COUNT(event_name)\n\tFILTER (\n\t\tWHERE ((${mts_automation_condition})\n\t\tAND event_name IN (${mts_automation_event_name})))))\n/ SUM(\n\t(SELECT COUNT(event_name)\n\tFILTER (\n\t\tWHERE (event_name IN (${mts_automation_event_name})))))\n*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_po_release_overdue",
+      "name": "Process orders overdue for release",
+      "description": "Process orders where the scheduled release date is in the past and the actual release date is pending",
+      "signalFragment": "COUNT(case_id)\n\tFILTER (WHERE \"Scheduled Release Date\" < NOW()\n\tAND \"Actual Release Date\" IS NULL)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_po_delivery_overdue",
+      "name": "Process orders overdue for delivery",
+      "description": "Process orders where the scheduled finish date is in the past and the actual delivery date is pending",
+      "signalFragment": "COUNT(case_id)\n\tFILTER (WHERE \"Scheduled Finish Date\" < NOW()\n\tAND \"Actual Delivery Date\" IS NULL)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_start_date_diff",
+      "name": "Start date: difference scheduled and actual date",
+      "description": "Average difference of the scheduled start date minus the actual start date",
+      "signalFragment": "AVG(\n\"Scheduled Start Date\" - \"Actual Start Date\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_end_date_diff",
+      "name": "Finish date: difference scheduled and actual date",
+      "description": "Average difference of the scheduled finish date minus the actual finish date",
+      "signalFragment": "AVG(\n\"Scheduled Finish Date\" - \"Actual Finish Date\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_release_date_diff",
+      "name": "Release date: difference scheduled and actual date",
+      "description": "Average difference of the scheduled release date minus the actual release date",
+      "signalFragment": "AVG(\n\"Scheduled Release Date\" - \"Actual Release Date\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_late_delivery_rate",
+      "name": "Late delivery rate",
+      "description": "Percentage of late delivered orders from total orders",
+      "signalFragment": "COUNT(case_id) FILTER(\n\tWHERE \"Actual Delivery Date\" IS NOT NULL\n\tAND (\"Actual Delivery Date\" - \"Scheduled Finish Date\" > DURATION '0days'))\n/\nCOUNT(case_id) FILTER(\n\tWHERE \"Actual Delivery Date\" IS NOT NULL)\n*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_early_delivery_rate",
+      "name": "Early delivery rate",
+      "description": "Percentage of early delivered orders from total orders",
+      "signalFragment": "COUNT(case_id) FILTER(\n\tWHERE \"Actual Delivery Date\" IS NOT NULL\n\tAND (\"Actual Delivery Date\" - \"Scheduled Finish Date\" < DURATION '0days')\n\t)\n/\nCOUNT(case_id) FILTER(\n\tWHERE\"Actual Delivery Date\" IS NOT NULL)\n*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_on_time_delivery_rate",
+      "name": "On-time delivery rate",
+      "description": "Percentage of on-time delivered orders from total orders",
+      "signalFragment": "COUNT(case_id) FILTER(\n\tWHERE \"Actual Delivery Date\" IS NOT NULL\n\tAND \"Actual Delivery Date\" - \"Scheduled Finish Date\" = DURATION '0days'\n\t)\n/\nCOUNT(case_id) FILTER(\n\tWHERE \"Actual Delivery Date\" IS NOT NULL)\n*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_order_release_lead_time",
+      "name": "Order release lead Time",
+      "description": "Time from order creation to order release",
+      "signalFragment": "AVG(\n\t(SELECT FIRST(end_time) FILTER(\n\tWHERE event_name = 'Released'))\n\t-\n(SELECT LAST(end_time) FILTER(\n\tWHERE event_name = 'Create Process Order'))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_order_confirmation_lead_time",
+      "name": "Order confirmation lead time",
+      "description": "Time from order release to order confirmation",
+      "signalFragment": "AVG(\n\t(SELECT FIRST(end_time) FILTER(\n\tWHERE event_name = 'Confirmed'))\n\t-\n\t(SELECT LAST(end_time) FILTER(\n\tWHERE event_name = 'Released'))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mts_manufacturing_lead_time",
+      "name": "Manufacturing lead time",
+      "description": "Time from order release to order receipt",
+      "signalFragment": "AVG(\n\t(SELECT FIRST(end_time) FILTER(\n\tWHERE event_name LIKE 'GR%'))\n\t-\n\t(SELECT LAST(end_time) FILTER(\n\tWHERE event_name = 'Released'))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_STOCK"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "mts_automation_condition",
+      "description": "User type indicating that an event is performed automatically and not by an employee, for example 'Batch Job'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Event Created By User Type\" IN ('System','Service','Batch Job')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mts_automation_event_name",
+      "description": "Specific event for which the automation rate is calculated, for example 'Create Process Order'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Process Order'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mts_po_status_event_name",
+      "description": "Process order status indicating a specific stage in the process, for example 'Technically completed'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Technically completed'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    }
+  ]
+}

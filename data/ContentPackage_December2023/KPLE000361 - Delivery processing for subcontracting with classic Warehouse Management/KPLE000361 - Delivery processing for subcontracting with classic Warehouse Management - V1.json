@@ -1,0 +1,66 @@
+{
+  "comment": "KPLE000361 Delivery processing for subcontracting with classic Warehouse Management",
+  "bpmn_model": "Delivery processing for subcontracting with classic Warehouse Management",
+  "source_data": [
+    {
+      "ppi_id": "KPLE000361",
+      "type": "main",
+      "filter": "(VGTYP eq 'V' or VGTYP eq '') and WERKS_LIKP eq '' and contains(TCODE, 'ME2O')"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPLE000361_01",
+  "event_definitions": {
+    "Create delivery item": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create delivery item via subcontracting stock monitor ME2O": {
+          "pattern": "TCODE == 'ME2O' and USTYP == 'A'",
+          "id": 10
+        },
+        "Create delivery item via subcontracting cockpit ME2ON": {
+          "pattern": "TCODE == 'ME2ON' and USTYP == 'A'",
+          "id": 20
+        },
+        "Create delivery item via custom transaction": {
+          "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+          "id": 30
+        }
+      },
+      "include_other_variants": "Create delivery item - others"
+    },
+    "Perform transportation planning for subcontracting delivery": {
+      "pattern": "ERDAT != @initial and TRSTA != ''",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Create transfer order item and confirm without difference": {
+      "pattern": "BDATU != @initial and LVSTA == 'C' and KOSTA == 'C'",
+      "timestamp": "BDATU",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30"
+    },
+    "Create transfer order item and confirm with difference": {
+      "pattern": "BDATU != @initial and LVSTA == 'C' and KOSTA == 'B'",
+      "timestamp": "BDATU",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_40"
+    },
+    "Process subcontracting delivery with packing": {
+      "pattern": "BDATU != @initial and PKSTA != ''",
+      "timestamp": "BDATU",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_50"
+    },
+    "Post goods issue": {
+      "pattern": "WADAT_IST != @initial",
+      "timestamp": "WADAT_IST",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_60"
+    }
+  }
+}

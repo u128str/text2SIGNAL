@@ -1,0 +1,1950 @@
+{
+  "metrics": [
+    {
+      "id": "system-count-99",
+      "name": "Number of systems in analysis",
+      "signalFragment": "COUNT(DISTINCT \"kpiIns_ID\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": ""
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "completion-score-99",
+      "name": "Completion Score",
+      "signalFragment": "AVG(CASE WHEN \"COMPLETION_CNT\" = 'TRUE' THEN 1 ELSE 0 END) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_10_10-99",
+      "name": "Customer invoices created by dialog user",
+      "signalFragment": "AVG (\"2 - Blocker - Customer invoices created by dialog user\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_10_13-99",
+      "name": "Customer invoices manually created using a custom transaction",
+      "signalFragment": "AVG (\"2 - Blocker - Customer invoices manually created using a custom transaction\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_10_17-99",
+      "name": "Customer invoices manually created using transaction FBxx",
+      "signalFragment": "AVG (\"2 - Blocker - Customer invoices manually created using transaction FBxx\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_10_20-99",
+      "name": "Customer invoices parked",
+      "signalFragment": "AVG (\"2 - Blocker - Customer invoices parked\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_10_30-99",
+      "name": "Customer invoices reversed",
+      "signalFragment": "AVG (\"2 - Blocker - Customer invoices reversed\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-info-ctx_10_31-99",
+      "name": "Customer invoices created for internal trading partners",
+      "signalFragment": "AVG (\"3 - Info - Customer invoices created for internal trading partners\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_10_33-99",
+      "name": "Customer invoices created with document date in the past",
+      "signalFragment": "AVG (\"2 - Blocker - Customer invoices created with document date in the past\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_10_37-99",
+      "name": "Customer invoices created with document date in the future",
+      "signalFragment": "AVG (\"2 - Blocker - Customer invoices created with document date in the future\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_10_40-99",
+      "name": "Open FI-AR items with dunning block",
+      "signalFragment": "AVG (\"2 - Blocker - Open FI-AR items with dunning block\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_10_50-99",
+      "name": "Open FI-AR items already dunned",
+      "signalFragment": "AVG (\"2 - Blocker - Open FI-AR items already dunned\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_10_60-99",
+      "name": "Open and overdue FI-AR items",
+      "signalFragment": "AVG (\"2 - Blocker - Open and overdue FI-AR items\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_10_70-99",
+      "name": "Open and overdue FI-AR items despite offered discount",
+      "signalFragment": "AVG (\"2 - Blocker - Open and overdue FI-AR items despite offered discount\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_20_10-99",
+      "name": "FI-AR items previously dunned are cleared",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AR items previously dunned are cleared\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_20_20-99",
+      "name": "FI-AR items cleared with manual payment transaction FBZ1",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AR items cleared with manual payment transaction FBZ1\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_20_25-99",
+      "name": "FI-AR items cleared with account maintenance transaction FB1D",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AR items cleared with account maintenance transaction FB1D\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_20_30-99",
+      "name": "FI-AR items cleared after net due date",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AR items cleared after net due date\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_20_35-99",
+      "name": "FI-AR items cleared after net due date but with discount",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AR items cleared after net due date but with discount\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_20_40-99",
+      "name": "FI-AR clearing items entered with clearing date in the future",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AR clearing items entered with clearing date in the future\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_20_50-99",
+      "name": "FI-AR clearing items entered with clearing date more than 3 days in the past",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AR clearing items entered with clearing date more than 3 days in the past\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-info-ctx_20_60-99",
+      "name": "FI-AR items cleared with discount applied",
+      "signalFragment": "AVG (\"3 - Info - FI-AR items cleared with discount applied\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-blocker-ctx_20_70-99",
+      "name": "FI-AR items cleared without offered discount",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AR items cleared without offered discount\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-step_20_10_cnt-99",
+      "name": "FI-AR items cleared (completion rate)",
+      "signalFragment": "AVG (\"STEP - FI-AR items cleared\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060-step_20_10_tltavg-99",
+      "name": "FI-AR items cleared (total lead time)",
+      "signalFragment": "AVG (\"4 - Lead time from start - FI-AR items cleared\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": " days"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_10-99",
+      "name": "Issue customer invoice",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Issue customer invoice')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_20-10-99",
+      "name": "Create invoice via post document transaction FB01",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via post document transaction FB01')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_20-20-99",
+      "name": "Create invoice via post outgoing invoice transaction FB70",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via post outgoing invoice transaction FB70')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_20-30-99",
+      "name": "Create invoice via recurring entry transaction FBD5",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via recurring entry transaction FBD5')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_20-40-99",
+      "name": "Create invoice via custom transaction",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via custom transaction')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_20-50-99",
+      "name": "Create invoice via parking function FBVB",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via parking function FBVB')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_20-60-99",
+      "name": "Create invoice via interface",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via interface')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_20-70-99",
+      "name": "Create invoice via reference document posting transaction FBR2",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via reference document posting transaction FBR2')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_20-00-99",
+      "name": "Create invoice - others",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice - others')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_30-99",
+      "name": "Dun invoice",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Dun invoice')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_40-10-99",
+      "name": "Clear FI-AR items via payment run F110",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AR items via payment run F110')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_40-20-99",
+      "name": "Clear FI-AR items via account maintenance transaction FB1D",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AR items via account maintenance transaction FB1D')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_40-30-99",
+      "name": "Clear FI-AR items via manual payment",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AR items via manual payment')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_40-40-99",
+      "name": "Clear FI-AR items via transaction FB05",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AR items via transaction FB05')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_40-50-99",
+      "name": "Clear FI-AR items via reversal",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AR items via reversal')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kffi001060_01-event_40-00-99",
+      "name": "Clear FI-AR items - others",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AR items - others')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    }
+  ],
+  "metricsVariables": [],
+  "processVariables": [],
+  "investigation": {
+    "name": "99. Process Quantity Structure",
+    "rootWidget": {
+      "name": "root widget",
+      "id": "root-chapter-01",
+      "visualization": {
+        "type": "CHAPTER"
+      },
+      "filters": [],
+      "children": [
+        {
+          "name": "Throughput volume",
+          "id": "throughput-volume-1",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "PARAMETERIZED",
+                "attribute": "CASE",
+                "aggregation": "COUNT",
+                "parameter": {
+                  "type": "SEMANTIC_TYPE",
+                  "semanticType": "CASE"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Number of process variants",
+          "id": "number-of-process-variants-1",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "PARAMETERIZED",
+                "attribute": "VARIANT",
+                "aggregation": "COUNT",
+                "parameter": {
+                  "type": "SEMANTIC_TYPE",
+                  "semanticType": "VARIANT"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Number of systems in analysis",
+          "id": "system-count-99",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "METRIC",
+                "metric": "system-count-99"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Completion Score",
+          "id": "completion-score-99",
+          "visualization": {
+            "type": "VALUE",
+            "unit": {
+              "type": "SUFFIX",
+              "suffix": "%"
+            },
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "METRIC",
+                "metric": "completion-score-99"
+              }
+            ]
+          }
+        },
+        {
+          "name": "KFFI001060 - Process Insights Context Metrics",
+          "id": "kffi001060---process-insights-context-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "Customer invoices created by dialog user",
+              "id": "kffi001060-blocker-ctx_10_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_10_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Customer invoices manually created using a custom transaction",
+              "id": "kffi001060-blocker-ctx_10_13-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_10_13-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Customer invoices manually created using transaction FBxx",
+              "id": "kffi001060-blocker-ctx_10_17-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_10_17-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Customer invoices parked",
+              "id": "kffi001060-blocker-ctx_10_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_10_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Customer invoices reversed",
+              "id": "kffi001060-blocker-ctx_10_30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_10_30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Customer invoices created for internal trading partners",
+              "id": "kffi001060-info-ctx_10_31-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-info-ctx_10_31-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Customer invoices created with document date in the past",
+              "id": "kffi001060-blocker-ctx_10_33-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_10_33-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Customer invoices created with document date in the future",
+              "id": "kffi001060-blocker-ctx_10_37-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_10_37-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Open FI-AR items with dunning block",
+              "id": "kffi001060-blocker-ctx_10_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_10_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Open FI-AR items already dunned",
+              "id": "kffi001060-blocker-ctx_10_50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_10_50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Open and overdue FI-AR items",
+              "id": "kffi001060-blocker-ctx_10_60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_10_60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Open and overdue FI-AR items despite offered discount",
+              "id": "kffi001060-blocker-ctx_10_70-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_10_70-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AR items previously dunned are cleared",
+              "id": "kffi001060-blocker-ctx_20_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_20_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AR items cleared with manual payment transaction FBZ1",
+              "id": "kffi001060-blocker-ctx_20_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_20_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AR items cleared with account maintenance transaction FB1D",
+              "id": "kffi001060-blocker-ctx_20_25-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_20_25-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AR items cleared after net due date",
+              "id": "kffi001060-blocker-ctx_20_30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_20_30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AR items cleared after net due date but with discount",
+              "id": "kffi001060-blocker-ctx_20_35-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_20_35-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AR clearing items entered with clearing date in the future",
+              "id": "kffi001060-blocker-ctx_20_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_20_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AR clearing items entered with clearing date more than 3 days in the past",
+              "id": "kffi001060-blocker-ctx_20_50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_20_50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AR items cleared with discount applied",
+              "id": "kffi001060-info-ctx_20_60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-info-ctx_20_60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AR items cleared without offered discount",
+              "id": "kffi001060-blocker-ctx_20_70-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-blocker-ctx_20_70-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        },
+        {
+          "name": "KFFI001060 - Process Insights Milestone Metrics",
+          "id": "kffi001060---process-insights-milestone-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "FI-AR items cleared (completion rate)",
+              "id": "kffi001060-step_20_10_cnt-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-step_20_10_cnt-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AR items cleared (total lead time)",
+              "id": "kffi001060-step_20_10_tltavg-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": " days"
+                },
+                "rounding": {
+                  "numberOfDecimals": 1,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060-step_20_10_tltavg-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        },
+        {
+          "name": "Event Metrics",
+          "id": "event-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "Issue customer invoice",
+              "id": "kffi001060_01-event_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via post document transaction FB01",
+              "id": "kffi001060_01-event_20-10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_20-10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via post outgoing invoice transaction FB70",
+              "id": "kffi001060_01-event_20-20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_20-20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via recurring entry transaction FBD5",
+              "id": "kffi001060_01-event_20-30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_20-30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via custom transaction",
+              "id": "kffi001060_01-event_20-40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_20-40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via parking function FBVB",
+              "id": "kffi001060_01-event_20-50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_20-50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via interface",
+              "id": "kffi001060_01-event_20-60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_20-60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via reference document posting transaction FBR2",
+              "id": "kffi001060_01-event_20-70-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_20-70-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice - others",
+              "id": "kffi001060_01-event_20-00-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_20-00-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Dun invoice",
+              "id": "kffi001060_01-event_30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AR items via payment run F110",
+              "id": "kffi001060_01-event_40-10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_40-10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AR items via account maintenance transaction FB1D",
+              "id": "kffi001060_01-event_40-20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_40-20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AR items via manual payment",
+              "id": "kffi001060_01-event_40-30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_40-30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AR items via transaction FB05",
+              "id": "kffi001060_01-event_40-40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_40-40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AR items via reversal",
+              "id": "kffi001060_01-event_40-50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_40-50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AR items - others",
+              "id": "kffi001060_01-event_40-00-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kffi001060_01-event_40-00-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        }
+      ],
+      "dataSource": null
+    },
+    "metricsBar": [],
+    "eventToShapeMappings": {
+      "mappings": []
+    }
+  }
+}

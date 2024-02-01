@@ -1,0 +1,118 @@
+{ "comment": "KPSD000367 Sales order processing with order-related billing",
+  "source_data": [
+    {
+      "ppi_id": "KPSD000367",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPSD000367_01",
+  "event_definitions": {
+    "Create sales order item with order-related billing": {
+      "pattern": "ERDAT_I != @initial",
+      "timestamp": "ERDAT_I",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create sales order item with order-related billing according to order quantity": {
+        "pattern": "FKREL == 'B'",
+        "id": "10"
+        },
+        "Create sales order item with order-related billing according to target quantity": {
+        "pattern": "FKREL == 'C'",
+         "id": "20"
+        },
+        "Create sales order item with order-related billing according to delivery quantity": {
+        "pattern": "FKREL == 'G'",
+        "id": "30"
+        }
+      },
+      "include_other_variants": "Create sales order item with order-related billing via other means"
+      },
+      "Create invoice": {
+      "pattern": "ERDAT_INV != @initial",
+      "timestamp": "ERDAT_INV",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20",
+      "variants": {
+        "Create invoice manually via single transaction VF01": {
+        "pattern": "TCODE == 'VF01' and AUTOMATION_INV == 'M'",
+        "id": "10"
+        },
+        "Create invoice via manual billing due processing": {
+        "pattern": "TCODE == 'VF04'",
+        "id": "20"
+        },
+        "Create invoice automatically": {
+        "pattern": "TCODE == '' or ((TCODE == 'VF01' or TCODE == 'VF02') and AUTOMATION_INV == 'A')",
+        "id": "30"
+        },
+        "Create invoice via custom transaction": {
+        "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+        "id": "40"
+         },
+        "Create invoice automatically from shipment": {
+        "pattern": "TCODE == 'VTFAKT'",
+        "id": "40"
+          }
+        },
+      "include_other_variants": "Create invoice via other transactions"
+      },
+      "Post invoice": {
+      "pattern": "CPUDT != @initial",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30",
+      "variants": {
+        "Post invoice automatically to FI": {
+        "pattern": "TCODE != 'VFX3' and TCODE != 'VF02' and RFBSK_INV == 'C'",
+        "id": "10"
+        },
+        "Post invoice to FI after block": {
+          "pattern": "RFBSK_INV == 'A'",
+          "id": "20"
+        },
+        "Post invoice manually to FI after error resolution via VFX3": {
+        "pattern": "TCODE == 'VFX3' or TCODE == 'VF02'",
+        "id": "30"
+        }
+       },
+      "include_other_variants": "Post invoice via other means"
+    },
+    "Dun invoice": {
+      "pattern": "MADAT_B != @initial",
+      "timestamp": "MADAT_B",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40"
+    },
+      "Clear FI-AR item": {
+      "pattern": "AUGDT != @initial",
+      "timestamp": "AUGDT",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50",
+      "variants": {
+        "Clear FI-AR item via payment run F110": {
+          "pattern": "TCODE_AUGBL == 'F110' or TCODE_AUGBL == ''",
+          "id": "10"
+        },
+        "Clear FI-AR item via account maintenance transaction FB1*": {
+          "pattern": "TCODE_AUGBL.str.startswith('FB1')",
+          "id": "20"
+        },
+        "Clear FI-AR item via manual payment": {
+          "pattern": "TCODE_AUGBL.str.startswith('FBZ')",
+          "id": "30"
+        },
+        "Clear FI-AR item via transaction FB05": {
+          "pattern": "TCODE_AUGBL == 'FB05'",
+          "id": "40"
+        },
+        "Clear FI-AR item via reversal": {
+          "pattern": "TCODE_AUGBL == 'FB08' or TCODE_AUGBL == 'VF11'",
+          "id": "50"
+        }
+      },
+      "include_other_variants": "Clear FI-AR item via other transactions"
+    }
+  }
+}

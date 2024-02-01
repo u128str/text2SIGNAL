@@ -1,0 +1,466 @@
+{
+  "metrics": [
+    {
+      "id": "jsm_avg_closing_time",
+      "name": "Average Issue Closing Time",
+      "description": "Average time from issue creation to its closing",
+      "signalFragment": "AVG(\n\tIF (${jsm_issue_change_condition},\n\t\t(SELECT LAST(end_time) WHERE event_name IN (${jsm_system_change_closing_events}))\n\t\t-(${jsm_issue_create_date}),\n\t\t(SELECT LAST(end_time) WHERE event_name IN (${jsm_issue_closing_events}))\n\t\t-(${jsm_issue_create_date}))\n\t)",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_avg_csat",
+      "name": "Average Customer Satisfaction Score (CSAT)",
+      "description": "Average Customer Satisfaction Score",
+      "signalFragment": "AVG(\"Satisfaction\")",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_avg_resolution_time",
+      "name": "Average Resolution Time",
+      "description": "Average time from issue creation to its resolution",
+      "signalFragment": "AVG(${jsm_issue_resolution_date} - ${jsm_issue_create_date}) FILTER (WHERE ${jsm_resolution_condition})\n",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_avg_response_time",
+      "name": "Average Response Time",
+      "description": "Average time from issue creation to its first response",
+      "signalFragment": "AVG(${jsm_first_response_date} - ${jsm_issue_create_date})\n",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_issue_reassignments_ratio",
+      "name": "Issue Reassignment Rate",
+      "description": "Ratio of issue reassignments per case",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT COUNT(event_name)\n\t\t\tWHERE (event_name = ${jsm_issue_assignment_events})) > 1\n\t)\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_issue_assignment_ratio",
+      "name": "Assignment Ratio",
+      "description": "Percentage of cases containing at least one assignment event",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT COUNT(event_name) \n\t\t\tWHERE (event_name = ${jsm_issue_assignment_events})) >0)\n/\nCOUNT (case_id)\n* 100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_change_priority_ratio",
+      "name": "Change Priority Ratio",
+      "description": "Percentage of cases with priority change",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT COUNT(event_name) \n\t\t\tWHERE (event_name = ${jsm_change_priority_events})) > 0) \n/\nCOUNT (case_id)\n* 100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_changes_ratio",
+      "name": "Issue Change Ratio",
+      "description": "Percentage of cases with changes.",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT COUNT(event_name) \n\t\t\tWHERE (event_name = ${jsm_change_events})) > 0)\n/\nCOUNT(case_id)\n*100\n",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_first_call_resolution_ratio",
+      "name": "First call resolution ratio",
+      "description": "Percentage of incidents that are resolved without any rework. Rework is defined as any case that contains the same event name more than once.",
+      "signalFragment": "COUNT(case_id) FILTER(\n\tWHERE (SELECT COUNT(DISTINCT event_name)) = (SELECT COUNT(event_name))\n\t)\n/ COUNT(case_id)\n*100\n",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_high_priority_issue_ratio",
+      "name": "High Priority Issue Ratio",
+      "description": "Percentage of cases with high priority",
+      "signalFragment": "COUNT(case_id) FILTER ( \nWHERE ${jsm_high_priority_condition})\n/\nCOUNT(case_id)\n*100\n",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_total_nr_closed_issues",
+      "name": "Total Number of Closed Issues",
+      "description": "Total number of closed issues",
+      "signalFragment": "COUNT(case_id) FILTER ( WHERE ${jsm_close_condition})",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_breached_sla_issue_ratio",
+      "name": "Breached SLA Issue Ratio",
+      "description": "Ratio of the started SLA's that eventually breached",
+      "signalFragment": "SUM(${jsm_sla_breached})/SUM(${jsm_sla_started})*100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_total_nr_breached_slas",
+      "name": "Total Number of Breached SLA's",
+      "description": "Total number of breached SLA's",
+      "signalFragment": "SUM(${jsm_sla_breached})",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_total_nr_clompleted_slas",
+      "name": "Total Number of Completed SLA's",
+      "description": "Total number of completed SLA's",
+      "signalFragment": "SUM(\"SLAs Completed\")",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_total_nr_created_issues",
+      "name": "Total Number of Created Issues",
+      "description": "Total number of created issues",
+      "signalFragment": "COUNT(case_id)",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_total_nr_ongoing_slas",
+      "name": "Total Number of Ongoing SLA's",
+      "description": "Total number of ongoing SLA's",
+      "signalFragment": "SUM(\"SLAs Ongoing\")",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_total_nr_open_issues",
+      "name": "Total Number of Open Issues",
+      "description": "Total number of open issues",
+      "signalFragment": "COUNT(case_id) FILTER ( WHERE ${jsm_open_condition})",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_total_nr_paused_slas",
+      "name": "Total Number of Paused SLA's",
+      "description": "Total Number of paused SLA's",
+      "signalFragment": "SUM(\"SLAs Paused\" )",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_total_nr_resolved_issues",
+      "name": "Total Number of Resolved Issues",
+      "description": "Total number of resolved issues",
+      "signalFragment": "COUNT(case_id) FILTER ( WHERE ${jsm_resolution_condition})",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "jsm_total_nr_sla_started",
+      "name": "Total Number of started SLA's",
+      "description": "Total Number of started SLA's",
+      "signalFragment": "SUM(${jsm_sla_started})",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "JIRA"
+      ],
+      "processTypes": [
+        "ISSUE_TO_RESOLUTION"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "jsm_issue_assignment_events",
+      "description": "Events defining the assignment of an issue",
+      "defaultValues": [
+        {
+          "defaultValue": "'Assign Issue'",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_issue_closing_events",
+      "description": "Events defining the last activity of an issue",
+      "defaultValues": [
+        {
+          "defaultValue": "'Issue status change: Closed', 'Issue status change: Done'",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_system_change_closing_events",
+      "description": "Events defining the last activity of a system change",
+      "defaultValues": [
+        {
+          "defaultValue": "'Issue status change: Canceled', 'Issue status change: Completed', 'Issue status change: Failed'",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_change_priority_events",
+      "description": "Events defining that the priority has been changed",
+      "defaultValues": [
+        {
+          "defaultValue": "'Issue change: priority'",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_high_priority_condition",
+      "description": "Condition defining cases with high priority, for example priority = High or Highest",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Current Priority\" IN ('High', 'Highest')",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_issue_change_condition",
+      "description": "Condition defining cases where the Issue Type indicated a System Change. These types of issues have different closing events",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Issue Type\" = '[System] Change'",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_issue_create_date",
+      "description": "Attribute defining the creation of an issue",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Issue Created Date\"",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_first_response_date",
+      "description": "Attribute defining the first response date of an issue",
+      "defaultValues": [
+        {
+          "defaultValue": "\"First Response Date\"",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_issue_resolution_date",
+      "description": "Attribute defining the resolution of an issue",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Issue Resolution Date\"",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_resolution_condition",
+      "description": "Condition defining the resolution of an issue",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Resolution\" IS NOT NULL",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_open_condition",
+      "description": "Condition defining whether an issue is open",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Current Status category\" != 'Done'",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_close_condition",
+      "description": "Condition defining whether an issue is closed",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Current Status category\" == 'Done'",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_change_events",
+      "description": "Events defining issue changes",
+      "defaultValues": [
+        {
+          "defaultValue": "'Issue change: %'",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_sla_breached",
+      "description": "Attribute defining the number of breached SLA",
+      "defaultValues": [
+        {
+          "defaultValue": "\"SLAs Breached\"",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsm_sla_started",
+      "description": "Attribute defining the number of started SLA's",
+      "defaultValues": [
+        {
+          "defaultValue": "\"SLAs Started\"",
+          "sourceSystems": [
+            "JIRA"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "comment": "KPPP000160 Make to stock (discrete manufacturing)",
+  "bpmn_model": "Make to stock (discrete manufacturing)",
+  "source_data": [
+    {
+      "ppi_id": "KPPP000160",
+      "type": "main",
+      "filter": "SOBKZ eq ''"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPPP000160_01",
+  "event_definitions": {
+    "Create production order with reference to planned order": {
+      "pattern": "ERDAT != @initial and PLNUM != ''",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10"
+    },
+    "Create production order without reference to planned order": {
+      "pattern": "ERDAT != @initial and PLNUM == ''",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_20"
+    },
+    "Release production order": {
+      "pattern": "FTRMI != @initial",
+      "timestamp": "FTRMI",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_30"
+    },
+    "Initially confirm production order": {
+      "pattern": "GSTRI != @initial",
+      "timestamp": "GSTRI",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_40"
+    },
+    "Finally confirm production order": {
+      "pattern": "GETRI != @initial",
+      "timestamp": "GETRI",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_50"
+    },
+    "Deliver production order": {
+      "pattern": "LTRMI != @initial",
+      "timestamp": "LTRMI",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_60",
+      "variants": {
+        "Deliver production order to unrestricted stock": {
+          "pattern": "INSMK == ''",
+          "id": "10"
+        },
+        "Deliver production order to quality inspection stock": {
+          "pattern": "INSMK == 'X'",
+          "id": "20"
+        }
+      },
+      "include_other_variants": "Deliver production order - others"
+    },
+    "Set fully/partly not delivered production order to technically completed": {
+      "pattern": "IDAT2 != @initial and LTRMI == @initial",
+      "timestamp": "IDAT2",
+      "timestamp_offset_minutes": 200,
+      "id": "EVENT_90"
+    },
+    "Set fully/partly delivered production order to technically completed": {
+      "pattern": "IDAT2 != @initial and LTRMI != @initial",
+      "timestamp": "IDAT2",
+      "timestamp_offset_minutes": 200,
+      "id": "EVENT_100"
+    }
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "metrics": [
+    {
+      "id": "on_time_manufacturing",
+      "name": "Orders Manufactured On Time",
+      "description": "Orders Manufactured On Time",
+      "signalFragment": "COUNT(distinct \"case_id\") FILTER (WHERE\n\"Order Actual Start\" <= \"Order Planned Start\" AND\n\"Order Actual Completion\" <= \"Order Planned Completion\")",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_DIGITAL_MANUFACTURING"
+      ],
+      "processTypes": [
+        "OPERATE_MANUFACTURING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_time_for_routing_step",
+      "name": "Average Cycle Time for Routing Step",
+      "description": "Average time between Start and Complete of a certain Routing step",
+      "signalFragment": "AVG ((SELECT FIRST (END_TIME) FILTER (WHERE EVENT_NAME LIKE ${routing_step_end})) - (SELECT FIRST (END_TIME) FILTER (WHERE EVENT_NAME LIKE ${routing_step_start})))",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_DIGITAL_MANUFACTURING"
+      ],
+      "processTypes": [
+        "OPERATE_MANUFACTURING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_production_order_to_goods_receipt",
+      "name": "Average Time from Production Order to Goods Receipt",
+      "description": "Average Time from Production Order to Goods Receipt",
+      "signalFragment": "AVG ((SELECT LAST (END_TIME) FILTER (WHERE EVENT_NAME IN ('Post Goods Receipt'))) - (SELECT FIRST (END_TIME) FILTER (WHERE EVENT_NAME IN ('Create Production Order'))))",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_DIGITAL_MANUFACTURING"
+      ],
+      "processTypes": [
+        "OPERATE_MANUFACTURING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "completed_orders",
+      "name": "Completed Orders",
+      "description": "Production order deliveries status – 100% completed",
+      "signalFragment": "COUNT (CASE_ID) FILTER (where\n\"Order Execution Status\" ='COMPLETED')",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_DIGITAL_MANUFACTURING"
+      ],
+      "processTypes": [
+        "OPERATE_MANUFACTURING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "delayed_time_at_order_start",
+      "name": "Delayed Time at Order start",
+      "description": "Average difference between actual start and scheduled start of order",
+      "signalFragment": "AVG (\"Order Actual Start\" - \"Order Scheduled Start\") \nFILTER (WHERE \"Order Actual Start\" - \"Order Scheduled Start\" > DURATION '0minutes')",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_DIGITAL_MANUFACTURING"
+      ],
+      "processTypes": [
+        "OPERATE_MANUFACTURING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "orders_delayed_in_completion",
+      "name": "Number of Orders Delayed in Completion",
+      "description": "Orders Manufactured On Time",
+      "signalFragment": "count(case_id) FILTER(\n\tWHERE \"Order Actual Start\" IS NOT NULL\n\tAND \"Order Actual Completion\" - \"Order Scheduled Completion\" > DURATION '0minutes')",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_DIGITAL_MANUFACTURING"
+      ],
+      "processTypes": [
+        "OPERATE_MANUFACTURING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "orders_delayed_in_start",
+      "name": "Number of Orders Delayed in Start",
+      "description": "Number of orders where the actual start is delayed",
+      "signalFragment": "COUNT (CASE_ID) FILTER (WHERE \"Order Actual Start\" IS NOT NULL AND \"Order Actual Start\" - \"Order Scheduled Start\" > DURATION '0minutes')",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_DIGITAL_MANUFACTURING"
+      ],
+      "processTypes": [
+        "OPERATE_MANUFACTURING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_production_order_to_sfc_time",
+      "name": "Time from Production Order to SFC Creation",
+      "description": "Avg Time taken from Production Order creation to Shop Floor Control creation",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) FILTER (\n\t\tWHERE (event_name = ('Create Shop Floor Control'))))\n\t-(SELECT FIRST(end_time) FILTER (\n\t\tWHERE (event_name = ('Create Production Order'))))\n   )",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_DIGITAL_MANUFACTURING"
+      ],
+      "processTypes": [
+        "OPERATE_MANUFACTURING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "work_in_progress_time",
+      "name": "Work in Progress Time",
+      "description": "Average time between completion of one step and start of the next step",
+      "signalFragment": "AVG(\n\t(SELECT FIRST(end_time) \n    \tFILTER( WHERE ${step_end_condition}))\n- (SELECT FIRST(end_time) \n    \tFILTER( WHERE ${step_start_condition}))\n)",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_DIGITAL_MANUFACTURING"
+      ],
+      "processTypes": [
+        "OPERATE_MANUFACTURING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "first_pass_yield_rate",
+      "name": "First Pass Yield Rate",
+      "description": "SFC Build Quantity that don't have NC logged against total SFC GR Quantity",
+      "signalFragment": "SUM (\"SFC Build Quantity\") FILTER (WHERE \"SFC Routing Type\" != 'NC') / SUM (\"SFC Received Quantity\")",
+      "aggregationType": "EVENT",
+      "sourceSystems": [
+        "SAP_DIGITAL_MANUFACTURING"
+      ],
+      "processTypes": [
+        "OPERATE_MANUFACTURING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "partially_completed_orders",
+      "name": "Partially Completed Orders",
+      "description": "Orders that are not completed and GR quantity is available",
+      "signalFragment": "COUNT (CASE_ID) FILTER (WHERE \n\"Order Execution Status\"!='COMPLETED' AND \"Order Received Quantity\" > 0)",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_DIGITAL_MANUFACTURING"
+      ],
+      "processTypes": [
+        "OPERATE_MANUFACTURING"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "routing_step_start",
+      "description": "Routing Step Start Event,for example 'Start %Paint%'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Start %Paint%'",
+          "sourceSystems": [
+            "SAP_DIGITAL_MANUFACTURING"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "routing_step_end",
+      "description": "Routing Step End Event ,for example 'Complete %Paint%'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Complete %Paint%'",
+          "sourceSystems": [
+            "SAP_DIGITAL_MANUFACTURING"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "step_start_condition",
+      "description": "Step Start Condition ,for example event_name LIKE 'Start %Paint%' AND \"Routing Step\" ='0020'",
+      "defaultValues": [
+        {
+          "defaultValue": "event_name LIKE 'Start %Paint%' AND \"Routing Step\" ='0020'",
+          "sourceSystems": [
+            "SAP_DIGITAL_MANUFACTURING"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "step_end_condition",
+      "description": "Step End Condition ,for example event_name LIKE 'Complete %Paint%' AND \"Routing Step\" ='0010'",
+      "defaultValues": [
+        {
+          "defaultValue": "event_name LIKE 'Complete %Paint%' AND \"Routing Step\" ='0010'",
+          "sourceSystems": [
+            "SAP_DIGITAL_MANUFACTURING"
+          ]
+        }
+      ]
+    }
+  ],
+  "releaseToggle": "RELEASE_PI-A_BETA_PROGRAM"
+}

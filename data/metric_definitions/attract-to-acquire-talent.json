@@ -1,0 +1,144 @@
+{
+  "metrics": [
+    {
+      "id": "perc_hired_candidates",
+      "name": "Percentage of Hired Candidates",
+      "description": "Percentage of job applications that result in a hiring event",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT COUNT(event_name)\n\t\tWHERE event_name IN (${hiring_events}))\n\t> 0)\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ATTRACT_TO_ACQUIRE_TALENT"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "hired_candidates",
+      "name": "Number of Hired Candidates",
+      "description": "Number of job applications that result in a hiring event",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT COUNT(event_name)\n\t\tWHERE event_name IN (${hiring_events}))\n\t> 0)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ATTRACT_TO_ACQUIRE_TALENT"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_time_to_hire",
+      "name": "Average Time to Hire",
+      "description": "Average Time Between Job Application Received and Candidate Hired",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) FILTER (\n\t\tWHERE (event_name IN (${hiring_events}))))\n\t-(SELECT FIRST(end_time) FILTER (\n\t\tWHERE (event_name IN (${job_application_creation_events}))))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ATTRACT_TO_ACQUIRE_TALENT"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_time_to_fill",
+      "name": "Average Time to Fill",
+      "description": "Average Time Between Job Requisition Created and Position Filled",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) FILTER (\n\t\tWHERE (event_name IN (${hiring_events}))))\n\t-(SELECT FIRST(end_time) FILTER (\n\t\tWHERE (event_name IN (${job_requisition_creation_events}))))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ATTRACT_TO_ACQUIRE_TALENT"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_time_to_extend_offer",
+      "name": "Average Time to Extend Job Offer",
+      "description": "Average Time Between Candidate Selected by Hiring Manager and Offer Extended to Candidate",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) FILTER (\n\t\tWHERE (event_name IN (${offer_extended_events}))))\n\t-(SELECT FIRST(end_time) FILTER (\n\t\tWHERE (event_name IN (${hiring_manager_hired_events}))))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ATTRACT_TO_ACQUIRE_TALENT"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "num_open_job_requisitions",
+      "name": "Number of Open Job Requisitions",
+      "description": "The number of currently open job requisitions, based on the count of unique Job Requisition IDs and their Job Requisition Status",
+      "signalFragment": "COUNT(DISTINCT \"Job Requisition ID\") FILTER (\n\tWHERE \"Job Requisition Status\" IN (${job_req_status_open}))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ATTRACT_TO_ACQUIRE_TALENT"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "hiring_events",
+      "description": "List of events indicating that the job application resulted in a hire (candidate was hired), e.g. 'Hired'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Hired'",
+          "sourceSystems": [
+            "SFSF"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "job_application_creation_events",
+      "description": "List of events indicating that the job application was created, e.g. 'Create Job Application'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Job Application'",
+          "sourceSystems": [
+            "SFSF"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "job_requisition_creation_events",
+      "description": "List of events indicating that the job requisition was created, e.g. 'Create Job Requisition'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Job Requisition'",
+          "sourceSystems": [
+            "SFSF"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "hiring_manager_hired_events",
+      "description": "List of events indicating that the candidate has been selected by the hiring manager, e.g. 'Prepare Offer'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Prepare Offer'",
+          "sourceSystems": [
+            "SFSF"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "offer_extended_events",
+      "description": "List of events indicating that the job offer has been extended to the candidate, e.g. 'Offer Extended'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Offer Extended'",
+          "sourceSystems": [
+            "SFSF"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "job_req_status_open",
+      "description": "List of Job Requisition status entries that indicate a Job Requisition is still open, e.g. 'Open'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Open'",
+          "sourceSystems": [
+            "SFSF"
+          ]
+        }
+      ]
+    }
+  ]
+}

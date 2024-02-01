@@ -1,0 +1,97 @@
+{
+  "comment": "KPSD000365 Sales order item (make to order) to sales invoice creation",
+  "source_data": [
+    {
+      "ppi_id": "KPSD000365",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPSD000365_01",
+  "event_definitions": {
+  "Create sales order item": {
+      "pattern": "ERDAT_I != @initial",
+      "timestamp": "ERDAT_I",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10"
+  },
+    "Create production order with reference to planned order": {
+      "pattern": "ERDAT != @initial and (AUTYP =='10' and PLNUM != '')",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Create production order without reference to planned order": {
+      "pattern": "ERDAT != @initial and (AUTYP =='10' and PLNUM == '')",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_30"
+    },
+    "Create process order with reference to planned order": {
+      "pattern": "ERDAT != @initial and (AUTYP =='40' and PLNUM != '')",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_40"
+    },
+    "Create process order without reference to planned order": {
+      "pattern": "ERDAT != @initial and (AUTYP =='40' and PLNUM == '')",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_50"
+    },
+    "Release production order": {
+      "pattern": "FTRMI != @initial and AUTYP =='10'",
+      "timestamp": "FTRMI",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_60"
+    },
+     "Release process order": {
+      "pattern": "FTRMI != @initial and AUTYP =='40'",
+      "timestamp": "FTRMI",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_70"
+    },
+     "Initially confirm production order": {
+      "pattern": "GSTRI != @initial and AUTYP =='10'",
+      "timestamp": "GSTRI",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_80"
+    },
+     "Initially confirm process order": {
+      "pattern": "GSTRI != @initial and AUTYP =='40'",
+      "timestamp": "GSTRI",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_90"
+    },
+     "Deliver production order to sales order item stock": {
+      "pattern": "LTRMI != @initial and AUTYP =='10' and ('WEMNG' >= 'GAMNG' or ELIKZ =='X')",
+      "timestamp": "LTRMI",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_100"
+    },
+      "Deliver process order to sales order item stock": {
+      "pattern": "LTRMI != @initial and AUTYP =='40' and ('WEMNG' >= 'GAMNG' or ELIKZ =='X')",
+      "timestamp": "LTRMI",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_110"
+    },
+      "Create outbound delivery item": {
+      "pattern": "ERDAT_DEL != @initial",
+      "timestamp": "ERDAT_DEL",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_120"
+    },
+      "Post goods issue from sales order item stock": {
+      "pattern": "ERDAT_GI != @initial",
+      "timestamp": "ERDAT_GI",
+      "timestamp_offset_minutes": 200,
+      "id": "EVENT_130"
+    },
+      "Create customer invoice": {
+      "pattern": "ERDAT_INV != @initial",
+      "timestamp": "ERDAT_INV",
+      "timestamp_offset_minutes": 240,
+      "id": "EVENT_140"
+    }
+  }
+}

@@ -1,0 +1,2975 @@
+{
+  "metrics": [
+    {
+      "id": "system-count-99",
+      "name": "Number of systems in analysis",
+      "signalFragment": "COUNT(DISTINCT \"kpiIns_ID\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": ""
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "completion-score-99",
+      "name": "Completion Score",
+      "signalFragment": "AVG(CASE WHEN \"COMPLETION_CNT\" = 'TRUE' THEN 1 ELSE 0 END) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_10_10-99",
+      "name": "Supplier invoices issued before purchase order",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoices issued before purchase order\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_10_20-99",
+      "name": "Supplier invoices reversed",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoices reversed\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_10_30-99",
+      "name": "Supplier invoices deleted",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoices deleted\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_10_35-99",
+      "name": "Supplier invoices created by dialog user",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoices created by dialog user\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-info-ctx_10_40-99",
+      "name": "Supplier invoices created via BAPI interface",
+      "signalFragment": "AVG (\"3 - Info - Supplier invoices created via BAPI interface\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-info-ctx_10_50-99",
+      "name": "Supplier invoices created via EDI / IDoc",
+      "signalFragment": "AVG (\"3 - Info - Supplier invoices created via EDI / IDoc\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-info-ctx_10_60-99",
+      "name": "Supplier invoices created using evaluated receipt settlement",
+      "signalFragment": "AVG (\"3 - Info - Supplier invoices created using evaluated receipt settlement\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-info-ctx_10_65-99",
+      "name": "Supplier invoices created for internal trading partners",
+      "signalFragment": "AVG (\"3 - Info - Supplier invoices created for internal trading partners\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_10_70-99",
+      "name": "Supplier invoices created after posting date",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoices created after posting date\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_10_80-99",
+      "name": "Supplier invoices currently parked",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoices currently parked\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_10_90-99",
+      "name": "Supplier invoices previously parked",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoices previously parked\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_10-99",
+      "name": "FI-AP items currently blocked for payment",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AP items currently blocked for payment\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_20-99",
+      "name": "FI-AP items previously blocked for payment",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AP items previously blocked for payment\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_25-99",
+      "name": "Open FI-AP items with net due date in the past",
+      "signalFragment": "AVG (\"2 - Blocker - Open FI-AP items with net due date in the past\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_30-99",
+      "name": "Supplier invoices blocked for payment in invoice verification",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoices blocked for payment in invoice verification\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_22-99",
+      "name": "Supplier invoices blocked for payment in invoice verification but released in FI-AP",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoices blocked for payment in invoice verification but released in FI-AP\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_24-99",
+      "name": "Supplier invoices with manual payment blocks set in FI-AP",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoices with manual payment blocks set in FI-AP\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-info-ctx_20_35-99",
+      "name": "Open FI-AP items with possible discount",
+      "signalFragment": "AVG (\"3 - Info - Open FI-AP items with possible discount\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_38-99",
+      "name": "Supplier invoices reversed and FI-AP items not cleared",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoices reversed and FI-AP items not cleared\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_40-99",
+      "name": "FI-AP items not cleared via payment run",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AP items not cleared via payment run\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_45-99",
+      "name": "FI-AP items cleared more than 3 days before net due date and no discount",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AP items cleared more than 3 days before net due date and no discount\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_50-99",
+      "name": "Payment terms different in FI-AP and purchase order",
+      "signalFragment": "AVG (\"2 - Blocker - Payment terms different in FI-AP and purchase order\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_60-99",
+      "name": "FI-AP items cleared with account maintenance transaction FB1K",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AP items cleared with account maintenance transaction FB1K\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_70-99",
+      "name": "FI-AP clearing items entered after clearing date",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AP clearing items entered after clearing date\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_75-99",
+      "name": "FI-AP items cleared after net due date",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AP items cleared after net due date\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_80-99",
+      "name": "Supplier invoice reversed and FI-AP items paid",
+      "signalFragment": "AVG (\"2 - Blocker - Supplier invoice reversed and FI-AP items paid\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_85-99",
+      "name": "FI-AP items cleared despite payment block",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AP items cleared despite payment block\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_90-99",
+      "name": "FI-AP items cleared with discount lost",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AP items cleared with discount lost\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-info-ctx_20_100-99",
+      "name": "FI-AP items cleared with discount applied",
+      "signalFragment": "AVG (\"3 - Info - FI-AP items cleared with discount applied\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-blocker-ctx_20_110-99",
+      "name": "FI-AP items cleared with discount applied but late payment",
+      "signalFragment": "AVG (\"2 - Blocker - FI-AP items cleared with discount applied but late payment\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-step_10_20_cnt-99",
+      "name": "Supplier invoices created and posted (completion rate)",
+      "signalFragment": "AVG (\"STEP - Supplier invoices created and posted\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-step_10_20_tltavg-99",
+      "name": "Supplier invoices created and posted (total lead time)",
+      "signalFragment": "AVG (\"4 - Lead time from start - Supplier invoices created and posted\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": " days"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-step_20_10_cnt-99",
+      "name": "FI-AP items released for payment (completion rate)",
+      "signalFragment": "AVG (\"STEP - FI-AP items released for payment\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-step_20_10_tltavg-99",
+      "name": "FI-AP items released for payment (total lead time)",
+      "signalFragment": "AVG (\"4 - Lead time from start - FI-AP items released for payment\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": " days"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-step_20_20_cnt-99",
+      "name": "FI-AP clearing documents created (completion rate)",
+      "signalFragment": "AVG (\"STEP - FI-AP clearing documents created\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-step_20_20_tltavg-99",
+      "name": "FI-AP clearing documents created (total lead time)",
+      "signalFragment": "AVG (\"4 - Lead time from start - FI-AP clearing documents created\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": " days"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-step_20_30_cnt-99",
+      "name": "FI-AP items cleared (completion rate)",
+      "signalFragment": "AVG (\"STEP - FI-AP items cleared\") * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460-step_20_30_tltavg-99",
+      "name": "FI-AP items cleared (total lead time)",
+      "signalFragment": "AVG (\"4 - Lead time from start - FI-AP items cleared\")",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": " days"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_10-99",
+      "name": "Create purchase order",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create purchase order')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_20-99",
+      "name": "Issue supplier invoice",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Issue supplier invoice')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_30-10-99",
+      "name": "Create invoice via BAPI interface",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via BAPI interface')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_30-20-99",
+      "name": "Create invoice via EDI/IDoc",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via EDI/IDoc')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_30-30-99",
+      "name": "Create invoice via evaluated receipt settlement",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via evaluated receipt settlement')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_30-40-99",
+      "name": "Create invoice via background invoice verification",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via background invoice verification')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_30-50-99",
+      "name": "Create invoice online via dialog user",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice online via dialog user')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_30-60-99",
+      "name": "Create invoice via system user",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via system user')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_30-70-99",
+      "name": "Create invoice via SRM or Ariba",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via SRM or Ariba')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_30-80-99",
+      "name": "Create invoice via account maintenance",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via account maintenance')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_30-90-99",
+      "name": "Create invoice via parking function",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice via parking function')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_30-00-99",
+      "name": "Create invoice - others",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create invoice - others')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_40-99",
+      "name": "Move invoice immediately to free for payment",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Move invoice immediately to free for payment')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_50-99",
+      "name": "Block invoice automatically via invoice verification",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Block invoice automatically via invoice verification')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_60-99",
+      "name": "Block invoice manually in finance",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Block invoice manually in finance')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_70-10-99",
+      "name": "Release payment block via invoice verification",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Release payment block via invoice verification')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_70-20-99",
+      "name": "Release payment block via finance transaction",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Release payment block via finance transaction')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_70-30-99",
+      "name": "Release payment block via custom transaction",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Release payment block via custom transaction')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_70-40-99",
+      "name": "Release payment block via finance workflow",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Release payment block via finance workflow')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_70-00-99",
+      "name": "Release payment block - others",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Release payment block - others')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_80-10-99",
+      "name": "Clear FI-AP items via payment run",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AP items via payment run')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_80-20-99",
+      "name": "Clear FI-AP items via account maintenance transaction FB1K",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AP items via account maintenance transaction FB1K')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_80-30-99",
+      "name": "Clear FI-AP items via manual payment",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AP items via manual payment')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_80-40-99",
+      "name": "Clear FI-AP items via transaction FB05",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AP items via transaction FB05')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_80-50-99",
+      "name": "Clear FI-AP items via reversal",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AP items via reversal')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    },
+    {
+      "id": "kppurch460_01-event_80-00-99",
+      "name": "Clear FI-AP items - others",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE event_name MATCHES ('Clear FI-AP items - others')) / COUNT(case_id) * 100",
+      "variables": [],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "aggregationType": "CASE",
+      "createdAt": "2022-05-04T11:11:00.000000Z"
+    }
+  ],
+  "metricsVariables": [],
+  "processVariables": [],
+  "investigation": {
+    "name": "99. Process Quantity Structure",
+    "rootWidget": {
+      "name": "root widget",
+      "id": "root-chapter-01",
+      "visualization": {
+        "type": "CHAPTER"
+      },
+      "filters": [],
+      "children": [
+        {
+          "name": "Throughput volume",
+          "id": "throughput-volume-1",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "PARAMETERIZED",
+                "attribute": "CASE",
+                "aggregation": "COUNT",
+                "parameter": {
+                  "type": "SEMANTIC_TYPE",
+                  "semanticType": "CASE"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Number of process variants",
+          "id": "number-of-process-variants-1",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "PARAMETERIZED",
+                "attribute": "VARIANT",
+                "aggregation": "COUNT",
+                "parameter": {
+                  "type": "SEMANTIC_TYPE",
+                  "semanticType": "VARIANT"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Number of systems in analysis",
+          "id": "system-count-99",
+          "visualization": {
+            "type": "VALUE",
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "METRIC",
+                "metric": "system-count-99"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Completion Score",
+          "id": "completion-score-99",
+          "visualization": {
+            "type": "VALUE",
+            "unit": {
+              "type": "SUFFIX",
+              "suffix": "%"
+            },
+            "rounding": {
+              "numberOfDecimals": 0,
+              "mode": "ROUND_CLOSEST"
+            }
+          },
+          "filters": [],
+          "children": [],
+          "dataSource": {
+            "type": "STRUCTURED",
+            "projections": [
+              {
+                "type": "METRIC",
+                "metric": "completion-score-99"
+              }
+            ]
+          }
+        },
+        {
+          "name": "KPPURCH460 - Process Insights Context Metrics",
+          "id": "kppurch460---process-insights-context-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "Supplier invoices issued before purchase order",
+              "id": "kppurch460-blocker-ctx_10_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_10_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices reversed",
+              "id": "kppurch460-blocker-ctx_10_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_10_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices deleted",
+              "id": "kppurch460-blocker-ctx_10_30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_10_30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices created by dialog user",
+              "id": "kppurch460-blocker-ctx_10_35-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_10_35-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices created via BAPI interface",
+              "id": "kppurch460-info-ctx_10_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-info-ctx_10_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices created via EDI / IDoc",
+              "id": "kppurch460-info-ctx_10_50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-info-ctx_10_50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices created using evaluated receipt settlement",
+              "id": "kppurch460-info-ctx_10_60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-info-ctx_10_60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices created for internal trading partners",
+              "id": "kppurch460-info-ctx_10_65-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-info-ctx_10_65-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices created after posting date",
+              "id": "kppurch460-blocker-ctx_10_70-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_10_70-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices currently parked",
+              "id": "kppurch460-blocker-ctx_10_80-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_10_80-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices previously parked",
+              "id": "kppurch460-blocker-ctx_10_90-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_10_90-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items currently blocked for payment",
+              "id": "kppurch460-blocker-ctx_20_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items previously blocked for payment",
+              "id": "kppurch460-blocker-ctx_20_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Open FI-AP items with net due date in the past",
+              "id": "kppurch460-blocker-ctx_20_25-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_25-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices blocked for payment in invoice verification",
+              "id": "kppurch460-blocker-ctx_20_30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices blocked for payment in invoice verification but released in FI-AP",
+              "id": "kppurch460-blocker-ctx_20_22-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_22-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices with manual payment blocks set in FI-AP",
+              "id": "kppurch460-blocker-ctx_20_24-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_24-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Open FI-AP items with possible discount",
+              "id": "kppurch460-info-ctx_20_35-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-info-ctx_20_35-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices reversed and FI-AP items not cleared",
+              "id": "kppurch460-blocker-ctx_20_38-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_38-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items not cleared via payment run",
+              "id": "kppurch460-blocker-ctx_20_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items cleared more than 3 days before net due date and no discount",
+              "id": "kppurch460-blocker-ctx_20_45-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_45-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Payment terms different in FI-AP and purchase order",
+              "id": "kppurch460-blocker-ctx_20_50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items cleared with account maintenance transaction FB1K",
+              "id": "kppurch460-blocker-ctx_20_60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP clearing items entered after clearing date",
+              "id": "kppurch460-blocker-ctx_20_70-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_70-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items cleared after net due date",
+              "id": "kppurch460-blocker-ctx_20_75-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_75-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoice reversed and FI-AP items paid",
+              "id": "kppurch460-blocker-ctx_20_80-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_80-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items cleared despite payment block",
+              "id": "kppurch460-blocker-ctx_20_85-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_85-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items cleared with discount lost",
+              "id": "kppurch460-blocker-ctx_20_90-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_90-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items cleared with discount applied",
+              "id": "kppurch460-info-ctx_20_100-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-info-ctx_20_100-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items cleared with discount applied but late payment",
+              "id": "kppurch460-blocker-ctx_20_110-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                },
+                "thresholds": {
+                  "baseColor": "green",
+                  "type": "REGION",
+                  "visible": true,
+                  "values": [
+                    {
+                      "colorAbove": "yellow",
+                      "value": 5.0
+                    },
+                    {
+                      "colorAbove": "red",
+                      "value": 10.0
+                    }
+                  ]
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-blocker-ctx_20_110-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        },
+        {
+          "name": "KPPURCH460 - Process Insights Milestone Metrics",
+          "id": "kppurch460---process-insights-milestone-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "Supplier invoices created and posted (completion rate)",
+              "id": "kppurch460-step_10_20_cnt-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-step_10_20_cnt-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Supplier invoices created and posted (total lead time)",
+              "id": "kppurch460-step_10_20_tltavg-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": " days"
+                },
+                "rounding": {
+                  "numberOfDecimals": 1,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-step_10_20_tltavg-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items released for payment (completion rate)",
+              "id": "kppurch460-step_20_10_cnt-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-step_20_10_cnt-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items released for payment (total lead time)",
+              "id": "kppurch460-step_20_10_tltavg-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": " days"
+                },
+                "rounding": {
+                  "numberOfDecimals": 1,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-step_20_10_tltavg-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP clearing documents created (completion rate)",
+              "id": "kppurch460-step_20_20_cnt-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-step_20_20_cnt-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP clearing documents created (total lead time)",
+              "id": "kppurch460-step_20_20_tltavg-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": " days"
+                },
+                "rounding": {
+                  "numberOfDecimals": 1,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-step_20_20_tltavg-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items cleared (completion rate)",
+              "id": "kppurch460-step_20_30_cnt-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-step_20_30_cnt-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "FI-AP items cleared (total lead time)",
+              "id": "kppurch460-step_20_30_tltavg-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": " days"
+                },
+                "rounding": {
+                  "numberOfDecimals": 1,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460-step_20_30_tltavg-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        },
+        {
+          "name": "Event Metrics",
+          "id": "event-metrics",
+          "visualization": {
+            "type": "CHAPTER"
+          },
+          "filters": [],
+          "children": [
+            {
+              "name": "Create purchase order",
+              "id": "kppurch460_01-event_10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Issue supplier invoice",
+              "id": "kppurch460_01-event_20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via BAPI interface",
+              "id": "kppurch460_01-event_30-10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_30-10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via EDI/IDoc",
+              "id": "kppurch460_01-event_30-20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_30-20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via evaluated receipt settlement",
+              "id": "kppurch460_01-event_30-30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_30-30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via background invoice verification",
+              "id": "kppurch460_01-event_30-40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_30-40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice online via dialog user",
+              "id": "kppurch460_01-event_30-50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_30-50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via system user",
+              "id": "kppurch460_01-event_30-60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_30-60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via SRM or Ariba",
+              "id": "kppurch460_01-event_30-70-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_30-70-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via account maintenance",
+              "id": "kppurch460_01-event_30-80-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_30-80-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice via parking function",
+              "id": "kppurch460_01-event_30-90-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_30-90-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Create invoice - others",
+              "id": "kppurch460_01-event_30-00-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_30-00-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Move invoice immediately to free for payment",
+              "id": "kppurch460_01-event_40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Block invoice automatically via invoice verification",
+              "id": "kppurch460_01-event_50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Block invoice manually in finance",
+              "id": "kppurch460_01-event_60-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_60-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Release payment block via invoice verification",
+              "id": "kppurch460_01-event_70-10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_70-10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Release payment block via finance transaction",
+              "id": "kppurch460_01-event_70-20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_70-20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Release payment block via custom transaction",
+              "id": "kppurch460_01-event_70-30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_70-30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Release payment block via finance workflow",
+              "id": "kppurch460_01-event_70-40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_70-40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Release payment block - others",
+              "id": "kppurch460_01-event_70-00-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_70-00-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AP items via payment run",
+              "id": "kppurch460_01-event_80-10-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_80-10-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AP items via account maintenance transaction FB1K",
+              "id": "kppurch460_01-event_80-20-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_80-20-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AP items via manual payment",
+              "id": "kppurch460_01-event_80-30-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_80-30-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AP items via transaction FB05",
+              "id": "kppurch460_01-event_80-40-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_80-40-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AP items via reversal",
+              "id": "kppurch460_01-event_80-50-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_80-50-99"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Clear FI-AP items - others",
+              "id": "kppurch460_01-event_80-00-99",
+              "visualization": {
+                "type": "VALUE",
+                "unit": {
+                  "type": "SUFFIX",
+                  "suffix": "%"
+                },
+                "rounding": {
+                  "numberOfDecimals": 0,
+                  "mode": "ROUND_CLOSEST"
+                }
+              },
+              "filters": [],
+              "children": [],
+              "dataSource": {
+                "type": "STRUCTURED",
+                "projections": [
+                  {
+                    "type": "METRIC",
+                    "metric": "kppurch460_01-event_80-00-99"
+                  }
+                ]
+              }
+            }
+          ],
+          "dataSource": null
+        }
+      ],
+      "dataSource": null
+    },
+    "metricsBar": [],
+    "eventToShapeMappings": {
+      "mappings": []
+    }
+  }
+}

@@ -1,0 +1,108 @@
+Introduction
+------------
+This data source and set of SIGNAL queries was created to demonstrate some (process agnostic) mining use cases to support the JustAsk (formerly AskData) SIGNAL NLP Proof of Concept.
+
+The queries, along with the underlying data source and example PI Investigation template is to be shared with our colleagues at JustAsk to train an NLP algorithm to translate simple process type questions into SIGNAL code.
+
+
+Data Source
+-----------
+The data source is an Order To Cash Process, however the example SIGNAL can be used for any process type (some attributes / event names may need to be adjusted).
+
+The data source contains 2 csv files that can be used to construct an event log.
+
+The Event log contains:
+  - 2417 Cases
+  - 28454 Events (Approximately 12 events per case)
+  - 173 Process Variants
+
+The attributes and data types are documented below.
+
+OTC_EventLog.csv
+----------------------------------------------------------
+Attribute                                 | Data Type
+----------------------------------------------------------
+CaseId                                    | string
+EventName                                 | string
+Timestamp                                 | timestamp
+
+
+OTC_AttributeLog.csv
+----------------------------------------------------------
+Attribute                                 | Data Type
+----------------------------------------------------------
+CaseId                                    | string
+Gross Sales                               | float
+Net Sales                                 | float
+Rejected                                  | float
+Receivable                                | float
+Overdue receivable                        | float
+Credit Score                              | float
+Risk Class                                | string
+Invoice Due Date                          | timestamp
+Dispute Case                              | string
+Days Sales Outstanding                    | float
+Collection Effectiveness Index            | float
+Accounts Receivable Turnover Rate         | float
+Average Days Delinquent                   | float
+Delivered on Time                         | string
+Automation Rate                           | float
+Cost per 1k Revenue                       | float
+FTEs per 1Bil Revenue                     | float
+Credit Reviews per Credit FTE             | float
+Data Set                                  | string
+
+
+
+Use Cases and queries
+---------------------
+6 standard (process agnostic) mining use cases & 9 example questions are documented along with a corresponding SIGNAL query and expected result (based on the event log provided).
+
+The use cases cover standard mining concepts:
+   - Cycle Time Analysis
+   - Variant Analysis
+   - Rework / Event Loops
+   - Compliance Checking
+   - Pattern Matching / Identifying Deviations
+   - Performance over Time
+
+
+
+Process Intelligence Investigation
+----------------------------------
+A saved investigation template in json format is also included.
+
+If you need help setting up access to SAP Signavio Process Intelligence and importing the investigation please reach out.
+
+Production Schema's
+-------------------
+An extract defining the event log schema's of production data sets for customers who have signed an agreement allowing us to use their production data for internal testing purposes.
+
+The report contains the following data points for each event log attribute:
+
+C_tenant_id = tenant ID of customer workspace
+C_slug = process id
+C_display_name = attribute display name
+C_data_type = attribute data type
+C_level = attribute hierarchy (case or nested event)
+C_is_custom_attribute = flag to indicate if the attribute is a dynamically calculated custom attribute or standard imported attribute
+
+The report does not contain the semantic attributes (CASE_ID, EVENT_NAME, END_TIME) as these are present in all event logs and have standard names and types
+CASE_ID = TEXT
+EVENT_NAME = TEXT
+END_TIME = TIMESTAMP
+
+
+Widget Configurations
+---------------------
+
+** Work in progress
+
+
+
+SIGNAL Documentation
+--------------------
+
+The public user guide for SIGNAL language features can be found here: https://help.sap.com/docs/signavio-process-intelligence/signal-guide/intro?locale=en-US&q=SIGNAL
+
+

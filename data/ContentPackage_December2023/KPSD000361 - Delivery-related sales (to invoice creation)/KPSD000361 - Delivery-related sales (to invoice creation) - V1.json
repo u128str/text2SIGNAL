@@ -1,0 +1,49 @@
+{
+  "comment": "KPSD000361 Delivery related sales (to invoice creation)",
+  "source_data": [
+    {
+      "ppi_id": "KPSD000361",
+      "type": "main"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPSD000361_01",
+  "event_definitions": {
+    "Create sales order item": {
+    "pattern": "ERDAT_I != @initial",
+    "timestamp": "ERDAT_I",
+    "timestamp_offset_minutes": 10,
+    "id": "EVENT_10"
+    },
+    "Create outbound delivery item": {
+    "pattern": "ERDAT_DEL != @initial",
+    "timestamp": "ERDAT_DEL",
+    "timestamp_offset_minutes": 40,
+    "id": "EVENT_40"
+    },
+    "Post goods issue": {
+      "pattern": "ERDAT_GI != @initial",
+      "timestamp": "ERDAT_GI",
+      "timestamp_offset_minutes": 70,
+      "id": "EVENT_50"
+     },
+    "Release billing block in sales order header": {
+      "pattern": "FAKSK_RELEASE != @initial",
+      "timestamp": "FAKSK_RELEASE",
+      "timestamp_offset_minutes": 100,
+      "id": "EVENT_60"
+    },
+    "Release billing block in sales order item": {
+      "pattern": "FAKSP_RELEASE != @initial",
+      "timestamp": "FAKSP_RELEASE",
+      "timestamp_offset_minutes": 140,
+      "id": "EVENT_70"
+     },
+    "Create customer invoice": {
+      "pattern": "ERDAT_INV != @initial",
+      "timestamp": "ERDAT_INV",
+      "timestamp_offset_minutes": 170,
+      "id": "EVENT_80"
+    }
+   }
+}

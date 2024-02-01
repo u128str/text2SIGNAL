@@ -1,0 +1,1 @@
+{"metrics": [{"id": "average-cycle-time-16", "name": "Average cycle time", "description": "Average cycle time calculated from the first to the last event", "signalFragment": "AVG((SELECT LAST(end_time)) - (SELECT FIRST(end_time)))", "variables": [], "__typename": "Metric"}], "metricVariables": []}

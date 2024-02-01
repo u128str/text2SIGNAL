@@ -1,0 +1,177 @@
+{
+  "metrics": [
+    {
+      "id": "ass_rfp_savings_baseline",
+      "name": "RFP savings vs baseline spend",
+      "description": "RFP (Request for Proposal) awarded value compared to the baseline spend. Indicates how much money your organization allocated (or expected to spend, baseline) versus how much they actually spent within RFP events.",
+      "signalFragment": "SUM(\n\t(SELECT MAX(\"Baseline Spend of Sourcing Project\") FILTER (\n\t\tWHERE (event_name IN (${rfp_creation_events})) \n        AND \"Awarded Total Cost\" > 0\n        AND \"Baseline Spend of Sourcing Project\" > 0))\n\t-(SELECT SUM(\"Awarded Total Cost\") FILTER (\n\t\tWHERE (event_name IN (${rfp_creation_events})) \n        AND \"Awarded Total Cost\" > 0\n        AND \"Baseline Spend of Sourcing Project\" > 0))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_STRATEGIC_SOURCING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ass_auction_savings_baseline",
+      "name": "Auction savings vs baseline spend",
+      "description": "Auction awarded value compared to the baseline spend. Indicates how much money your organization allocated (or expected to spend, baseline) versus how much they actually spent within Auction events.",
+      "signalFragment": "SUM(\n\t(SELECT MAX(\"Baseline Spend of Sourcing Project\") FILTER (\n\t\tWHERE (event_name IN (${auction_creation_events})) \n        AND \"Awarded Total Cost\" > 0\n        AND \"Baseline Spend of Sourcing Project\"  > 0))\n\t-(SELECT SUM(\"Awarded Total Cost\") FILTER (\n\t\tWHERE (event_name IN (${auction_creation_events})) \n        AND \"Awarded Total Cost\" > 0\n        AND \"Baseline Spend of Sourcing Project\" > 0))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_STRATEGIC_SOURCING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ass_rfp_savings_historic",
+      "name": "RFP savings vs historic spend",
+      "description": "RFP (Request for Proposal) savings compared to historic spend. Indicates how much money your organization used to spend for this product/service (historic) versus how much they actually spent within RFP events.",
+      "signalFragment": "SUM(\n\t(SELECT SUM(\"Historic Total Cost\") FILTER (\n\t\tWHERE (event_name IN (${rfp_creation_events})) \n        AND \"Awarded Total Cost\" > 0\n        AND \"Historic Total Cost\" > 0))\n\t-(SELECT SUM(\"Awarded Total Cost\") FILTER (\n\t\tWHERE (event_name IN (${rfp_creation_events})) \n        AND \"Awarded Total Cost\" > 0\n        AND \"Historic Total Cost\" > 0))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_STRATEGIC_SOURCING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ass_auction_savings_historic",
+      "name": "Auction savings vs historic spend",
+      "description": "Auction savings compared to historic spend. Indicates how much money your organization used to spend for this product/service (historic) versus how much they actually spent within Auction events.",
+      "signalFragment": "SUM(\n\t(SELECT SUM(\"Historic Total Cost\") FILTER (\n\t\tWHERE (event_name IN (${auction_creation_events})) \n        AND \"Awarded Total Cost\" > 0\n        AND \"Historic Total Cost\" > 0))\n\t-(SELECT SUM(\"Awarded Total Cost\") FILTER (\n\t\tWHERE (event_name IN (${auction_creation_events})) \n        AND \"Awarded Total Cost\" > 0\n        AND \"Historic Total Cost\" > 0))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_STRATEGIC_SOURCING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ass_awarded_events_1_supplier",
+      "name": "Single participant awarded events",
+      "description": "Number of awarded sourcing events with a single participant",
+      "signalFragment": "SUM((\n\tSELECT COUNT(\"Event Id\") FILTER (\n\t\tWHERE \"Participating Suppliers\" = 1 and \"Awarded Total Cost\" > 0\n\t)\n))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_STRATEGIC_SOURCING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ass_avg_supplier_participation",
+      "name": "Average supplier participation",
+      "description": "Average supplier participation in sourcing events",
+      "signalFragment": "AVG(\n\t(SELECT SUM(\"Participating Suppliers\") FILTER (\n\t\tWHERE (event_name IN (${sourcing_event_creation_events})) \n        ))\n\t/(SELECT SUM(\"Invited Suppliers\") FILTER (\n\t\tWHERE (event_name IN (${sourcing_event_creation_events})) \n        ))\n)*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_STRATEGIC_SOURCING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ass_avg_project_duration",
+      "name": "Average sourcing project cycle time",
+      "description": "Average duration of a sourcing project from creation to close",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) FILTER (\n\t\tWHERE (event_name IN (${sourcing_project_closure_events}))))\n\t-(SELECT FIRST(end_time) FILTER (\n\t\tWHERE (event_name IN (${sourcing_project_creation_events}))))\n   )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_STRATEGIC_SOURCING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ass_avg_request_conversion",
+      "name": "Average sourcing request conversion duration",
+      "description": "Average time it takes to convert a sourcing request to a Sourcing Project",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) FILTER (\n\t\tWHERE (event_name IN (${sourcing_project_creation_events}))))\n\t-(SELECT FIRST(end_time) FILTER (\n\t\tWHERE (event_name IN (${sourcing_request_creation_events}))))\n   )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_STRATEGIC_SOURCING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ass_request_conversion_rate",
+      "name": "Sourcing request conversion rate",
+      "description": "Percentage of Sourcing Requests that were converted to a Sourcing Project",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR(event_name IN (${sourcing_project_creation_events}))))\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_STRATEGIC_SOURCING"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "rfp_creation_events",
+      "description": "List of events representing the creation of an RFP, for example 'Create RFP'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create RFP'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "auction_creation_events",
+      "description": "List of events representing the creation of auctions, for example 'Create Auction'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Auction'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sourcing_event_creation_events",
+      "description": "List of events representing the creation of any sourcing event, for example 'Create RFI', 'Create RFP', 'Create Auction'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create RFI', 'Create RFP', 'Create Auction'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sourcing_project_creation_events",
+      "description": "List of events representing the creation of a sourcing project, for example 'Create Sourcing Project'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Sourcing Project'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sourcing_project_closure_events",
+      "description": "List of events representing the completion of a sourcing project, for example 'Close Sourcing Project'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Close Sourcing Project'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sourcing_request_creation_events",
+      "description": "List of events representing the creation of a sourcing request, for example 'Create Sourcing Request'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Sourcing Request'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    }
+  ]
+}

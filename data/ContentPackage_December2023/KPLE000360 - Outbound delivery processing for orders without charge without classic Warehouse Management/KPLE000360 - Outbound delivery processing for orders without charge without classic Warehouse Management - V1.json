@@ -1,0 +1,68 @@
+{
+  "comment": "KPLE000360 Outbound delivery processing for orders without charge without classic Warehouse Management ",
+  "bpmn_model": "Outbound delivery processing for orders without charge without classic Warehouse Management",
+  "source_data": [
+    {
+      "ppi_id": "KPLE000360",
+      "type": "main",
+      "filter": "VGTYP eq 'I'"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPLE000360_02",
+  "event_definitions": {
+    "Create outbound delivery item": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create outbound delivery item immediately when saving sales order": {
+          "pattern": "TCODE == 'VA01' or TCODE == 'VA02'",
+          "id": 10
+        },
+        "Create outbound delivery item via single transaction VL01N": {
+          "pattern": " USTYP == 'A' and TCODE == 'VL01N'",
+          "id": 20
+        },
+        "Create outbound delivery item manually via delivery due transaction VL10x": {
+          "pattern": "USTYP == 'A' and TCODE == 'VL10X'",
+          "id": 30
+        },
+        "Create outbound delivery item automatically": {
+          "pattern": "TCODE == ''or (TCODE != '' and (USTYP == 'B' or USTYP =='C'))",
+          "id": 40
+        },
+        "Create outbound delivery item via custom transaction": {
+          "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+          "id": 50
+        }
+      },
+      "include_other_variants": "Create outbound delivery item via other transactions"
+    },
+    "Perform transportation planning for outbound delivery": {
+      "pattern": "TRSTA != '' and ERDAT != @initial ",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Pick outbound delivery item": {
+      "pattern": "KODAT_IST != @initial ",
+      "timestamp": "KODAT_IST",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30"
+    },
+    "Process outbound delivery with packing": {
+      "pattern": "KODAT_IST != @initial and PKSTA != ''",
+      "timestamp": "KODAT_IST",
+      "timestamp_offset_minutes": 100,
+      "id": "EVENT_40"
+    },
+    "Post goods issue": {
+      "pattern": "WADAT_IST != @initial",
+      "timestamp": "WADAT_IST",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50"
+    }
+  }
+}

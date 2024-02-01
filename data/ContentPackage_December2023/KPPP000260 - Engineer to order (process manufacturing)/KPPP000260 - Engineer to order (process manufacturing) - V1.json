@@ -1,0 +1,69 @@
+{
+  "comment": "KPPP000260 Engineer to order (process manufacturing)",
+  "bpmn_model": "Engineer to order (process manufacturing)",
+  "source_data": [
+    {
+      "ppi_id": "KPPP000260",
+      "type": "main",
+      "filter": "SOBKZ eq 'Q'"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPPP000260_03",
+  "event_definitions": {
+    "Create process order with reference to planned order": {
+      "pattern": "ERDAT != @initial and PLNUM != ''",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10"
+    },
+    "Create process order without reference to planned order": {
+      "pattern": "ERDAT != @initial and PLNUM == ''",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_20"
+    },
+    "Release process order": {
+      "pattern": "FTRMI != @initial",
+      "timestamp": "FTRMI",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_30"
+    },
+    "Initially confirm process order": {
+      "pattern": "GSTRI != @initial",
+      "timestamp": "GSTRI",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_40"
+    },
+    "Finally confirm process order": {
+      "pattern": "GETRI != @initial",
+      "timestamp": "GETRI",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_50"
+    },
+    "Deliver process order to unrestricted-use project stock": {
+      "pattern": "LTRMI != @initial and INSMK == ''",
+      "timestamp": "LTRMI",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_60"
+    },
+    "Deliver process order to quality inspection project stock": {
+      "pattern": "LTRMI != @initial and INSMK == 'X'",
+      "timestamp": "LTRMI",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_70"
+    },
+    "Set fully/partly delivered process order to technically completed": {
+      "pattern": "IDAT2 != @initial and LTRMI != @initial",
+      "timestamp": "IDAT2",
+      "timestamp_offset_minutes": 200,
+      "id": "EVENT_80"
+    },
+    "Set fully/partly not delivered process order to technically completed": {
+      "pattern": "IDAT2 != @initial and LTRMI == @initial",
+      "timestamp": "IDAT2",
+      "timestamp_offset_minutes": 200,
+      "id": "EVENT_90"
+    }
+  }
+}

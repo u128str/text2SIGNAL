@@ -1,0 +1,76 @@
+{
+  "comment": "Procurement for orders without expected goods receipt",
+  "source_data": [
+    {
+      "ppi_id": "KPPURCH265",
+      "type": "main",
+      "filter": "KNTTP eq 'F'"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPPURCH265_04",
+   "event_definitions": {
+    "Create purchase order item": {
+      "pattern": "AEDAT_H != @initial",
+      "timestamp": "AEDAT_H",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create purchase order item in dialog via transaction ME2*": {
+          "pattern": "(STATU == '9' or STATU == '') and USTYP == 'A' and TCODE.str.startswith('ME2')",
+          "id": "10"
+        },
+        "Create purchase order item in dialog via custom transaction": {
+          "pattern": "STATU == '9' and USTYP == 'A' and (TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/'))",
+          "id": "20"
+        },
+        "Create purchase order item from SAP SRM": {
+          "pattern": "STATU == 'K'",
+          "id": "30"
+        },
+        "Convert purchase requisition items into  purchase order item": {
+          "pattern": "STATU == 'B'",
+          "id": "40"
+        },
+        "Create purchase order item via BAPI interface or function module": {
+          "pattern": "(STATU == 'I' or STATU == 'X')",
+          "id": "50"
+        },
+        "Create purchase order item automatically": {
+          "pattern": "(STATU == '9' and (USTYP == 'B' or USTYP == 'C'))",
+          "id": "60"
+        }
+      },
+      "include_other_variants": "Create purchase order item via other means"
+    },
+    "Assign purchase requisition to purchase order item": {
+      "pattern": "AEDAT_H != @initial  and PR_EXISTS == 'X' ",
+      "timestamp": "AEDAT_H",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Release Purchase Order item": {
+      "pattern": "AEDAT_H != @initial",
+      "timestamp": "AEDAT_H",
+      "timestamp_offset_minutes": 100,
+      "id": "EVENT_30",
+      "variants": {
+        "Approve purchase order": {
+          "pattern": "(PROCSTAT == '03' or PROCSTAT == '05')",
+          "id": "10"
+        },
+        "Release purchase order without approval": {
+          "pattern": "(PROCSTAT == '02' or PROCSTAT == '')",
+          "id": "20"
+        }
+      },
+      "include_other_variants": "Release purchase order item via other means"
+    },
+    "Post invoice receipt for purchase order": {
+      "pattern": "IR_CPUDT != @initial",
+      "timestamp": "IR_CPUDT",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_40"
+    }
+  }
+}

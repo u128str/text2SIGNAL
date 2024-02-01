@@ -1,0 +1,54 @@
+{
+  "comment": "KPPP000263 Direct procurement for non-stock components in process manufacturing",
+  "source_data": [
+    {
+      "ppi_id": "KPPP000263",
+      "type": "main"
+    }
+  ],
+  "process_name": "KPPP000263_01",
+  "version": "1",
+  "event_definitions": {
+    "Create production order non-stock component": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10"
+    },
+    "Create purchase requisition item automatically when saving process order": {
+      "pattern": "BADAT != @initial",
+      "timestamp": "BADAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+      "Release purchase requisition item": {
+      "pattern": "BADAT != @initial",
+      "timestamp": "BADAT",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30",
+      "variants": {
+        "Approve purchase requisition item": {
+          "pattern": "(BANPR == '03' or BANPR == '05')",
+          "id": "10"
+        },
+        "Release purchase requisition item without approval": {
+          "pattern": "(BANPR == '02')",
+          "id": "20"
+        }
+      },
+      "include_other_variants": "Release purchase requisition item - others"
+    },
+    "Convert purchase requisition item into purchase order item": {
+      "pattern": "BEDAT != @initial",
+      "timestamp": "BEDAT",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_50"
+    },
+    "Post goods receipt for purchase order": {
+      "pattern": "GR_CPUDT != @initial",
+      "timestamp": "GR_CPUDT",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_60"
+    }
+  }
+}

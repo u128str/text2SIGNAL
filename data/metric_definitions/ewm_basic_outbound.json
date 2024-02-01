@@ -1,0 +1,230 @@
+{
+  "metrics": [
+    {
+      "id": "ewm_outb_percentage_odoi_fully_shipped",
+      "name": "% of ODO Items fully shipped",
+      "description": "Percentage of Outbound Delivery Order Items where ODO quantity was fully shipped (GI quantity)",
+      "signalFragment": "COUNT (DISTINCT (CASE \nWHEN \"ODO Item Quantity\"=\"Total GI Quantity\" THEN \"case_id\" \nELSE NULL\nEND)) \n/\nCOUNT (distinct \"case_id\")\n*100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_percentage_odoi_not_fully_shipped",
+      "name": "% of ODO items not fully shipped",
+      "description": "Percentage of Outbound Delivery Order Items where ODO quantity matches GI quantity - ODO Item is fully shipped",
+      "signalFragment": "COUNT (DISTINCT (CASE \nWHEN \"ODO Item Quantity\"=\"Total GI Quantity\" THEN NULL \nWHEN \"ODO Item Quantity\"<\"Total GI Quantity\" THEN NULL \nELSE \"case_id\" \nEND)) \n/\nCOUNT (distinct \"case_id\")\n*100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_percentage_odoi_overdelivered",
+      "name": "% of ODO items overdelivered",
+      "description": "Percentage of Outbound Delivery Order Items where a higher quantity was delivered than ordered",
+      "signalFragment": "COUNT (DISTINCT (CASE \nWHEN \"ODO Item Quantity\"=\"Total GI Quantity\" THEN NULL \nWHEN \"ODO Item Quantity\">\"Total GI Quantity\" THEN NULL \nELSE \"case_id\" \nEND)) \n/\nCOUNT (distinct \"case_id\")\n*100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_percentage_odoi_wo_picking_wts",
+      "name": "% of ODO Items w/o Picking WTs",
+      "description": "Percentage of Outbound Delivery Order Items without the Warehouse Task \"Picking\"",
+      "signalFragment": "COUNT(\nCASE WHEN\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Create Warehouse Task' \nAND \"WT Activity Type\" = 'PICK')) = 0 \nTHEN Null\nELSE case_id\nEND)\n/\nCOUNT(case_id)\n*100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_percentage_odoi_wo_wts",
+      "name": "% of ODO Items w/o WTs",
+      "description": "Percentage of Outbound Delivery Order Items that don't have any Warehouse Tasks created",
+      "signalFragment": "COUNT(\nCASE WHEN event_name MATCHES('Create Warehouse Task') THEN null\nELSE case_id\nEND)\n/\nCOUNT(case_id)\n*100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_percentage_odoi_completed_wts",
+      "name": "% of ODO Items with completed WTs",
+      "description": "Percentage of Outbound Delivery Order Items where all WTs are confirmed",
+      "signalFragment": "COUNT(\nCASE WHEN\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Create Warehouse Task')) > 0\nAND\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Create Warehouse Task' )) =\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Confirm Warehouse Task')) \nTHEN case_id\nELSE Null\nEND)\n/\nCOUNT(case_id)\n*100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_percentage_odoi_w_partially_completed_wts",
+      "name": "% of ODO Items with partially completed WTs",
+      "description": "Percentage of Outbound Delivery Order Items where not all WTs are confirmed",
+      "signalFragment": "COUNT(\nCASE WHEN\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Create Warehouse Task' )) >\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Confirm Warehouse Task')) \nTHEN case_id\nELSE Null\nEND)\n/\nCOUNT(case_id)\n*100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_percentage_w_picking_wts_completed",
+      "name": "% of ODO Items with Picking WTs completed",
+      "description": "Percentage of Outbound Delivery Items where all \"Picking\" Warehouse Tasks are completed",
+      "signalFragment": "COUNT(\nCASE WHEN\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Create Warehouse Task'\nAND \"WT Activity Type\" = 'PICK')) > 0\nAND\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Create Warehouse Task' \nAND \"WT Activity Type\" = 'PICK')) =\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Confirm Warehouse Task'\nAND \"WT Activity Type\" = 'PICK')) \nTHEN case_id\nELSE Null\nEND)\n/\nCOUNT(case_id)\n*100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_percentage_odos_w_picking_wts_completed_wo_gi_posted",
+      "name": "% of ODO Items with Picking WTs Completed w/o Goods Issue posted",
+      "description": "Percentage of ODO Items with Picking completed without Goods Issue posted",
+      "signalFragment": "COUNT(\nCASE WHEN\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Create Warehouse Task'\nAND \"WT Activity Type\" = 'PICK')) > 0\nAND\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Create Warehouse Task' \nAND \"WT Activity Type\" = 'PICK')) =\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Confirm Warehouse Task' \nAND \"WT Activity Type\" = 'PICK')) \nAND \n(SELECT COUNT(event_name)\nWHERE (event_name = 'Post Goods Issue')) = 0\nTHEN case_id\nELSE Null\nEND)\n/ \nCOUNT(case_id)\n*100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_percentage_odos_w_picking_wts_partially_completed",
+      "name": "% of ODO Items with Picking WTs partially completed",
+      "description": "Percentage of Outbound Delivery Items where not all \"Picking\" Warehouse Tasks are completed",
+      "signalFragment": "COUNT(\nCASE WHEN\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Create Warehouse Task' \nAND \"WT Activity Type\" = 'PICK')) >\n(SELECT COUNT(event_name)\nWHERE (event_name = 'Confirm Warehouse Task'\nAND \"WT Activity Type\" = 'PICK'))\nTHEN case_id\nELSE Null\nEND)\n/\nCOUNT(case_id)\n*100",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_percentage_odos_wo_wts",
+      "name": "% of ODOs w/o WTs",
+      "description": "Percentage of Outbound Delivery Orders that don't have any Warehouse Tasks created",
+      "signalFragment": "COUNT (distinct (CASE WHEN event_name MATCHES('Create Warehouse Task') THEN null\nELSE \"ODO Document Number\" \nEND)) \n/\nCOUNT (distinct \"ODO Document Number\")\n*100\n\n",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_med_cyclet_odoi_creation_last_wt_creation",
+      "name": "Median Cycle Time: ODO Item Creation and (last) WT completion",
+      "description": "Median Cycle Time for goods from Outbound Delivery Orders creation to the last Warehouse Task completion",
+      "signalFragment": "MEDIAN(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN ('Confirm Warehouse Task')\n\t\t)\n\t-(SELECT LAST(end_time)\n\t\tWHERE event_name IN ('Create Outbound Delivery Order Item')\n))",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_med_cyclet_odoi_creation_first_wt_creation",
+      "name": "Median Cycle Time: ODO Item Creation to (first) WT Creation",
+      "description": "Median Cycle Time for goods from Outbound Delivery Order Items creation to the first Warehouse Task creation",
+      "signalFragment": "MEDIAN(\n\t(SELECT FIRST(end_time)\n\t\tWHERE event_name IN ('Create Warehouse Task')\n\t\t)\n\t-(SELECT LAST(end_time)\n\t\tWHERE event_name IN ('Create Outbound Delivery Order Item')\n\t\t)\n\t)",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_outst_revenue",
+      "name": "Outstanding Revenue",
+      "description": "Amount of Revenue outstanding due to Items not shipped",
+      "signalFragment": "SUM ( (CASE \nWHEN \"ODO Item Quantity\"=\"Total GI Quantity\" THEN NULL \nWHEN \"ODO Item Quantity\"< \"Total GI Quantity\" THEN NULL\nELSE \n(CASE WHEN \"SO Item Document Number\" IS NULL THEN NULL\nELSE (\"ODO Item Quantity\"-\"Total GI Quantity\")*(\"SO Item Net Price in Document Currency\") END)\n\nEND))",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_pot_revenue",
+      "name": "Potential Revenue",
+      "description": "Revenue of ODO Items shipped",
+      "signalFragment": "SUM(CASE WHEN \"SO Item Document Number\" IS NULL THEN NULL\nELSE (\"ODO Item Quantity\")*(\"SO Item Net Price in Document Currency\") END)",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ewm_outb_revenue",
+      "name": "Revenue",
+      "description": "Revenue of ODO Items shipped",
+      "signalFragment": "SUM (\nCASE WHEN \"SO Item Document Number\" IS NULL THEN NULL\nELSE (\"Total GI Quantity\")*(\"SO Item Net Price in Document Currency\")\nEND\n)",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_EWM"
+      ],
+      "processTypes": [
+        "EWM_BASIC_OUTBOUND"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [],
+  "releaseToggle": "RELEASE_PI-A_BETA_PROGRAM"
+}

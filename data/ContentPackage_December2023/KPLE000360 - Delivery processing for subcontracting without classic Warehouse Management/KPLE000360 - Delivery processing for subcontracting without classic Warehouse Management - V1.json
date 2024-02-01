@@ -1,0 +1,61 @@
+{
+  "comment": "KPLE000360 Delivery processing for subcontracting without classic Warehouse Management",
+  "bpmn_model": "Delivery processing for subcontracting without classic Warehouse Management",
+  "source_data": [
+    {
+      "ppi_id": "KPLE000360",
+      "type": "main",
+      "filter": "(VGTYP eq 'V' or VGTYP eq '') and WERKS_LIKP eq '' and contains(TCODE,'ME2O')"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPLE000360_01",
+  "event_definitions": {
+    "Create subcontracting delivery item": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create delivery item via subcontracting stock monitor ME2O": {
+          "pattern": "TCODE == 'ME2O' and USTYP == 'A'",
+          "id": 10
+        },
+        "Create delivery item via subcontracting cockpit ME2ON": {
+          "pattern": " USTYP == 'A' and TCODE == 'ME2ON'",
+          "id": 20
+        },
+
+        "Create subcontracting delivery item via custom transaction": {
+          "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+          "id": 50
+        }
+      },
+      "include_other_variants": "Create subcontracting delivery item via other transactions"
+    },
+    "Perform transportation planning for subcontracting delivery": {
+      "pattern": "TRSTA != '' and ERDAT != @initial ",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Pick subcontracting delivery item": {
+      "pattern": "KODAT_IST != @initial ",
+      "timestamp": "KODAT_IST",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30"
+    },
+    "Process subcontracting delivery with packing": {
+      "pattern": "KODAT_IST != @initial and PKSTA != ''",
+      "timestamp": "KODAT_IST",
+      "timestamp_offset_minutes": 100,
+      "id": "EVENT_40"
+    },
+    "Post goods issue": {
+      "pattern": "WADAT_IST != @initial",
+      "timestamp": "WADAT_IST",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50"
+    }
+  }
+}

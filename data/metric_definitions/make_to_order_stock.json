@@ -1,0 +1,567 @@
+{
+  "metrics": [
+    {
+      "id": "production_orders_overdue_for_delivery_completed",
+      "name": "Production orders overdue for delivery completed",
+      "description": "Number of released production orders whose scheduled finish date is overdue and the final delivery indicator is not set",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${mtos_prod_order_deliv_not_completed_condition} \n    \t\tAND ${mtos_prod_order_gr_allowed_condition}\n            AND (NOW() - ${mots_prod_order_scheduled_finish_date}) < DURATION ${mots_scheduled_finish_overdue_period}          \n    )\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "planned_orders_converted_into_prod_orders",
+      "name": "Planned orders converted too early/late into production orders",
+      "description": "Number of production orders for which the conversion into a production order was on a different date from the calculated conversion date in the planned order",
+      "signalFragment": "COUNT( case_id) FILTER (\n\tWHERE ( SELECT COUNT(event_name)    \t    \n            WHERE (${mots_prod_order_item_status} NOT IN (${mots_prod_order_item_status_teco_clsd}))\n            AND (               \n            \t${mots_prod_order_creation_date} <> ${mots_prod_order_opening_date} \n            )\n    ) > 0\n)\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "perc_of_prod_orders_created_auto",
+      "name": "Automated production orders creation rate",
+      "description": "Percentage of production orders created automatically within a reference period",
+      "signalFragment": "count(case_id) FILTER \n(where  \n    (                    \n      SELECT COUNT(event_name)    \t    \n            WHERE (${mots_automation_condition})\n            and \"event_name\" = ${mots_prod_order_creation_events}\n    ) > 0\n)\n/\nCOUNT(CASE_ID)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "prod_orders_overdue_for_deletion",
+      "name": "Production orders overdue for deletion flag",
+      "description": "Number of production orders without a deletion flag for which the basic finish date is more than a specified period in the past",
+      "signalFragment": "COUNT( case_id) FILTER (\n\tWHERE ( SELECT COUNT(event_name)\n    \t    WHERE ${mots_prod_order_item_status} IN (${mots_prod_order_item_deletion_flag})\n    ) = 0\n    AND (NOW() - ${mots_prod_order_item_basic_finish_date}) > DURATION ${mots_deletion_flag_overdue_period}\n)\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_prod_orders_overdue_for_closed",
+      "name": "Production orders overdue for status closed",
+      "description": "Number of open overdue production orders which are technically closed",
+      "signalFragment": "COUNT( case_id) FILTER (\n\tWHERE ( SELECT COUNT(event_name)\n    \t    WHERE ${mots_prod_order_item_status} IN (${mots_prod_order_item_status_teco})\n    ) > 0\n    AND ( SELECT COUNT(event_name)\n    \t    WHERE ${mots_prod_order_item_status} IN (${mots_prod_order_item_status_clsd_dlfl})\n    ) = 0\n\tAND (NOW() - ${mots_prod_order_scheduled_finish_date}) < DURATION ${mots_scheduled_finish_overdue_period}\n)\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_avg_time_to_ppc_backflush_per_day",
+      "name": "Backflushing entries created",
+      "description": "Average number of backflushing entries created per day",
+      "signalFragment": "CASE\n\tWHEN\n    \tCOUNT(DISTINCT DATE_TRUNC('day', ${mots_prod_order_backflush_creation_time})) = 0\n\t\tTHEN 0\n    ELSE\n\t\tCOUNT(case_id) \n   \t\t\tFILTER (\n   \t\t\t\tWHERE ${mots_prod_order_backflush_creation_time} IS NOT NULL\n\t\t\t)\n\t\t/\n\t\tCOUNT(DISTINCT DATE_TRUNC('day', ${mots_prod_order_backflush_creation_time}))\nEND",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_prod_version_usage_per_plant",
+      "name": "Production version usage",
+      "description": "Sum of production version usage",
+      "signalFragment": "SUM( ${mots_prod_version_usage} )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_unprocessed_ppc_postings",
+      "name": "Unprocessed Production Planning and Control postings of activities",
+      "description": "Number of unprocessed Production Planning and Control postings of activities",
+      "signalFragment": "COUNT( case_id) FILTER (\n\tWHERE ( \n     ${mots_prod_order_unprocessed_ppc_posting_condition}\n    ) \n)\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_prod_orders_overdue_release",
+      "name": "Production orders overdue for release",
+      "description": "Number of production orders that have been overdue for release for a specified period",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${mots_prod_order_actual_release_date} IS NULL\n            AND ( NOW() - ${mots_prod_order_scheduled_release_date} ) > DURATION ${mots_sch_rel_date_overdue_period}\n    )\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_lead_time_of_prod_order_creation_to_closure",
+      "name": "Average time from production order creation to the actual technical closure date",
+      "description": "Average lead time from 'Create Production Order Item' event to the actual technical closure date",
+      "signalFragment": "AVG(\n\t(SELECT LAST(${mots_prod_order_act_tech_closure_date})\n\t\t)\n     - (SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${mots_prod_order_creation_events})\n\t\t)\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_work_center_usage",
+      "name": "Work center usage via routing",
+      "description": "Sum of work center usage via routing",
+      "signalFragment": "SUM(${mots_prod_order_routing_usage})",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_prod_orders_overdue_tech_closure",
+      "name": "Production orders overdue for technical closure",
+      "description": "Production orders overdue for technical closure",
+      "signalFragment": "COUNT( case_id) FILTER (\n\tWHERE ( SELECT COUNT(event_name)\n    \t    WHERE ${mots_prod_order_item_status} IN (${mots_prod_order_item_status_teco_clsd})\n    ) = 0\n    AND ( NOW() - ${mots_prod_order_scheduled_finish_date} ) > DURATION ${mots_scheduled_finish_overdue_period}\n)\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_prod_orders_overdue_final_confirmation",
+      "name": "Production orders overdue for final confirmation",
+      "description": "Number of production orders whose scheduled finish date is more than a specified period in the past, and the final confirmation has not yet been posted",
+      "signalFragment": "COUNT( case_id) FILTER (\n\tWHERE ( ( NOW() - ${mots_prod_order_scheduled_finish_date} ) > DURATION ${mots_scheduled_finish_overdue_period}\n            AND ${mots_prod_order_scheduled_finish_date} IS NULL\n    )\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_missing_parts_in_prod_orders_unreleased",
+      "name": "Missing parts in production order not yet released",
+      "description": "Number of not yet released production orders which were created in a selected time period that have missing parts resulting from the ATP check",
+      "signalFragment": "COUNT( case_id) FILTER (\n\tWHERE ( SELECT COUNT(event_name)\n            WHERE (${mots_prod_order_item_status} IN (${mots_prod_orders_released}))\n    ) = 0\n    AND ${mots_missing_parts_in_prod_orders} IS NOT NULL\n    AND ( NOW() - ( SELECT LAST(end_time)\n\t\t  WHERE event_name IN (${mots_prod_order_creation_events}) ) \n          <= DURATION ${mots_not_released_prod_orders_reference_period})\n)\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_lead_time_of_prod_orders_creation_to_delivery",
+      "name": "Average time from production order creation to delivery",
+      "description": "Average lead time from 'Create Production Order Item' event to 'Create Outbound Delivery Item' event",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN (${mots_outbound_delivery_creation_events})\n\t\t)\n\t-(SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${mots_prod_order_creation_events})\n\t\t)\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "mots_perc_of_prod_orders_ref_to_planned_orders",
+      "name": "Automated production orders with reference to planned orders creation rate",
+      "description": "Percentage of automated production orders creation events with reference to planned orders",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (\n    \t${mots_prod_orders_reference_to_planned_order_condition}\n    )\n)\n/\nCOUNT(case_id) FILTER (\n\tWHERE (                        \n      ${mots_created_prod_orders}\n    ) \n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "MAKE_TO_ORDER_STOCK"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "mtos_prod_order_deliv_not_completed_condition",
+      "description": "Condition for not completed production orders delivery, for example: \"ProdOrderDelivCompleted\" IS NULL",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderDelivCompleted\" IS NULL",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mtos_prod_order_gr_allowed_condition",
+      "description": "Condition for production orders where goods receipt is allowed, for example: \"ProdOrderGRIndicator\" = 'X'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderGRIndicator\" = 'X'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_item_status",
+      "description": "Attribute for production order item status, for example: \"ProdOrderItemStatus\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderItemStatus\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_item_status_teco_clsd",
+      "description": "Condition for closed production order items, for example: 'TECO','CLSD'",
+      "defaultValues": [
+        {
+          "defaultValue": "'TECO','CLSD'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_item_status_teco",
+      "description": "Condition for only technically closed production order items, for example: 'TECO'",
+      "defaultValues": [
+        {
+          "defaultValue": "'TECO'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_item_status_clsd_dlfl",
+      "description": "Condition for closed production order items or production order items with deletion flag, for example: 'CLSD','DLFL'",
+      "defaultValues": [
+        {
+          "defaultValue": "'CLSD','DLFL'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_item_status_clsd",
+      "description": "Condition for closed production order items, for example: 'CLSD'",
+      "defaultValues": [
+        {
+          "defaultValue": "'CLSD'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_creation_date",
+      "description": "Production order creation date, for example: \"ProdOrderCreationDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderCreationDate\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_opening_date",
+      "description": "Production order opening date, for example: \"PlannedOrderOpeningDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"PlannedOrderOpeningDate\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_automation_condition",
+      "description": "Attributes indicating that an event was automated, for example: \"EventCreatedByUserType\" != 'Dialog'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"EventCreatedByUserType\" != 'Dialog'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_creation_events",
+      "description": "Events referring to the creation of any production order, for example: 'Create Production Order Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Production Order Item'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_item_deletion_flag",
+      "description": "Condition for production orders with deletion flag, for example: 'DLFL'",
+      "defaultValues": [
+        {
+          "defaultValue": "'DLFL'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_item_basic_finish_date",
+      "description": "Attribute for production order basic finish date, for example: \"ProdOrderBasicFinishDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderBasicFinishDate\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_deletion_flag_overdue_period",
+      "description": "Reference period for overdue production orders with deletion flag, for example: '1days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'1days'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_scheduled_finish_overdue_period",
+      "description": "Reference period for overdue production orders by scheduled finish date, for example: '1days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'1days'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_sch_rel_date_overdue_period",
+      "description": "Reference period for overdue production orders by scheduled release date, for example: '1days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'1days'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_backflush_creation_time",
+      "description": "Production order Backflush Creation Time, for example: \"ProdOrderBackflushCreationTime\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderBackflushCreationTime\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_version_usage",
+      "description": "Production order version usage, for example: \"ProdOrderVersionUsage\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderVersionUsage\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_unprocessed_ppc_posting_condition",
+      "description": "Condition for production orders with unprocessed Production Planning and Control posting, for example: \"ProdOrderUnprocessedPPCPosting\" = 'X'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderUnprocessedPPCPosting\" = 'X'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_actual_release_date",
+      "description": "Actual release date of production order, for example: \"ProdOrderActRelDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderActRelDate\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_scheduled_release_date",
+      "description": "Scheduled release date of production order, for example: \"ProdOrderSchRelDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderSchRelDate\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_act_tech_closure_date",
+      "description": "Actual technical closure date of production order, for example: \"ProdOrderActTechClosureDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderActTechClosureDate\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_routing_usage",
+      "description": "Routing usage of production order, for example: \"ProdOrderRoutingUsage\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderRoutingUsage\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_not_closed_condition",
+      "description": "Condition for production orders not being closed, for example: \"ProdOrderItemStatus\" NOT IN ('CLSD')",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderItemStatus\" NOT IN ('CLSD')",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_scheduled_finish_date",
+      "description": "Scheduled finish date for production orders, for example: \"ProdOrderSchedFinishDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderSchedFinishDate\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_order_confirmed_finish_date",
+      "description": "Confirmed finish date for production orders, for example: \"ProdOrderConfirmedFinishDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderConfirmedFinishDate\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_orders_released",
+      "description": "Statuses of released production orders, for example: 'TECO','CLSD','DLFL'",
+      "defaultValues": [
+        {
+          "defaultValue": "'TECO','CLSD','DLFL'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_missing_parts_in_prod_orders",
+      "description": "Attribute for missing parts in production orders, for example: \"ProdOrderMissingParts\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderMissingParts\"",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_not_released_prod_orders_reference_period",
+      "description": "Reference time period to monitor production orders that were not yet released, for example: '180Days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'180Days'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_outbound_delivery_creation_events",
+      "description": "Events referring to the creation of any outbound deliver items, for example: 'Create Outbound Delivery Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Outbound Delivery Item'",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_prod_orders_reference_to_planned_order_condition",
+      "description": "Condition for production orders with references to planned orders, for example: \"ProdOrderPlanOrder\" IS NOT NULL",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrderPlanOrder\" IS NOT NULL",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mots_created_prod_orders",
+      "description": "Condition for created production orders, for example: \"ProdOrder\" IS NOT NULL",
+      "defaultValues": [
+        {
+          "defaultValue": "\"ProdOrder\" IS NOT NULL",
+          "sourceSystems": [
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    }
+  ],
+  "releaseToggle": "RELEASE_INTERNAL"
+}

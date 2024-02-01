@@ -1,0 +1,386 @@
+{
+  "metrics": [
+    {
+      "id": "ptp_ariba_avg_pr_confirmation_time",
+      "name": "Average confirmation time for purchase requisitions",
+      "description": "Average time needed to confirm a purchase requisition by creating a purchase order",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN (${ptp_ariba_po_creation_events}))\n\t-(SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${ptp_ariba_pr_creation_events}))\n   )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_avg_invoice_payment_time",
+      "name": "Average invoice payment time",
+      "description": "Average time to clear invoices",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN (${ptp_ariba_invoice_clearing_events}))\n\t-(SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${ptp_ariba_invoice_receipt_events}))\n   )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_avg_po_to_delivery_time",
+      "name": "Average time from purchase order to delivery",
+      "description": "Average time from purchase order to goods receipt",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN (${ptp_ariba_goods_receipt_events}))\n\t-(SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${ptp_ariba_po_creation_events}))\n   )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_late_payment_rate",
+      "name": "Late payment rate",
+      "description": "Percentage of cases with late payments. Only cases that are paid are considered.",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${ptp_ariba_late_payment_condition})\n\t)\n/ COUNT(case_id) FILTER (\n\tWHERE (${ptp_ariba_invoice_clearing_date} IS NOT NULL)\n\t)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_overdue_payment_rate",
+      "name": "Overdue payment rate",
+      "description": "Percentage of cases with overdue payments. Only cases that have not been paid yet are considered.",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${ptp_ariba_overdue_payment_condition})\n\t)\n/ COUNT(case_id) FILTER (\n\tWHERE (${ptp_ariba_invoice_clearing_date} IS NULL)\n\t)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_process_compliance",
+      "name": "Process compliance",
+      "description": "Percentage of compliant Procure-to-Pay cases",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${ptp_ariba_compliant_event_sequence})\n\t)\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_two_way_match_rate",
+      "name": "Two-way match rate",
+      "description": "Percentage of purchase orders with a two-way match",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${ptp_ariba_two_way_match_condition})\n\t)\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_late_deliveries",
+      "name": "Late deliveries cases",
+      "description": "Number of cases with late deliveries. Only cases that have been completely delivered are considered.",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE ${ptp_ariba_late_delivery_condition}\n\t\tAND ${ptp_ariba_delivery_completed_condition}\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_late_deliveries_rate",
+      "name": "Late deliveries rate",
+      "description": "Percentage of cases with late deliveries. Only cases that have been completely delivered are considered.",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE ${ptp_ariba_late_delivery_condition}\n\t\tAND ${ptp_ariba_delivery_completed_condition}\n\t)\n/\nCOUNT(case_id) FILTER (\n\tWHERE ${ptp_ariba_delivery_completed_condition}\n\t)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_late_deliveries_delay",
+      "name": "Average delay of late deliveries",
+      "description": "The average delay time of late deliveries. Only cases that have been completely delivered are considered.",
+      "signalFragment": "AVG(${ptp_ariba_goods_receipt_date} - ${ptp_ariba_delivery_due_date}) FILTER (\n\tWHERE ${ptp_ariba_late_delivery_condition}\n\t\tAND ${ptp_ariba_delivery_completed_condition}\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_on_time_delivery_rate",
+      "name": "On-Time Delivery rate",
+      "description": "Percentage of cases with on-time deliveries. Only cases that have been completely delivered are considered.",
+      "signalFragment": "(1 - \n\tCOUNT(case_id) FILTER (\n\t\tWHERE ${ptp_ariba_late_delivery_condition}\n\t\t\tAND ${ptp_ariba_delivery_completed_condition}\n\t\t)\n\t/\n\tCOUNT(case_id) FILTER (\n\t\tWHERE ${ptp_ariba_delivery_completed_condition}\n\t\t)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_overdue_deliveries",
+      "name": "Overdue deliveries cases",
+      "description": "Number of cases with overdue deliveries. Only cases that have not been (completely) delivered yet are considered.",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE ${ptp_ariba_overdue_delivery_condition}\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_overdue_deliveries_rate",
+      "name": "Overdue deliveries rate",
+      "description": "Percentage of cases with overdue deliveries. Only cases that have not been (completely) delivered yet are considered.",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE ${ptp_ariba_overdue_delivery_condition}\n\t)\n/\nCOUNT(case_id) FILTER (\n\tWHERE (${ptp_ariba_delivery_completed_condition}) IS NULL\n\t)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_pos_created_after_invoice_receipt",
+      "name": "POs created after Invoice Receipt",
+      "description": "Total number of cases in which a PO Item has been created after the Invoice Receipt event",
+      "signalFragment": "COUNT(case_id) FILTER\n\t(WHERE (event_name MATCHES(${ptp_ariba_po_created_after_invoice_receipt})))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_invoices_waiting_for_gr",
+      "name": "Invoices waiting for Goods Receipt",
+      "description": "Total number of cases with Invoices waiting for the Goods Receipt event",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE NOT (event_name MATCHES(${ptp_ariba_goods_receipt_events}))\n\tAND (event_name MATCHES(${ptp_ariba_invoice_receipt_event_flow}))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ptp_ariba_late_payments_cycle_time",
+      "name": "Late payments cycle time",
+      "description": "Average payment cycle time of cases with late payments",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) FILTER \n\t\t(WHERE event_name IN (${ptp_ariba_invoice_clearing_events})))\n\t-\n\t(SELECT FIRST(end_time) FILTER \n    \t(WHERE event_name IN (${ptp_ariba_invoice_receipt_events})))\n\t) FILTER (\n\tWHERE (${ptp_ariba_late_payment_condition})\n\tAND ${ptp_ariba_invoice_clearing_date} IS NOT NULL\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROCURE_TO_PAY"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "ptp_ariba_po_creation_events",
+      "description": "Events indicating the creation of a purchase order, for example 'Create PO Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create PO Item'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_pr_creation_events",
+      "description": "Events indicating the creation of a purchase requisition item, for example 'Create PR Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create PR Item'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_invoice_receipt_events",
+      "description": "Events indicating the receipt of an invoice, for example 'Receive Invoice', 'Reconcile Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Receive Invoice', 'Reconcile Invoice'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_invoice_receipt_event_flow",
+      "description": "Event flow indicating the receipt of an invoice, for example ('Receive Invoice'|'Reconcile Invoice')",
+      "defaultValues": [
+        {
+          "defaultValue": "('Receive Invoice'|'Reconcile Invoice')",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_po_created_after_invoice_receipt",
+      "description": "Event flow indicating the creation of a PO Item after the Invoice has been received, for example ('Receive Invoice'|'Reconcile Invoice') ~> 'Create PO Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "('Receive Invoice'|'Reconcile Invoice') ~> 'Create PO Item'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_invoice_clearing_events",
+      "description": "Events indicating the clearing of an invoice, for example 'Pay Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Pay Invoice'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_invoice_clearing_date",
+      "description": "Attribute referring to the clearing date of an invoice, for example \"Last Invoice Payment Date\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Invoice Payment Date\"",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_goods_receipt_events",
+      "description": "Events identifying the receipt of goods, for example 'Receive PO item'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Receive PO item'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_late_payment_condition",
+      "description": "Condition that identifies cases with invoices paid late, for example \"Last Invoice Due Date\" < \"Last Invoice Payment Date\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Invoice Due Date\" < \"Last Invoice Payment Date\"",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_overdue_payment_condition",
+      "description": "Condition that identifies cases with overdue invoices, for example \"Last Invoice Payment Date\" IS NULL AND \"Last Invoice Due Date\" < DATE_TRUNC('day', NOW())",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Invoice Payment Date\" IS NULL AND \"Last Invoice Due Date\" < DATE_TRUNC('day', NOW())",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_compliant_event_sequence",
+      "description": "Sequence of events that fulfil the compliance requirements of a Procure-to-Pay process, for example ^ 'Create PR Item' ~> 'Create PO Item' ~> 'Receive PO Item' ~> 'Receive Invoice' ~> 'Reconcile Invoice' ~> 'Pay Invoice' $",
+      "defaultValues": [
+        {
+          "defaultValue": "^ 'Create PR Item' ~> 'Create PO Item' ~> 'Receive PO Item' ~> 'Receive Invoice' ~> 'Reconcile Invoice' ~> 'Pay Invoice' $",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_two_way_match_condition",
+      "description": "Condition identifying cases with a two-way attribute match, for example \"PO Item Total Amount\" = \"Last Invoice Item Amount\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"PO Item Total Amount\" = \"Last Invoice Item Amount\"",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_delivery_due_date",
+      "description": "Attribute referring to the date when the delivery is due, for example \"PO Requested Delivery Date\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"PO Requested Delivery Date\"",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_goods_receipt_date",
+      "description": "Attribute referring to the date when the goods have been received, for example DATE_TRUNC('day', \"Last GR Item Delivery Date\")",
+      "defaultValues": [
+        {
+          "defaultValue": "DATE_TRUNC('day', \"Last GR Item Delivery Date\")",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_late_delivery_condition",
+      "description": "Condition identifying cases that are delivered too late, for example DATE_TRUNC('day', \"Last GR Creation Date\") > \"PO Requested Delivery Date\"",
+      "defaultValues": [
+        {
+          "defaultValue": "DATE_TRUNC('day', \"Last GR Creation Date\") > \"PO Requested Delivery Date\"",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_overdue_delivery_condition",
+      "description": "Condition identifying cases with an overdue delivery, for example DATE_TRUNC('day', NOW()) > \"PO Requested Delivery Date\"  AND \"PO Requested Delivery Date\" IS NULL",
+      "defaultValues": [
+        {
+          "defaultValue": "DATE_TRUNC('day', NOW()) > \"PO Requested Delivery Date\" AND \"PO Delivery Status\" IS NULL",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ptp_ariba_delivery_completed_condition",
+      "description": "Condition indicating that the delivery for a PO Item is completed, for example \"PO Delivery Status\" = 'Received'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"PO Delivery Status\" = 'Received'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    }
+  ]
+}

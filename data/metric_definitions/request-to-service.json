@@ -1,0 +1,117 @@
+{
+  "metrics": [
+    {
+      "id": "rts_contract_attach_rate",
+      "name": "Contract attach rate",
+      "description": "Service tickets with attached customer contract",
+      "signalFragment": "COUNT(case_id) FILTER (WHERE \"Ticket Contract\" IS NOT NULL)\n/\nCOUNT(case_id)*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "REQUEST_TO_SERVICE"
+      ],
+      "sourceSystems": [
+        "SAP_SERVICE_CLOUD"
+      ],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "direction": "UP",
+      "version": "1.0.0"
+    },
+    {
+      "id": "rts_first_time_fix_rate",
+      "name": "First time fix rate",
+      "description": "Rate of first time fixes for tickets",
+      "signalFragment": "(COUNT (case_id) FILTER(WHERE ((SELECT COUNT (event_name) FILTER (WHERE event_name IN ('Technically Completed')) < 2) ))\n/ \nCOUNT (case_id) )*100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "REQUEST_TO_SERVICE"
+      ],
+      "sourceSystems": [
+        "SAP_SERVICE_CLOUD"
+      ],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "direction": "UP",
+      "version": "1.0.0"
+    },
+    {
+      "id": "rts_avg_tickets_per_customer",
+      "name": "Average number of tickets per customer",
+      "description": "Average number of tickets per customer",
+      "signalFragment": "COUNT(case_id) / COUNT(DISTINCT \"Ticket Account ID\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "REQUEST_TO_SERVICE"
+      ],
+      "sourceSystems": [
+        "SAP_SERVICE_CLOUD"
+      ],
+      "direction": "DOWN",
+      "version": "1.0.0"
+    },
+    {
+      "id": "rts_ratio_escalated_tickets",
+      "name": "Ratio of escalated tickets",
+      "description": "Rate of tickets that were escalated",
+      "signalFragment": "COUNT (\"case_id\") \nFILTER (WHERE (EVENT_NAME MATCHES ('Escalated')))\n/\nCOUNT (\"case_id\") * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "REQUEST_TO_SERVICE"
+      ],
+      "sourceSystems": [
+        "SAP_SERVICE_CLOUD"
+      ],
+      "unit": {
+        "type": "SUFFIX",
+        "suffix": "%"
+      },
+      "direction": "DOWN",
+      "version": "1.0.0"
+    },
+    {
+      "id": "rts_avg_response_time",
+      "name": "Average response time",
+      "description": "Average time from ticket creation to first response",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN (${rts_response_events}))\n\t-(SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${ticket_creation_events}))\n   )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "REQUEST_TO_SERVICE"
+      ],
+      "sourceSystems": [
+        "SAP_SERVICE_CLOUD"
+      ],
+      "direction": "DOWN",
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "rts_response_events",
+      "description": "Events defining the response to a recently opened case, for example 'In Progress - Accepted', 'In Progress - Approved'",
+      "defaultValues": [
+        {
+          "defaultValue": "'In Process - Accepted', 'In Process - Approved'",
+          "sourceSystems": [
+            "SAP_SERVICE_CLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ticket_creation_events",
+      "description": "Events defining the start events of a case, for example 'Open'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Open'",
+          "sourceSystems": [
+            "SAP_SERVICE_CLOUD"
+          ]
+        }
+      ]
+    }
+  ]
+}

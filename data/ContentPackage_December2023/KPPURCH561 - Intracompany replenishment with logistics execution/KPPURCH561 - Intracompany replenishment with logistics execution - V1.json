@@ -1,0 +1,57 @@
+{
+  "comment": "KPPURCH560 Intracompany replenishment with logistics execution - current version ends with ST-A/PI V01 SP1, with SP2 a new definition file is needed",
+  "bpmn_model": "Intracompany replenishment with logistics execution",
+  "source_data": [
+    {
+      "ppi_id": "KPPURCH561",
+      "type": "main"
+    }
+  ],
+  "process_name": "KPPURCH561_01",
+  "version": "1",
+  "event_definitions": {
+    "Create stock transport order item": {
+      "pattern": "BEDAT != @initial",
+      "timestamp": "BEDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create stock transport order item with reference to stock transport requisition & with availability check": {
+          "pattern": "BANFN != '' and MNG02 != 0",
+          "id": "10"
+        },
+        "Create stock transport order item with reference to stock transport requisition & without availability check": {
+          "pattern": "BANFN != '' and MNG02 == 0",
+          "id": "20"
+        },
+        "Create stock transport order item without reference to stock transport requisition & with availability check": {
+          "pattern": "BANFN == '' and MNG02 != 0",
+          "id": "30"
+        },
+        "Create stock transport order item without reference to stock transport requisition & without availability check": {
+          "pattern": "BANFN == '' and MNG02 == 0",
+          "id": "40"
+         }
+      },
+      "include_other_variants": "Create stock transport order item - others"
+    },
+    "Create replenishment delivery item": {
+      "pattern": "CPUDT_DEL != @initial",
+      "timestamp": "CPUDT_DEL",
+      "timestamp_offset_minutes": 20,
+      "id": "EVENT_50"
+    },
+    "Post goods issue in supplying plant for stock transport order item": {
+      "pattern": "CPUDT_GI != @initial",
+      "timestamp": "CPUDT_GI",
+      "timestamp_offset_minutes": 30,
+      "id": "EVENT_60"
+    },
+    "Post goods receipt in receiving plant for stock transport order item": {
+      "pattern": "CPUDT_GR != @initial",
+      "timestamp": "CPUDT_GR",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_70"
+    }
+  }
+}

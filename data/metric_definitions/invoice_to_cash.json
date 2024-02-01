@@ -1,0 +1,442 @@
+{
+  "metrics": [
+    {
+      "id": "itc_ecc_s4h_total_overdue_invoice_amount",
+      "name": "Total overdue invoice amounts",
+      "description": "Sum of all invoice amounts that are overdue (converted in USD)",
+      "signalFragment": "SUM(${itc_ecc_s4h_amount_conv}) FILTER(\n\t WHERE (${itc_ecc_s4h_clearing_date} IS NULL)\n\t\tAND ${itc_ecc_s4h_due_date} < DATE_TRUNC('day', NOW())\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_open_overdue_invoices",
+      "name": "Number of open overdue invoices",
+      "description": "Number of invoices that are currently open and overdue",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${itc_ecc_s4h_clearing_date} IS NULL)\n\t\tAND ${itc_ecc_s4h_due_date} < DATE_TRUNC('day', NOW())\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_lead_time",
+      "name": "Average time invoice creation to invoice clearing",
+      "description": "Average time from invoice creation to invoice clearing within a reference period",
+      "signalFragment": "AVG(\n\t(SELECT LAST(${itc_ecc_s4h_clearing_date}) \n\t\tWHERE ((NOW() - LAST(end_time)) < DURATION ${itc_ecc_s4h_invoice_clearing_period}))\n\t-(SELECT LAST(${itc_ecc_s4h_posting_date})\n\t\tWHERE ((NOW() - LAST(end_time)) < DURATION ${itc_ecc_s4h_invoice_posting_period}))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_avg_creation_pgi_invoice",
+      "name": "Average time post goods issue to invoice creation",
+      "description": "Average time from posting goods issue to invoice creation",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) \n\tWHERE event_name IN (${itc_ecc_s4h_invoice_creation_events})) \n\t-\n\t(SELECT FIRST(end_time) \n\tWHERE event_name IN (${itc_ecc_s4h_shipping_events}))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_no_payment_rate",
+      "name": "No payment rate",
+      "description": "Percentage of overdue invoices from all open invoices",
+      "signalFragment": "COUNT (case_id) FILTER (\n\tWHERE (${itc_ecc_s4h_clearing_date} IS NULL AND ${itc_ecc_s4h_due_date} < DATE_TRUNC('day', NOW()))\n\t)\n/ COUNT (case_id) FILTER(\n\tWHERE (${itc_ecc_s4h_clearing_date} IS NULL)) * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_dunning_rate",
+      "name": "Dunning rate",
+      "description": "Percentage of invoices that were dunned",
+      "signalFragment": "COUNT (case_id) FILTER (\n\tWHERE (${itc_ecc_s4h_dunning_condition})\n\t) / COUNT (case_id) * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_automation_rate_inv_clearing",
+      "name": "Automation rate for invoice clearing",
+      "description": "Percentage of automated invoice clearing events",
+      "signalFragment": "SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\t\tWHERE (event_name IN (${itc_ecc_s4h_clear_invoice_events})\n\t\t\tAND (${itc_ecc_s4h_automation_condition})))\n\t)\n)\n/ SUM(\n\t(SELECT COUNT(event_name) FILTER (\n\tWHERE (event_name IN (${itc_ecc_s4h_clear_invoice_events})))\n\t)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_duration_of_dunning_blocks",
+      "name": "Duration of dunning blocks",
+      "description": "Average lead time from setting a dunning block to removing the last dunning block",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) FILTER \n\t\t(WHERE event_name IN (${itc_ecc_s4h_remove_dunning_block_events})))\n\t-\n\t(SELECT FIRST(end_time) FILTER\n\t\t(WHERE event_name IN (${itc_ecc_s4h_set_dunning_block_events})))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_days_sales_outstanding",
+      "name": "Days Sales Outstanding (DSO)",
+      "description": "Average number of days to collect revenue, weighted by the invoice value",
+      "signalFragment": "AVG((\n\t(SELECT LAST(${itc_ecc_s4h_clearing_date})) \n\t\t- (SELECT FIRST(${itc_ecc_s4h_posting_date})))\n\t*(SELECT LAST(${itc_ecc_s4h_amount_conv}))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_late_payment_rate",
+      "name": "Late payment rate",
+      "description": "Percentage of invoices that were cleared 1 day after their due dates",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${itc_ecc_s4h_clearing_date} - ${itc_ecc_s4h_due_date} \n\t\t> DURATION ${itc_ecc_s4h_late_payment_condition})\n)\n/COUNT(case_id) FILTER (\n\tWHERE (${itc_ecc_s4h_clearing_date} IS NOT NULL)\n) * 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_early_payment_rate",
+      "name": "Early payment rate",
+      "description": "Percentage of invoices that were cleared more than 5 days before their due dates",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${itc_ecc_s4h_due_date} - ${itc_ecc_s4h_clearing_date} \n\t\t> DURATION ${itc_ecc_s4h_early_payment_condition})\n)\n/COUNT(case_id) FILTER (\n\tWHERE (${itc_ecc_s4h_clearing_date} IS NOT NULL)\n)* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_on_time_payment_rate",
+      "name": "On-time payment rate",
+      "description": "Percentage of invoices that were cleared less than 5 days before and no later than 1 day after their due dates",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${itc_ecc_s4h_clearing_date} - ${itc_ecc_s4h_due_date} \n\t\t< DURATION ${itc_ecc_s4h_late_payment_condition}\n\tAND ${itc_ecc_s4h_due_date} - ${itc_ecc_s4h_clearing_date}\n\t\t< DURATION ${itc_ecc_s4h_early_payment_condition}\n\t)\n)\n/\nCOUNT(case_id) FILTER (\n\tWHERE (${itc_ecc_s4h_clearing_date} IS NOT NULL)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_no_touch_invoice",
+      "name": "No-Touch invoice processing rate",
+      "description": "Percentage of invoices with no change events",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE NOT (event_name MATCHES(${itc_ecc_s4h_no_touch_condition})) \n\t\tAND (event_name MATCHES(${itc_ecc_s4h_clear_invoice_events}))\n)\n/ (COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${itc_ecc_s4h_clear_invoice_events}))\n\t)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_inv_without_billing_doc",
+      "name": "Invoices without billing doc from SO",
+      "description": "Invoices without Billing Document from Sales Order",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(NOT ${itc_ecc_s4h_billing_doc_to_invoice_events})\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_reversed_invoices",
+      "name": "Percentage of reversed invoices",
+      "description": "Percentage of invoices that were reversed",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${itc_ecc_s4h_invoice_reversal_events}))\n/\nCOUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "itc_ecc_s4h_baseline_date_changes",
+      "name": "Percentage of baseline date changes",
+      "description": "Percentage of Baseline Date Changes after the Invoice was posted to SAP",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${itc_ecc_s4h_change_baseline_date})\n\t\tAND event_name MATCHES(${itc_ecc_s4h_posting_to_baseline_update_events}))\n/\nCOUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "INVOICE_TO_CASH"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "itc_ecc_s4h_invoice_clearing_period",
+      "description": "Reference time period to monitor invoice creation to clearing times within, for example the last 60 weeks: '60weeks'",
+      "defaultValues": [
+        {
+          "defaultValue": "'60weeks'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_invoice_posting_period",
+      "description": "Reference time period to monitor clearing of invoices within, for example the last 60 weeks: '60weeks'",
+      "defaultValues": [
+        {
+          "defaultValue": "'60weeks'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_dunning_condition",
+      "description": "Condition defining that an invoice has already been dunned, for example \"InvoiceLastDunnedOn\" IS NOT NULL",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Inv. Item Dunned On\" IS NOT NULL",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_automation_condition",
+      "description": "Condition indicating that an event was automated, for example \"Event Created By User Type\" <> 'Dialog'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Event Created By User Type\" <> 'Dialog'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_early_payment_condition",
+      "description": "Number of days an invoice clearing is considered to be too early",
+      "defaultValues": [
+        {
+          "defaultValue": "'5days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_late_payment_condition",
+      "description": "Number of days an invoice clearing is considered to be too late",
+      "defaultValues": [
+        {
+          "defaultValue": "'1days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_no_touch_condition",
+      "description": "Events that need manual intervention on an invoice and contradict the no-touch rate",
+      "defaultValues": [
+        {
+          "defaultValue": "('Remove Dunning Block'|'Set Dunning Block'|'Change Dunning Block'|'Send 1st Overdue Notice'|'Update Baseline Date'|'Update Payment Term'|'Reverse Invoice')",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_invoice_creation_events",
+      "description": "Events identifying the creation of invoice items, for example 'Create Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_shipping_events",
+      "description": "Events identifying that the goods have been shipped, for example 'Record Goods Issue'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Record Goods Issue'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_invoice_reversal_events",
+      "description": "Event identifying the reversal of an invoice, for example 'Reverse Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Reverse Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_clear_invoice_events",
+      "description": "Event identifying the clearing of an invoice, for example 'Clear Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_set_dunning_block_events",
+      "description": "Event identifying the setting of a dunning block for an invoice, for example 'Set Dunning Block'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Set Dunning Block'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_remove_dunning_block_events",
+      "description": "Event identifying the removal of a dunning block for an invoice, for example 'Remove Dunning Block'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Remove Dunning Block'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_clearing_date",
+      "description": "Attribute identifying the clearing date of an invoice, for example \"Last Inv. Item Clearing Date\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Inv. Item Clearing Date\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_posting_date",
+      "description": "Attribute identifying the posting date of an invoice, for example \"Inv. Posting Document Date\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Inv. Posting Document Date\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_due_date",
+      "description": "Attribute identifying the due date of an invoice, for example \"Last Inv. Item Due Date\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Last Inv. Item Due Date\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_amount_conv",
+      "description": "Attribute identifying the amount (converted to USD) of an invoice, for example \"Inv. Converted USD Amount\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Inv. Converted USD Amount\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_billing_doc_to_invoice_events",
+      "description": "Billing Document to Invoice event flow",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Billing Document'~> 'Create Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_posting_to_baseline_update_events",
+      "description": "Invoice Posting to Baseline date changes event flow",
+      "defaultValues": [
+        {
+          "defaultValue": "'Post Invoice'~>'Update Baseline Date'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "itc_ecc_s4h_change_baseline_date",
+      "description": "Events that describe a change in baseline date, for example 'Update Baseline Date'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Update Baseline Date'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    }
+  ]
+}

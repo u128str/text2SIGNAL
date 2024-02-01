@@ -1,0 +1,614 @@
+{
+  "metrics": [
+    {
+      "id": "avg_sales_order_processing_time",
+      "name": "Average processing time for sales orders",
+      "description": "Average time from the creation of a sales order item to its complete processing",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN (${processing_completion_events}))\n\t-(SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${sales_order_item_creation_events}))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "otc_avg_invoice_payment_time",
+      "name": "Average invoice payment time",
+      "description": "Average number of days that it takes a company to collect payment after a sale",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN (${billing_clearing_events}))\n\t-(SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${billing_creation_events}))\n\t)\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "return_rate",
+      "name": "Return rate",
+      "description": "Percentage of cases in which an item was returned",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR (event_name ${return_order_events})\n\t))\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "on_time_delivery",
+      "name": "On-time delivery rate",
+      "description": "Percentage of deliveries arriving at their destination before or on the expected date",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT COUNT(event_name)\n\t\t\tWHERE (${ontime_delivery_condition})) > 0\n\t)\n/ COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR(event_name IN (${outbound_delivery_creation_events})))\n\t) \n* 100\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "otc_late_payment_rate",
+      "name": "Late payment rate",
+      "description": "Percentage of cases where the invoice was cleared after its due date",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT COUNT(event_name)\n\t\t\tWHERE (${invoice_overdue_condition})) > 0\n\t)\n/ COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR(event_name IN (${billing_clearing_events})))\n\t) \n* 100\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "no_payment_rate",
+      "name": "No payment rate",
+      "description": "Percentage of cases where the invoice is overdue and not cleared",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT COUNT(event_name)\n\t\t\tWHERE ((${open_accounts_receivable_condition})\n\t\t\tAND (${no_payment_condition}))) > 0\n\t)\n/ COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR(event_name IN (${billing_creation_events})))\n\t) \n* 100\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "dunning_rate",
+      "name": "Dunning rate",
+      "description": "Percentage of cases where the invoice is dunned",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${dunning_condition})\n\t)\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_sales_doc_to_delivery_creation_time",
+      "name": "Lead time: sales document item creation to delivery creation",
+      "description": "Average lead time from the event 'Create Sales Order Item' to the event 'Create Outbound Delivery'",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)\n\t\tWHERE event_name IN (${outbound_delivery_creation_events}) AND\n\t\t((NOW() - LAST(end_time)) < DURATION ${outbound_delivery_period})\n\t\t)\n\t-(SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${sales_order_item_creation_events})\n\t\t)\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_invoice_creation_clearing_time",
+      "name": "Lead time: invoice creation to accounts receivable clearing",
+      "description": "Average lead time for items that were cleared within a reference period",
+      "signalFragment": "AVG(\n\t(SELECT LAST(\"InvoiceAccountingClearingDate\") WHERE \n\t\t((NOW() - LAST(end_time)) < DURATION ${invoice_clearing_period}))\n\t-(SELECT FIRST(${invoice_reference_date})WHERE \n\t\t((NOW() - LAST(end_time)) < DURATION ${invoice_posting_period}))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "rejected_sales_document_items",
+      "name": "Rejected sales document items",
+      "description": "Number of rejected sales order items that were created within a time period",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (\n\t\t(SELECT BOOL_OR(event_name IN (${sales_order_item_creation_events})) \n\t\tAND ((NOW() - LAST(end_time)) < DURATION ${sales_order_item_creation_period})\n\t)\n\tAND (SELECT BOOL_OR(event_name = 'Reject Sales Doc Item')\n\t\tAND ((NOW() - LAST(end_time)) < DURATION ${rejected_orders_reference_period}))\n\t)\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "return_order_items_created",
+      "name": "Return order items created",
+      "description": "Number of return order items that were created within a time period",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (\n\t\t(SELECT BOOL_OR(event_name IN (${sales_order_item_creation_events})) \n\t\tAND ((NOW() - LAST(end_time)) < DURATION ${sales_order_item_creation_period})\n\t)\n\tAND (SELECT BOOL_OR(event_name = 'Create Return Sales Order Item')\n\t\tAND ((NOW() - LAST(end_time)) < DURATION ${returned_orders_reference_period}))\n\t)\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "deleted_sales_document_items",
+      "name": "Deleted sales document items",
+      "description": "Number of deleted items in sales documents within a defined period of time",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (\n\t\tSELECT BOOL_OR(event_name IN (${delete_sales_order_item_events}))\n\t\tAND NOW() - LAST(end_time) < DURATION ${sales_order_item_deletion_period}\n\t)\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "automation_rate_sales_doc_creation",
+      "name": "Automation rate: sales document creation",
+      "description": "Percentage of automated sales order creation events within a time period",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (\n\t\t(SELECT BOOL_OR(event_name IN (${sales_order_doc_creation_events})\n\t\t AND (${otc_automation_condition}))\n\t\t AND ((NOW() - LAST(end_time)) < DURATION ${sales_order_doc_creation_period})) \n\t)\n) / SUM((SELECT COUNT(event_name)))\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "overdue_open_ar_items",
+      "name": "Overdue open Accounts Receivable items",
+      "description": "Number of overdue open customer items",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT COUNT(event_name)\n\t\t\tWHERE (\"InvoiceAccountingClearingDate\" IS NULL\n\t\t AND \"InvoiceDueDate\" < DATE_TRUNC('day', NOW()))) > 0\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_invoice_customer_process_time",
+      "name": "Average invoice customer process time",
+      "description": "Average time from the posting of goods issue to the creation of an invoice",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) WHERE event_name IN (${billing_creation_events}))\n\t-\n\t(SELECT FIRST(end_time) WHERE event_name IN (${shipping_events}))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "tot_nr_sales_orders",
+      "name": "Total number of sales orders",
+      "description": "Total amount of orders on header level",
+      "signalFragment": "COUNT(DISTINCT SalesDocId) FILTER (\n\t WHERE (SELECT BOOL_OR(event_name IN (${sales_order_item_creation_events}))))",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "no_touch_order_rate",
+      "name": "No-Touch-Order Rate",
+      "description": "Percentage of “perfect orders” or no-touch orders, i.e. delivered on time, with the right amount and no other changes",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR(event_name IN (${processing_completion_events})\n\t\tAND ${ontime_delivery_condition}\n\t\tAND event_name NOT ${otc_change_events})\n\t)\n)/COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "price_change_rate",
+      "name": "Price Change Rate",
+      "description": "Percentage of cases with SD Item price changes",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR(event_name ${price_change_events})))\n/ COUNT(case_id) FILTER (\n\tWHERE (event_name MATCHES((${sales_order_item_creation_events}))))\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "delivery_change_rate",
+      "name": "Delivery Change Rate",
+      "description": "Percentage of cases with SD Item delivery changes",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR(event_name ${update_delivery_events})))\n/ COUNT(case_id) FILTER (\n\tWHERE (event_name MATCHES((${sales_order_item_creation_events}))))\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "material_change_rate",
+      "name": "Material Change Rate",
+      "description": "Percentage of cases with SD Item material changes",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (event_name MATCHES((${update_material_events}))))\n/ COUNT(case_id) FILTER (\n\tWHERE (event_name MATCHES((${sales_order_item_creation_events}))))\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "quantity_change_rate",
+      "name": "Quantity change rate",
+      "description": "Percentage of cases with SD Item quantity changes",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (event_name MATCHES((${update_quantity_events}))))\n/ COUNT(case_id) FILTER (\n\tWHERE (event_name MATCHES((${sales_order_item_creation_events}))))\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ORDER_TO_CASH"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "sales_order_item_creation_events",
+      "description": "Events identifying the creation of a sales order, for example 'Create Sales Order Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Sales Order Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "processing_completion_events",
+      "description": "Events identifying when a sales order is processed, for example 'Sales Order Completely Processed'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Sales Order Completely Processed'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "billing_creation_events",
+      "description": "Events identifying the creation of invoices, for example 'Create Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "billing_clearing_events",
+      "description": "Events identifying that an invoice was cleared, for example 'Clear Invoice'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "return_order_events",
+      "description": "Events identifying that a sales order was returned, for example 'Create Return Sales Order Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "ILIKE 'Create Return%Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ontime_delivery_condition",
+      "description": "Condition defining that a delivery is on time, for example \"DeliveryGoodsMovementOnTime\" = 'Yes'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"DeliveryGoodsMovementOnTime\" = 'Yes'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invoice_overdue_condition",
+      "description": "Condition defining that an invoice was cleared after the due date, for example \"InvoiceAccountingClearingDate\" > \"InvoiceDueDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"InvoiceAccountingClearingDate\" > \"InvoiceDueDate\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no_payment_condition",
+      "description": "Condition defining that an invoice was not cleared, for example \"InvoiceAccountingClearingDate\" IS NULL",
+      "defaultValues": [
+        {
+          "defaultValue": "\"InvoiceAccountingClearingDate\" IS NULL",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dunning_condition",
+      "description": "Condition defining that an invoice has already been dunned, for example \"InvoiceLastDunnedOn\" IS NOT NULL",
+      "defaultValues": [
+        {
+          "defaultValue": "\"InvoiceLastDunnedOn\" IS NOT NULL",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "shipping_events",
+      "description": "Events identifying that the goods have been shipped, for example 'Post Goods Issue'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Post Goods Issue'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invoice_reference_date",
+      "description": "Attributes identifying which field of the accounting document is used for the calculation of the lead time, for example: \"InvoiceAccountingDocumentDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"InvoiceAccountingDocumentDate\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invoice_clearing_period",
+      "description": "Reference time period to monitor cleared invoices, for example, for invoices that were cleared during last week: '7days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invoice_posting_period",
+      "description": "Reference time period to monitor invoices that have been paid, for example, for payments that have been paid at least 1 day ago: '1days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "outbound_delivery_creation_events",
+      "description": "Events identifying that an Outbound Delivery has been created, for example: 'Create Outbound Delivery'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Outbound Delivery'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "outbound_delivery_period",
+      "description": "Reference time period in which outbound deliveries have been created, counting backward from today, for example: '7days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sales_order_item_creation_period",
+      "description": "Reference time period to monitor sales order items that were created, for example, for sales order items that were created during last week: '7days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "rejected_orders_reference_period",
+      "description": "Reference time period to monitor sales order items that were rejected, for example, for sales order items that were rejected during last week: '7days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "returned_orders_reference_period",
+      "description": "Reference time period to monitor sales order items that were returned, for example, for sales order items that were returned during last week: '7days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sales_order_doc_creation_events",
+      "description": "Events referring to the creation of any sales document, for example: 'Create Sales Order Item', 'Create Contract Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Sales Order Item', 'Create Contract Item', 'Create Return Sales Order Item', 'Create Sales Order Item w/o Charge', 'Create Credit Memo Request Item', 'Create Debit Memo Request Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "otc_automation_condition",
+      "description": "Attributes indicating that an event was automated, for example: \"EventCreatedByUserType\" != 'Dialog'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"EventCreatedByUserType\" != 'Dialog'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sales_order_doc_creation_period",
+      "description": "Reference time period to monitor sales order documents that were created, for example, for sales order documents that were created during last week: '7days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "delete_sales_order_item_events",
+      "description": "Events identifying that a sales order item was deleted, for example: 'Delete Sales Doc Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Delete Sales Doc Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sales_order_item_deletion_period",
+      "description": "Reference time period to monitor sales order items that were deleted, for example, for sales order items that were deleted during last week: '7days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "open_accounts_receivable_condition",
+      "description": "Condition defining that an invoice has not been cleared so far, although it was expected to. For example: NOW() > \"InvoiceDueDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "NOW() > \"InvoiceDueDate\"",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "otc_change_events",
+      "description": "Events referring to changes made to the sales doc item, for example: 'Change Sales Doc Item Price'",
+      "defaultValues": [
+        {
+          "defaultValue": "ILIKE 'Change Sales Doc%'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "price_change_events",
+      "description": "Events referring to price changes made to the sales doc item",
+      "defaultValues": [
+        {
+          "defaultValue": "ILIKE 'Change%Price'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "update_delivery_events",
+      "description": "Events referring to delivery changes made to the sales doc item",
+      "defaultValues": [
+        {
+          "defaultValue": "ILIKE '%Update Delivery%'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "update_material_events",
+      "description": "Events indicating material changes made to the sales doc item",
+      "defaultValues": [
+        {
+          "defaultValue": "'Change Sales Doc Item Material'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "update_quantity_events",
+      "description": "Events indicating quantity changes made to the sales doc item",
+      "defaultValues": [
+        {
+          "defaultValue": "'Change Sales Doc Item Quantity'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ]
+        }
+      ]
+    }
+  ]
+}

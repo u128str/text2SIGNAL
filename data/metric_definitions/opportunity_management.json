@@ -1,0 +1,484 @@
+{
+  "metrics": [
+    {
+      "id": "lto_sf_total_nr_open_opp",
+      "name": "Total number of open opportunities",
+      "description": "Total number of currently open opportunities",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_AND( NOT event_name IN (${lto_sf_close_opp_events})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_total_nr_closed_opp",
+      "name": "Total number of closed opportunities",
+      "description": "Total number of currently closed opportunities",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR( event_name IN (${lto_sf_close_opp_events})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_total_nr_won_opp",
+      "name": "Total number of won opportunities",
+      "description": "Total number of won opportunities",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (${lto_sf_opp_won_condition})\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_win_ratio",
+      "name": "Win/loss ratio",
+      "description": "Ratio of won to lost opportunities. A value > 1 indicates that there are more opportunities won than lost.",
+      "signalFragment": "(COUNT(case_id) FILTER (\n\tWHERE (${lto_sf_opp_won_condition}))\n)\n/\n(COUNT(case_id) FILTER (\n\tWHERE (${lto_sf_opp_lost_condition}))\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_avg_lead_conversion_time",
+      "name": "Average lead conversion time",
+      "description": "Average time from lead creation to lead conversion",
+      "signalFragment": "AVG(\n\t${lto_sf_lead_converted_date} - ${lto_sf_lead_created_date}\n   )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_avg_lead_response_time",
+      "name": "Average lead response time",
+      "description": "Average time from lead creation to working on lead",
+      "signalFragment": "AVG(\n\t(SELECT FIRST(end_time) FILTER (\n\t\tWHERE NOT event_name IN (${lto_sf_lead_created_events})))\n\t-(SELECT FIRST(end_time) FILTER (\n\t\tWHERE event_name IN (${lto_sf_lead_created_events})))\n   )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_avg_opp_won_time",
+      "name": "Average opportunity win time",
+      "description": "Average time from creating the opportunity to winning the opportunity",
+      "signalFragment": "AVG(${lto_sf_opp_closed_date} - ${lto_sf_opp_created_date}) FILTER (\n\tWHERE (${lto_sf_opp_won_condition})\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_avg_opp_lost_time",
+      "name": "Average opportunity lost time",
+      "description": "Average time from creating the opportunity to loosing the opportunity",
+      "signalFragment": "AVG(${lto_sf_opp_closed_date} - ${lto_sf_opp_created_date}) FILTER (\n\tWHERE (${lto_sf_opp_lost_condition})\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_opp_wo_lead",
+      "name": "Opportunities without lead",
+      "description": "Total number of opportunities without lead",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE ${lto_sf_lead_identifier} IS NULL\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_avg_touchpoints",
+      "name": "Average touchpoints per case",
+      "description": "Average number of touchpoints per case",
+      "signalFragment": "AVG((SELECT COUNT(event_name) FILTER (\n\tWHERE event_name IN (${lto_sf_touchpoint_events})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_no_touch_leads",
+      "name": "No-touch leads",
+      "description": "Percentage of leads without interactions",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE \n\t\t(SELECT \n\t\t\tBOOL_AND( NOT event_name IN (${lto_sf_touchpoint_events})) \n\t\t\tAND BOOL_OR( event_name IN (${lto_sf_lead_created_events})) \n\t\t)\n\t)\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_low_touch_conversions",
+      "name": "Low-touch conversions",
+      "description": "Number of converted leads with less interactions than specified",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE \n\t\t(SELECT COUNT(event_name) FILTER \n\t\t\t(WHERE event_name IN (${lto_sf_touchpoint_events})) \n\t\t) < ${lto_sf_number_of_touchpoints}\n\t\tAND (SELECT BOOL_OR(event_name IN (${lto_sf_conversion_events})) \n\t\t) \n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE",
+        "LEAD_TO_OPPORTUNITY"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_created_quotes",
+      "name": "Number of created quotes",
+      "description": "Number of created quotes",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR( event_name IN (${lto_sf_quote_created})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_approved_quotes",
+      "name": "Number of approved quotes",
+      "description": "Number of approved quotes",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR( event_name IN (${lto_sf_quote_approved})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_rejected_quotes",
+      "name": "Number of rejected quotes",
+      "description": "Number of rejected quotes",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR( event_name IN (${lto_sf_quote_rejected})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_quote_to_close_ratio",
+      "name": "Quote to close ratio",
+      "description": "Fraction of quotes that end up as won opportunities.",
+      "signalFragment": "(COUNT(case_id) FILTER (\n\tWHERE event_name MATCHES(${lto_sf_quote_to_opp_condition}))\n/ COUNT(case_id))\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_total_quote_volume",
+      "name": "Total quote volume",
+      "description": "Total financial volume of quotes provided to potential clients.",
+      "signalFragment": "SUM(\"OppAmount\") FILTER (\n\tWHERE (SELECT BOOL_OR( event_name IN (${lto_sf_quote_created})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "lto_sf_avg_quote_volume",
+      "name": "Average quote volume",
+      "description": "Average financial volume of quotes provided to potential clients.",
+      "signalFragment": "AVG(\"OppAmount\") FILTER (\n\tWHERE (SELECT BOOL_OR( event_name IN (${lto_sf_quote_created})))\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "LEAD_TO_QUOTE"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "lto_sf_close_opp_events",
+      "description": "Events indicating that an opportunity was closed, for example 'Update Opportunity Stage to: Closed Won'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Update Opportunity Stage to: Closed Won','Update Opportunity Stage to: Closed Lost','Update Opportunity Stage to: 06 Closed Won (Onboarding)','Update Opportunity Stage to: 5 Closed - Renewal Confirmed'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_lead_identifier",
+      "description": "Attribute that identifies a lead, for example \"LeadId\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"LeadId\"",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_lead_created_date",
+      "description": "Attribute containing the creation date of a lead, for example \"LeadCreatedDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"LeadCreatedDate\"",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_lead_created_events",
+      "description": "Events indicating that a lead was created, for example 'Create Lead'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Lead'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_lead_converted_date",
+      "description": "Attribute that contains the conversion date of a lead, for example \"LeadConvertedDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"LeadConvertedDate\"",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_lead_assigned",
+      "description": "Event indicating that a lead was assigned, for example 'Assign Lead Owner'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Assign Lead Owner'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_opp_created_date",
+      "description": "Attribute containing the creation date of an opportunity, for example \"OppCreatedDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"OppCreatedDate\"",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_opp_closed_date",
+      "description": "Attribute containing the closing date of an opportunity, for example \"OppCloseDate\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"OppCloseDate\"",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_opp_lost_condition",
+      "description": "Condition indicating that an opportunity is lost, for example \"OppIsWon\" = 'FALSE'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"OppIsWon\" = 'FALSE'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_opp_won_condition",
+      "description": "Condition indicating that an opportunity is won, for example \"OppIsWon\" = 'TRUE'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"OppIsWon\" = 'TRUE'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_touchpoint_events",
+      "description": "Events that describe a touchpoint, for example 'Log Activity: Call', 'Log Activity: Email'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Log Activity: Call', 'Log Activity: Email', 'Log Activity: Task', 'Log Activity: Task (Sent Email)', 'Log Activity: Task (Call)','Log Activity: Task (Social Connect)','Log Activity: Task (Demo Preparation)','Log Activity: Task (Discovery / Qualification)','Log Activity: Task (Custom Online Demo)','Log Activity: Task (Standard Online Demo)','Log Activity: Task (Questionnaire)','Log Activity: Task (Web Demo)'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_number_of_touchpoints",
+      "description": "Threshold for classifying a case as \"low-touch case\", for example 3",
+      "defaultValues": [
+        {
+          "defaultValue": "3",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_conversion_events",
+      "description": "Events indicating that a case was converted, for example 'Update Opportunity Stage to: Closed Won', 'Lead Converted'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Update Opportunity Stage to: Closed Won','Update Opportunity Stage to: 06 Closed Won (Onboarding)'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE",
+            "LEAD_TO_OPPORTUNITY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_quote_created",
+      "description": "Events indicating that a quote was created, for example 'Create Quote'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Quote'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_quote_approved",
+      "description": "Events indicating that a quote was approved, for example 'Approve Quote'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Approve Quote'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_quote_rejected",
+      "description": "Events indicating that a quote was rejected, for example 'Reject Quote'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Reject Quote'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lto_sf_quote_to_opp_condition",
+      "description": "Sequence of events that describes the process of quotes ending up as won opportunities, for example 'Create Quote' ~> 'Update Opportunity Stage to: Closed Won'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Quote'\n\t~> ('Opportunity closed (won)' | 'Update Opportunity Stage to: Closed Won' | 'Update Opportunity Stage to: 06 Closed Won (Onboarding)')",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_QUOTE"
+          ]
+        }
+      ]
+    }
+  ]
+}

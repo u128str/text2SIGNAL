@@ -1,0 +1,862 @@
+{
+  "metrics": [
+    {
+      "id": "p2c_s4hc_avg_ar_creation_to_clearing_time",
+      "name": "Average accounts receivable creation to clearing time",
+      "description": "Average time from accounts receivable creation to clearing",
+      "signalFragment": "SUM(\"AR_AVGClearingDays\" * \"AR_CountClearedDocuments\")\n/\nSUM(\"AR_CountClearedDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_avg_net_payment_terms",
+      "name": "Average net payment terms",
+      "description": "Average of net payment terms in days",
+      "signalFragment": "SUM(\"AR_AVGNetDueDateDays\" * \"AR_CountDocuments\")\n/\nSUM(\"AR_CountDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_avg_payment_delay",
+      "name": "Average payment delay",
+      "description": "Average delay of payments in days",
+      "signalFragment": "SUM(\"AR_AVGClearingAfterNetDueDays\" * \"AR_CountClearedDocuments\")\n/\nSUM(\"AR_CountClearedDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_avg_project_creation_to_end_time",
+      "name": "Average project creation to end time",
+      "description": "Average time from project creation to project end date",
+      "signalFragment": "AVG(\"Project_CreateToEndTime\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_avg_project_creation_to_start_time",
+      "name": "Average project creation to start time",
+      "description": "Average time from project creation to project start date",
+      "signalFragment": "AVG(\"Project_CreateToStartTime\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_avg_project_planned_to_actual_end_time",
+      "name": "Average project planned to actual end time",
+      "description": "Average time from planned project end to actual project end date",
+      "signalFragment": "AVG(\"Project_PlannedToActualClosingTime\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_avg_project_start_to_end_time",
+      "name": "Average project start to end time",
+      "description": "Average time from project start to project end date",
+      "signalFragment": "AVG(\"Project_StartToEndTime\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_avg_timesheet_approval_time",
+      "name": "Average timesheet approval time",
+      "description": "Average time from timesheet creation to timesheet approval",
+      "signalFragment": "SUM(\"TSR_AVGCreationTillApprovalTime\" * \"TSR_Count\")\n/\nSUM(\"TSR_Count\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_billing_request_rejection_rate",
+      "name": "Billing request (DMR) rejection rate",
+      "description": "Percentage of billing requests (debit memo requests) that were rejected",
+      "signalFragment": "(\nSUM(\"BillingRequest_RejectedCount\")\n/\nSUM(\"BillingRequest_TotalCount\")\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_invoice_cancellation_rate",
+      "name": "Invoice cancellation rate",
+      "description": "Percentage of invoices (billing documents) that were canceled",
+      "signalFragment": "(\nSUM(\"BillingDoc_TotalCancelled\")\n/\nSUM(\"BillingDoc_TotalCount\")\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_invoices_cancelled",
+      "name": "Number of invoices canceled",
+      "description": "Number of invoices (billing documents) that were canceled",
+      "signalFragment": "SUM(\"BillingDoc_TotalCancelled\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_invoices_created",
+      "name": "Number of invoices created",
+      "description": "Number of invoices (billing documents) that were created",
+      "signalFragment": "SUM(\"BillingDoc_TotalCount\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_late_payment_rate",
+      "name": "Late payment rate",
+      "description": "Percentage of invoices that were cleared one or more days after their due dates",
+      "signalFragment": "(\nSUM(\"AR_PaidLateCount\")\n/\nSUM(\"AR_CountClearedDocuments\")\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_ar_documents",
+      "name": "Number of accounts receivable documents",
+      "description": "Number of accounts receivable documents",
+      "signalFragment": "SUM(\"AR_CountDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_ar_documents_paid_late",
+      "name": "Number of accounts receivable documents paid late",
+      "description": "Number of accounts receivable documents that were cleared one or more days after their due dates",
+      "signalFragment": "SUM(\"AR_PaidLateCount\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_approved_timesheets",
+      "name": "Number of approved timesheets",
+      "description": "Number of timesheet records in status 'Approved'",
+      "signalFragment": "SUM(\"TSR_ApprovedDocsNumber\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_non_approved_timesheets",
+      "name": "Number of non-approved timesheets",
+      "description": "Number of timesheet records that are not in status 'Approved'",
+      "signalFragment": "SUM(\"TSR_Count\") - SUM(\"TSR_ApprovedDocsNumber\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_billing_requests",
+      "name": "Number of billing requests (DMR)",
+      "description": "Number of billing requests (debit memo requests)",
+      "signalFragment": "SUM(\"BillingRequest_TotalCount\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_cancelled_timesheets",
+      "name": "Number of canceled timesheets",
+      "description": "Number of canceled Timesheet Records",
+      "signalFragment": "SUM(\"TSR_CancelledDocsNumber\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_idle_projects",
+      "name": "Number of idle projects",
+      "description": "Number of projects that are neither cleared nor closed and had no activity during a certain time frame",
+      "signalFragment": "COUNT(DISTINCT case_id) FILTER (\n\tWHERE NOW() - (SELECT LAST(end_time)) > DURATION ${p2c_s4hc_idling_period}\n\t  AND (SELECT FIRST(event_name) FILTER (\n\t\tWHERE event_name IN ('Clear Accounts Receivable'))) IS NULL\n\t\t  AND \"Project_StageText\" NOT IN ('Closed')\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_rejected_billing_requests",
+      "name": "Number of rejected billing requests (DMR)",
+      "description": "Number of rejected billing requests (debit memo requests)",
+      "signalFragment": "SUM(\"BillingRequest_RejectedCount\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_open_ar_docs_timeframe",
+      "name": "Number of open accounts receivable documents (with time frame)",
+      "description": "Number of accounts receivable documents open for longer than a certain time frame",
+      "signalFragment": "COUNT(DISTINCT \"ARUniqueKey\") FILTER (\n\tWHERE\n\t\tevent_name = 'Create Accounts Receivable'\n\t\tAND \"ClearingDate\" IS NULL\n\t\tAND (NOW()-\"DocumentDate\")> DURATION ${p2c_s4hc_open_ar_period}\n\t)",
+      "aggregationType": "EVENT",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_open_ar_docs",
+      "name": "Number of open accounts receivable documents",
+      "description": "Number of accounts receivable documents that are not yet cleared",
+      "signalFragment": "SUM(\"AR_CountOpenDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_timesheets",
+      "name": "Number of timesheets",
+      "description": "Number of timesheet records",
+      "signalFragment": "SUM(\"TSR_Count\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_timesheets_per_project",
+      "name": "Number of timesheets created per project",
+      "description": "Number of timesheet records created per project",
+      "signalFragment": "AVG(\"TSR_Count\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_on_time_payment_rate",
+      "name": "On-time payment rate",
+      "description": "Percentage of invoices that were cleared on or before the due date",
+      "signalFragment": "(\n(SUM(\"AR_CountClearedDocuments\") - SUM(\"AR_PaidLateCount\"))\n/\nSUM(\"AR_CountClearedDocuments\")\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_percentage_projects_closed",
+      "name": "Percentage of closed projects",
+      "description": "Percentage of projects in the stage 'Closed'",
+      "signalFragment": "(\nCOUNT(case_id) FILTER (\n\tWHERE \"Project_StageText\" = 'Closed'\n\t)\n/\nCOUNT(case_id)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_projects_closed",
+      "name": "Number of closed projects",
+      "description": "Number of projects in the stage 'Closed'",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE \"Project_StageText\" = 'Closed'\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_percentage_projects_completed",
+      "name": "Percentage of completed projects",
+      "description": "Percentage of projects in the stage 'Completed'",
+      "signalFragment": "(\nCOUNT(case_id) FILTER (\n\tWHERE \"Project_StageText\" = 'Completed'\n\t)\n/\nCOUNT(case_id)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_projects_completed",
+      "name": "Number of completed projects",
+      "description": "Number of projects in the stage 'Completed'",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE \"Project_StageText\" = 'Completed'\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_percentage_projects_created_after_start",
+      "name": "Percentage of projects created after start date",
+      "description": "Percentage of projects that were created after the defined start date",
+      "signalFragment": "(\nSUM(\"Project_CreationAfterStartFlag\")\n/\nCOUNT(case_id)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_projects_created_after_start",
+      "name": "Number of projects created after start date",
+      "description": "Number of projects that were created after the defined start date",
+      "signalFragment": "SUM(\"Project_CreationAfterStartFlag\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_percentage_projects_contract_preparation",
+      "name": "Percentage of projects in contract preparation",
+      "description": "Percentage of projects in the stage 'Contract Preparation'",
+      "signalFragment": "(\nCOUNT(case_id) FILTER (\n\tWHERE \"Project_StageText\" = 'Contract Preparation'\n\t)\n/\nCOUNT(case_id)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_projects_contract_preparation",
+      "name": "Number of projects in contract preparation",
+      "description": "Number of projects in the stage 'Contract Preparation'",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE \"Project_StageText\" = 'Contract Preparation'\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_percentage_projects_in_execution",
+      "name": "Percentage of projects in execution",
+      "description": "Percentage of projects in the stage 'In Execution'",
+      "signalFragment": "(\nCOUNT(case_id) FILTER (\n\tWHERE \"Project_StageText\" = 'In Execution'\n\t)\n/\nCOUNT(case_id)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_projects_in_execution",
+      "name": "Number of projects in execution",
+      "description": "Number of projects in the stage 'In Execution'",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE \"Project_StageText\" = 'In Execution'\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_percentage_projects_in_planning",
+      "name": "Percentage of projects in planning",
+      "description": "Percentage of projects in the stage 'In Planning'",
+      "signalFragment": "(\nCOUNT(case_id) FILTER (\n\tWHERE \"Project_StageText\" = 'In Planning'\n\t)\n/\nCOUNT(case_id)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_projects_in_planning",
+      "name": "Number of projects in planning",
+      "description": "Number of projects in the stage 'In Planning'",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE \"Project_StageText\" = 'In Planning'\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_percentage_of_open_projects",
+      "name": "Percentage of open projects",
+      "description": "Percentage of projects that are open, this means neither in the stage 'Closed' nor 'Completed'",
+      "signalFragment": "(\nCOUNT(case_id) FILTER (WHERE \"Project_StageText\" NOT IN ('Closed', 'Completed'))\n/\nCOUNT(case_id)\n)\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_open_projects",
+      "name": "Number of open projects",
+      "description": "Number of projects that are open, this means neither in the stage 'Closed' nor 'Completed'",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE \"Project_StageText\" NOT IN ('Closed','Completed')\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_percentage_projects_costs_after_end",
+      "name": "Percentage of projects with costs after end date",
+      "description": "Percentage of projects with costs being posted after the official end date",
+      "signalFragment": "(\nCOUNT (case_id) FILTER (\n\tWHERE (\"CostDoc_EnterDocAfterProjectClosingCount\" > 0)\n\t)\n/\nCOUNT(case_id)\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_projects_costs_after_end",
+      "name": "Number of projects with costs after end date",
+      "description": "Number of projects with costs being posted after the official end date",
+      "signalFragment": "COUNT (case_id) FILTER (\n\tWHERE (\"CostDoc_EnterDocAfterProjectClosingCount\" > 0)\n\t)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_total_approved_hours",
+      "name": "Total approved hours",
+      "description": "Total amount of hours in approved timesheets",
+      "signalFragment": "SUM(\"TSR_HoursApproved\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_total_cancelled_hours",
+      "name": "Total canceled hours",
+      "description": "Total amount of hours in canceled timesheets",
+      "signalFragment": "SUM(\"TSR_HoursCancelled\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_total_cleared_amount",
+      "name": "Total cleared amount",
+      "description": "Total of all cleared amounts in accounts receivables",
+      "signalFragment": "SUM(${p2c_s4hc_cleared_sum_currency}) * (-1)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_total_hours_changed_after_approval",
+      "name": "Total hours changed after approval",
+      "description": "Total amount of hours in timesheets that have been changed after approval",
+      "signalFragment": "SUM(\"TSR_HoursChangedAfterApproval\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_total_hours_in_process",
+      "name": "Total hours in process",
+      "description": "Total amount of hours in timesheets that are in status 'in process'",
+      "signalFragment": "SUM(\"TSR_HoursInProcess\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_total_hours_released_for_approval",
+      "name": "Total hours released for approval",
+      "description": "Total amount of hours in timesheets that are in status 'released for approval'",
+      "signalFragment": "SUM(\"TSR_HoursReleased\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_total_invoiced_amount",
+      "name": "Total invoiced amount",
+      "description": "Total of all invoiced amounts in accounts receivables",
+      "signalFragment": "SUM(${p2c_s4hc_invoiced_sum_currency})",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_total_open_amount",
+      "name": "Total open amount",
+      "description": "Total of all open amounts in accounts receivables",
+      "signalFragment": "SUM(${p2c_s4hc_invoiced_sum_currency} + ${p2c_s4hc_cleared_sum_currency})",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_total_overdue_amount",
+      "name": "Total overdue amount",
+      "description": "Total of all amounts in accounts receivables that are overdue for longer than a certain time frame",
+      "signalFragment": "SUM(${p2c_s4hc_amount_currency}) FILTER (\n\tWHERE event_name = 'Create Accounts Receivable'\n\t  AND \"ClearingDate\" IS NULL\n\t  AND (NOW()-\"NetDueDate\")> DURATION ${p2c_s4hc_overdue_ar_period}\n\t)",
+      "aggregationType": "EVENT",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_overdue_ar_documents",
+      "name": "Number of overdue accounts receivable documents",
+      "description": "Number of all accounts receivable documents that are overdue for longer than a certain time frame",
+      "signalFragment": "COUNT(DISTINCT \"ARUniqueKey\") FILTER (\n\tWHERE event_name = 'Create Accounts Receivable'\n\t  AND \"ClearingDate\" IS NULL\n\t  AND (NOW()-\"NetDueDate\")> DURATION ${p2c_s4hc_overdue_ar_period}\n\t)",
+      "aggregationType": "EVENT",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_projects_with_overdue_ar_docs",
+      "name": "Number of projects with overdue accounts receivable documents",
+      "description": "Number of projects that have at least one accounts receivable document that is overdue for longer than a certain time frame",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT COUNT(event_name) > 0\n\t\t   WHERE event_name = 'Create Accounts Receivable'\n\t\t\t AND \"ClearingDate\" IS NULL\n\t\t\t AND (NOW()-\"NetDueDate\") > DURATION ${p2c_s4hc_overdue_ar_period})\n\t)\n",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_total_paid_late_amount",
+      "name": "Total paid late amount",
+      "description": "Total of all amounts in accounts receivables that were cleared one or more days after their net due dates",
+      "signalFragment": "SUM(${p2c_s4hc_amount_currency}) FILTER (\n\tWHERE event_name = 'Clear Accounts Receivable'\n\t  AND (\"ClearingDate\" - \"NetDueDate\") > DURATION '1day'\n\t)",
+      "aggregationType": "EVENT",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_number_of_cleared_ar_items",
+      "name": "Number of cleared accounts receivable documents",
+      "description": "Number of accounts receivable documents that were fully cleared",
+      "signalFragment": "SUM(\"AR_CountClearedDocuments\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "p2c_s4hc_rejected_hours",
+      "name": "Total rejected hours",
+      "description": "Total amount of hours in rejected timesheets",
+      "signalFragment": "SUM(\"TSR_HoursApprovalRejected\")",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "PROJECT_TO_CASH_SAP_S4H_CLOUD"
+      ],
+      "sourceSystems": [
+        "SAP_S4HANACLOUD"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "p2c_s4hc_idling_period",
+      "description": "Reference time period to consider for a project to be considered idle, for example '30 days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'30days'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p2c_s4hc_open_ar_period",
+      "description": "Reference time period to consider for calculation of open AR documents, for example '30 days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'30days'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p2c_s4hc_overdue_ar_period",
+      "description": "Reference time period to consider for calculation of overdue AR documents, for example '30 days' after net due date",
+      "defaultValues": [
+        {
+          "defaultValue": "'30days'",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p2c_s4hc_invoiced_sum_currency",
+      "description": "Field defining in which currency the invoiced amounts are calculated, for example \"AR_InvoicedAmountInGlobalCurrency\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"AR_InvoicedAmountInGlobalCurrency\"",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p2c_s4hc_cleared_sum_currency",
+      "description": "Field defining in which currency the cleared amounts are calculated, for example \"AR_ClearedAmountInGlobalCurrency\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"AR_ClearedAmountInGlobalCurrency\"",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p2c_s4hc_amount_currency",
+      "description": "Field defining in which currency the amounts are calculated on event level, for example \"AmountInGlobalCurrency\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"AmountInGlobalCurrency\"",
+          "sourceSystems": [
+            "SAP_S4HANACLOUD"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "comment" : "KWPM000260 Planned maintenance with maintenance order (preventive)",
+  "bpmn_model": "Planned Maintenance with maintenance order (preventive)",
+  "source_data": [
+    {
+      "ppi_id": "KWPM000260",
+      "type": "main",
+      "filter": "PLKNZ eq '1'"
+    }
+  ],
+  "version": "1",
+  "process_name": "KWPM000260_01",
+  "event_definitions": {
+    "Create maintenance order": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create maintenance order from maintenance plan": {
+          "pattern": "AKKNZ == '4'",
+          "id": "10"
+        },
+        "Create maintenance order from notification": {
+          "pattern": "AKKNZ == '3'",
+          "id": "20"
+        },
+        "Create maintenance order online": {
+          "pattern": "AKKNZ == ''",
+          "id": "30"
+        },
+        "Create maintenance order with order reference": {
+          "pattern": "AKKNZ == '5'",
+          "id": "40"
+        },
+        "Create maintenance order as subsequent order": {
+          "pattern": "AKKNZ == '2'",
+          "id": "50"
+        }
+      },
+      "include_other_variants": "Create maintenance order via other means"
+    },
+    "Release maintenance order": {
+      "pattern": "FTRMI != @initial",
+      "timestamp": "FTRMI",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Confirm maintenance order initially": {
+      "pattern": "GSTRI != @initial",
+      "timestamp": "GSTRI",
+      "timestamp_offset_minutes": 70,
+      "id": "EVENT_30"
+    },
+    "Confirm maintenance order finally": {
+      "pattern": "GETRI != @initial",
+      "timestamp": "GETRI",
+      "timestamp_offset_minutes": 110,
+      "id": "EVENT_40"
+    },
+    "Set maintenance order to technically completed": {
+      "pattern": "IDAT2 != @initial",
+      "timestamp": "IDAT2",
+      "timestamp_offset_minutes": 140,
+      "id": "EVENT_50"
+    },
+    "Set maintenance order to business completed": {
+      "pattern": "IDAT3 != @initial",
+      "timestamp": "IDAT3",
+      "timestamp_offset_minutes": 170,
+      "id": "EVENT_60"
+    }
+  }
+}

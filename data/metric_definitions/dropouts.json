@@ -1,0 +1,230 @@
+{
+  "metrics": [
+    {
+      "id": "dropout_number",
+      "name": "Number of dropouts",
+      "description": "Number of cases that were started and not successfully completed",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT LAST(event_name) IN (${dropout_events}))\n   )",
+      "aggregationType": "CASE",
+      "category": "Dropouts",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dropout_rate",
+      "name": "Dropout rate",
+      "description": "Percentage of cases that were started and not successfully completed",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE (SELECT LAST(event_name) IN (${dropout_events})))\n/ COUNT(case_id)\n* 100",
+      "aggregationType": "CASE",
+      "category": "Dropouts",
+      "version": "1.0.0"
+    },
+    {
+      "id": "nr_idle_cases",
+      "name": "Number of idle cases",
+      "description": "Number of cases that are open long enough to qualify as dropouts",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE NOW() - (SELECT LAST(end_time)) > DURATION ${dropout_threshold_time}\n\t\tAND (SELECT FIRST(event_name) FILTER (\n\t\t\tWHERE event_name IN (${case_end_events}))) IS NULL\n   )",
+      "aggregationType": "CASE",
+      "category": "Dropouts",
+      "version": "1.0.0"
+    },
+    {
+      "id": "time_spent_on_dropouts",
+      "name": "Amount of time spent on dropouts",
+      "description": "Total cycle time of all cases until the last event before dropout",
+      "signalFragment": "SUM(\n\t(SELECT LAST(end_time)) - (SELECT FIRST(end_time))) FILTER (\n\t\tWHERE (SELECT LAST(event_name) IN (${dropout_events}))\n   )",
+      "aggregationType": "CASE",
+      "category": "Dropouts",
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "dropout_events",
+      "description": "Events that identify a dropout case, for example 'Reject Quote', 'Update Opportunity Stage to: Dead - No Decision'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Update Opportunity Stage to: Dead',\n'Update Opportunity Stage to: Dead - No Opportunity',\n'Update Opportunity Stage to: Dead - No Decision',\n'Update Opportunity Stage to: Dead - Duplicate',\n'Update Opportunity Stage to: 00 Dead - Lost',\n'Update Lead Status to: Archive',\n'Reject Quote'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "'Cancel Settlement',\n'Cancel Execution',\n'Cancel Freight Order (Tech.)'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "case_end_events",
+      "description": "Events that identify when the case is completed, for example 'Incident Closed', 'Clear Invoice', 'Update Opportunity Stage to: Closed Won'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Update Opportunity Stage to: Closed Won',\n'Update Opportunity Stage to: 06 Closed Won (Onboarding)',\n'Update Opportunity Stage to: Closed Lost',\n'Update Opportunity Stage to: Dead',\n'Update Opportunity Stage to: Dead - No Opportunity',\n'Update Opportunity Stage to: Dead - No Decision',\n'Update Opportunity Stage to: Dead - Duplicate',\n'Update Opportunity Stage to: 00 Dead - Lost',\n'Update Lead Status to: Archive',\n'Reject Quote'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "'Close Incident'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH",
+            "PROCURE_TO_PAY",
+            "INVOICE_TO_CASH",
+            "INVOICE_TO_PAY"
+          ]
+        },
+        {
+          "defaultValue": "'Capitalize Asset Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ACQUIRE_TO_ONBOARD"
+          ]
+        },
+        {
+          "defaultValue": "'Technically completed'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "MAKE_TO_STOCK"
+          ]
+        },
+        {
+          "defaultValue": "ILIKE 'Material Movement%'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "'Receive Incoming Payment'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Post Goods Issue'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "'Post Carrier Invoice'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dropout_threshold_time",
+      "description": "Time threshold for considering a case as idle, for example '21days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH",
+            "PROCURE_TO_PAY",
+            "INVOICE_TO_CASH",
+            "INVOICE_TO_PAY",
+            "MAKE_TO_STOCK",
+            "ACQUIRE_TO_ONBOARD",
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "'21days'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    }
+  ]
+}

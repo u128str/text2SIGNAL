@@ -1,0 +1,120 @@
+{ "comment": "KPSD000260 Cash collection for sales (intercompany invoices)",
+  "bpmn_model": "Cash collection for sales (intercompany invoices)",
+  "source_data": [
+    {
+      "ppi_id": "KPSD000260",
+      "type": "main",
+      "filter": "VBTYP eq '5'"
+    }
+  ],
+  "version": "1",
+  "process_name": "KPSD000260_03",
+  "event_definitions": {
+    "Prepare debit memo": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Prepare delivery-related intercompany invoice": {
+        "pattern": "FKTYP == 'I'",
+        "id": "10"
+        },
+        "Prepare order-related intercompany invoice": {
+        "pattern": "FKTYP == 'A'",
+         "id": "20"
+        },
+        "Prepare periodic billing intercompany invoice": {
+        "pattern": "FKTYP == 'D'",
+        "id": "30"
+        }
+      },
+      "include_other_variants": "Prepare intercompany invoice - Others"
+      },
+      "Create intercompany invoice": {
+      "pattern": "CPUDT != @initial",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20",
+      "variants": {
+        "Create intercompany invoice manually via single transaction VF01": {
+        "pattern": "TCODE == 'VF01' and USTYP == 'A'",
+        "id": "10"
+        },
+        "Create intercompany invoice via manual billing due processing": {
+        "pattern": "TCODE == 'VF04'",
+        "id": "20"
+        },
+        "Create intercompany invoice automatically": {
+        "pattern": "TCODE == '' or ((TCODE == 'VF01' or TCODE == 'VF02') and (USTYP ==  'B' or USTYP == 'C'))",
+        "id": "30"
+        },
+        "Create intercompany  invoice via custom transaction": {
+        "pattern": "TCODE.str.startswith('Z') or TCODE.str.startswith('Y') or TCODE.str.startswith('/')",
+        "id": "40"
+         },
+        "Create intercompany invoice automatically from shipment": {
+        "pattern": "TCODE == 'VTFAKT'",
+        "id": "50"
+         }
+        },
+      "include_other_variants": "Create intercompany invoice via other transactions"
+      },
+      "Post intercompany invoice to FI": {
+      "pattern": "CPUDT != @initial",
+      "timestamp": "CPUDT",
+      "timestamp_offset_minutes": 80,
+      "id": "EVENT_30",
+      "variants": {
+        "Post intercompany invoice automatically to FI": {
+        "pattern": "TCODE != 'VFX3' and TCODE != 'VF02' and RFBSK == 'C'",
+        "id": "10"
+        },
+        "Post intercompany invoice to FI after block": {
+          "pattern": "RFBSK == 'A'",
+          "id": "20"
+        },
+        "Post intercompany invoice manually to FI after error resolution via VFX3": {
+        "pattern": "TCODE == 'VFX3' or TCODE == 'VF02'",
+        "id": "30"
+        }
+       },
+      "include_other_variants": "Post intercompany invoice to FI - Others"
+    },
+    "Dun intercompany invoice": {
+      "pattern": "MADAT_B != @initial",
+      "timestamp": "MADAT_B",
+      "timestamp_offset_minutes": 120,
+      "id": "EVENT_40"
+    },
+      "Clear FI-AR item": {
+      "pattern": "AUGDT != @initial",
+      "timestamp": "AUGDT",
+      "timestamp_offset_minutes": 160,
+      "id": "EVENT_50",
+      "variants": {
+        "Clear FI-AR item via payment run F110": {
+          "pattern": "TCODE_AUGBL == 'F110' or TCODE_AUGBL == ''",
+          "id": "10"
+        },
+        "Clear FI-AR item via account maintenance transaction FB1*": {
+          "pattern": "TCODE_AUGBL.str.startswith('FB1')",
+          "id": "20"
+        },
+        "Clear FI-AR item via manual payment": {
+          "pattern": "TCODE_AUGBL.str.startswith('FBZ')",
+          "id": "30"
+        },
+        "Clear FI-AR item via transaction FB05": {
+          "pattern": "TCODE_AUGBL == 'FB05'",
+          "id": "40"
+        },
+        "Clear FI-AR item via reversal": {
+          "pattern": "TCODE_AUGBL == 'FB08' or TCODE_AUGBL == 'VF11'",
+          "id": "50"
+        }
+      },
+      "include_other_variants": "Clear FI-AR item via other transactions"
+    }
+  }
+}

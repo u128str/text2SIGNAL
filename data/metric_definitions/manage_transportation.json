@@ -1,0 +1,187 @@
+{
+  "metrics": [
+    {
+      "id": "carrier_change_rate",
+      "name": "Carrier Change Rate",
+      "description": "Rate of Freight Orders that have a carrier change",
+      "signalFragment": "COUNT(case_id) \n\tFILTER (WHERE event_name MATCHES ('Change Carrier')\n\t)\n/\nCOUNT(case_id) \n*100 ",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "carrier_rejection_rate",
+      "name": "Carrier Rejection Rate",
+      "description": "Rate of Freight Orders that were rejected by Carrier",
+      "signalFragment": "COUNT(case_id) \n\tFILTER (WHERE event_name MATCHES ('Freight Order Rejected by Vendor')\n\t)\n/\nCOUNT(case_id) \n*100 ",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "fsd_cancellation_rate",
+      "name": "Freight Settlement Cancellation Rate",
+      "description": "Rate of Freight Settlements that were cancelled",
+      "signalFragment": "COUNT(case_id) \n\tFILTER (WHERE event_name MATCHES ('Cancel Settlement')\n\t)\n/\nCOUNT(case_id) \n*100 ",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "late_delivery_rate",
+      "name": "Late Delivery Rate",
+      "description": "Rate of Freight Order that were executed a defined period of time after the defined delivery date",
+      "signalFragment": "COUNT(case_id) FILTER(WHERE\n\t(SELECT LAST(end_time) FILTER\n    (WHERE event_name IN ('Confirm Execution Done')))\n\t- \"FRO Delivery Date\"\n\t> DURATION ${late_delivery_duration}\n    AND \"FRO Delivery Status\" = '03')\n/ \nCOUNT(case_id) FILTER (WHERE \"FRO Delivery Status\" = '03')",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "confirmation_cycle_time",
+      "name": "Med. Cycle Time FRO Confirmation by Vendor",
+      "description": "Median Cycle Time from Send Freight Order to Vendor to Freight Order Confirmed by Vendor",
+      "signalFragment": "MEDIAN(\n\t(SELECT LAST (end_time) FILTER (\n     WHERE event_name IN ('Freight Order Confirmed by Vendor'))\n\t) \n- \t(SELECT FIRST (end_time) FILTER (\n     WHERE event_name IN ('Send Freight Order to Vendor'))\n\t)\n)    ",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "execution_cancel_cycle_time",
+      "name": "Med. Cycle Time FRO Creation to Execution Cancellation",
+      "description": "Median Cycle Time Freight Order Creation to Cancel Execution",
+      "signalFragment": "MEDIAN(\n\t(SELECT LAST (end_time) FILTER (\n     WHERE event_name IN ('Cancel Execution'))\n\t) \n- \t(SELECT FIRST (end_time) FILTER (\n     WHERE event_name IN ('Create Freight Order'))\n\t)\n)    ",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "fro_to_fsd_cycle_time",
+      "name": "Med. Cycle Time FRO Creation to FSD Creation",
+      "description": "Median Cycle Time Freight Order Creation to Freight Settlement Document Creation",
+      "signalFragment": "MEDIAN(\n\t(SELECT LAST (end_time) FILTER (\n     WHERE event_name IN ('Create Freight Settlement Document'))\n\t) \n- \t(SELECT FIRST (end_time) FILTER (\n     WHERE event_name IN ('Create Freight Order'))\n\t)\n)    ",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "fsd_cancel_cycle_time",
+      "name": "Med. Cycle Time FSD Creation to Cancel Settlement",
+      "description": "Median Cycle Time Freight Settlement Document Creation to Cancel Settlement",
+      "signalFragment": "MEDIAN(\n\t(SELECT LAST (end_time) FILTER (\n     WHERE event_name IN ('Cancel Settlement'))\n\t) \n- \t(SELECT FIRST (end_time) FILTER (\n     WHERE event_name IN ('Create Freight Settlement Document'))\n\t)\n)    ",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "continuation_after_cancellation",
+      "name": "Number of Cases with Process Continuation after Cancellation",
+      "description": "Number of cases with events happening after a cancellation event",
+      "signalFragment": "COUNT( case_id) FILTER(\n\tWHERE EVENT_NAME MATCHES ('Cancel Freight Order (Tech.)') \n    AND NOT EVENT_NAME MATCHES ('Cancel Freight Order (Tech.)')\n    OR (EVENT_NAME MATCHES ('Cancel Execution') \n\tAND NOT EVENT_NAME MATCHES ('Cancel Execution'))\n\tOR (EVENT_NAME MATCHES ('Cancel Settlement') \n\tAND NOT EVENT_NAME MATCHES ('Cancel Settlement'))\n)",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "fro_cancellation_rate",
+      "name": "Freight Order Cancellation (Tech.) Rate",
+      "description": "Rate of Freight Orders that were technically cancelled",
+      "signalFragment": "COUNT(case_id) \n\tFILTER (WHERE event_name MATCHES ('Cancel Freight Order (Tech.)')\n\t)\n/\nCOUNT(case_id) \n*100 ",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "fro_execution_cancellation_rate",
+      "name": "Freight Order Execution Cancellation Rate",
+      "description": "Rate of Freight Orders that were cancelled during execution",
+      "signalFragment": "COUNT(case_id) \n\tFILTER (WHERE event_name MATCHES ('Cancel Execution')\n\t)\n/\nCOUNT(case_id) \n*100 ",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "fro_on_time_execution",
+      "name": "Freight Orders executed on time",
+      "description": "Number of Freight Orders that were executed on or before the defined delivery date",
+      "signalFragment": "COUNT(case_id) FILTER(WHERE\n\t(SELECT LAST(end_time) FILTER\n\t    (WHERE event_name IN ('Confirm Execution Done')))\n\t\t-\"FRO Delivery Date\" <= DURATION ${late_delivery_duration}\n\tAND \"FRO Delivery Status\" = '03')",
+      "aggregationType": "CASE",
+      "sourceSystems": [
+        "SAP_TM"
+      ],
+      "processTypes": [
+        "MANAGE_TRANSPORTATION"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "late_delivery_duration",
+      "description": "Duration after which time a delivery is defined as late. For example: '1days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'1days'",
+          "sourceSystems": [
+            "SAP_TM"
+          ]
+        }
+      ]
+    }
+  ],
+  "releaseToggle": "RELEASE-GA-2023-Q4"
+}

@@ -1,0 +1,281 @@
+{
+  "metrics": [
+    {
+      "id": "ac_no_fallback_clauses",
+      "name": "Number of Fallback Clauses",
+      "description": "Number of contract clauses with type 'Fallback'",
+      "signalFragment": "SUM(${attribute_for_no_fallback_contract_clauses})",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_no_alternative_clauses",
+      "name": "Number of Alternative Clauses",
+      "description": "Number of contract clauses with type 'Alternative'",
+      "signalFragment": "SUM(${attribute_for_no_alternative_contract_clauses})",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_no_empty_clauses",
+      "name": "Number of Empty Clauses",
+      "description": "Number of contract clauses with type 'Empty'",
+      "signalFragment": "SUM(${attribute_for_no_empty_contract_clauses})",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_no_preferred_clauses",
+      "name": "Number of Preferred Clauses",
+      "description": "Number of contract clauses with type 'Preferred'",
+      "signalFragment": "SUM(${attribute_for_no_preferred_contract_clauses})",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_expiring_contracts",
+      "name": "Number of Expiring Contracts",
+      "description": "Number of contracts expiring in 3 months",
+      "signalFragment": "COUNT(case_id) FILTER\n\t( WHERE \"Contract Expiration Type\" IN ('Fixed') AND\n    \t\"Contract Status\" IN ('Published') AND\n        ( \"Contract Expiration Date\" - NOW() < DURATION ${duration_of_expiring_contracts} )\n    )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_signature_cycle_time",
+      "name": "E-signature cycle time",
+      "description": "Average cycle time for e-signature",
+      "signalFragment": "AVG(\n\t( SELECT LAST(end_time)\n\t\tWHERE event_name IN (${contract_signature_events}) )\n\t-\n    ( SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${request_of_contract_signature_events}) )\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_expired_contracts",
+      "name": "Number of Expired Contracts",
+      "description": "Number of expired contracts",
+      "signalFragment": "COUNT(case_id) FILTER\n\t( WHERE \"Contract Status\" IN ('Expired') OR\n    \t( \"Contract Expiration Date\" - NOW() < DURATION '0days' ) )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_contract_cycle_time",
+      "name": "Contract cycle time",
+      "description": "Average time taken from event 'Create Contract' to event 'Contract is effective'",
+      "signalFragment": "AVG(\n\t( SELECT LAST(end_time)\n\t\tWHERE event_name IN (${contract_is_effective_events}) )\n\t-\n    ( SELECT FIRST(end_time)\n\t\tWHERE event_name IN (${create_contract_events}) )\n)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_rate_of_contracts_created_through_sourcing",
+      "name": "Rate of Contracts created through Sourcing Events",
+      "description": "Percentage of contracts created through sourcing events",
+      "signalFragment": "COUNT(\"case_id\") FILTER\n\t( WHERE ${condition_for_created_from_sourcing_event} )\n\t/\nCOUNT(\"case_id\")\n* 100",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_no_of_contracts_created_through_sourcing",
+      "name": "Number of Contracts created through Sourcing Events",
+      "description": "Number of contracts created through sourcing events",
+      "signalFragment": "COUNT(\"case_id\") FILTER\n\t( WHERE ${condition_for_created_from_sourcing_event} )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_cases_with_preferred_clause",
+      "name": "Number of Contracts with Preferred Clause",
+      "description": "Number of contracts with at least one contract clause with type 'Preferred'",
+      "signalFragment": "COUNT(case_id) FILTER (\n\tWHERE ${attribute_for_no_preferred_contract_clauses} > 0 )",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_avg_no_contract_cluase_types",
+      "name": "Average Number of Contract Clause Types",
+      "description": "Average number of contract clause types per contracts",
+      "signalFragment": "(\n\tCOUNT(1) FILTER (WHERE ${attribute_for_no_alternative_contract_clauses} > 0 ) +\n\tCOUNT(1) FILTER (WHERE ${attribute_for_no_empty_contract_clauses} > 0 ) +\n\tCOUNT(1) FILTER (WHERE ${attribute_for_no_fallback_contract_clauses} > 0 ) +\n\tCOUNT(1) FILTER (WHERE ${attribute_for_no_preferred_contract_clauses} > 0 )\n)\n/\nCOUNT(case_id)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_sum_of_contract_clauses",
+      "name": "Number of Contract Clauses",
+      "description": "Sum of all contract clauses",
+      "signalFragment": "SUM(${attribute_for_no_alternative_contract_clauses}) +\nSUM(${attribute_for_no_empty_contract_clauses}) +\nSUM(${attribute_for_no_fallback_contract_clauses}) +\nSUM(${attribute_for_no_preferred_contract_clauses})",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "ac_avg_no_contract_clauses",
+      "name": "Average Number of Contract Clauses",
+      "description": "Average number of contract clauses per contracts",
+      "signalFragment": "(SUM(${attribute_for_no_alternative_contract_clauses}) +\nSUM(${attribute_for_no_empty_contract_clauses}) +\nSUM(${attribute_for_no_fallback_contract_clauses}) +\nSUM(${attribute_for_no_preferred_contract_clauses}))\n/\nCOUNT(case_id)",
+      "aggregationType": "CASE",
+      "processTypes": [
+        "ARIBA_CONTRACTING"
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "attribute_for_no_fallback_contract_clauses",
+      "description": "Attribute name for number of fallback contract clauses, for example: \"Number of Fallback Contract Clauses\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Number of Fallback Contract Clauses\"",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "attribute_for_no_alternative_contract_clauses",
+      "description": "Attribute name for number of alternative contract clauses, for example: \"Number of Alternative Contract Clauses\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Number of Alternative Contract Clauses\"",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "attribute_for_no_empty_contract_clauses",
+      "description": "Attribute name for number of empty contract clauses, for example: \"Number of Empty Contract Clauses\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Number of Empty Contract Clauses\"",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "attribute_for_no_preferred_contract_clauses",
+      "description": "Attribute name for number of preferred contract clauses, for example: \"Number of Preferred Contract Clauses\"",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Number of Preferred Contract Clauses\"",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "duration_of_expiring_contracts",
+      "description": "Duration of expiring contracts, for example: '90days'",
+      "defaultValues": [
+        {
+          "defaultValue": "'90days'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "contract_signature_events",
+      "description": "List of events representing the contract e-signature, for example: 'Contract Signed', 'Signature of the Contract Withdrawn', 'Signature of the Contract Cancelled', 'Signature of the Contract Denied'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Contract Signed', 'Signature of the Contract Withdrawn', 'Signature of the Contract Cancelled', 'Signature of the Contract Denied'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "request_of_contract_signature_events",
+      "description": "List of events representing the request of contract e-signature, for example: 'Request of Contract Signature'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Request of Contract Signature'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "contract_is_effective_events",
+      "description": "List of events representing the time when the contract becomes effective, for example: 'Contract is effective'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Contract is effective'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "create_contract_events",
+      "description": "List of events representing the creation of the contract, for example: 'Create Contract'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Contract'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "condition_for_created_from_sourcing_event",
+      "description": "Condition to determine that the contract is created from a sourcing event, for example: \"Contract Source\" = 'Sourcing Event'",
+      "defaultValues": [
+        {
+          "defaultValue": "\"Contract Source\" = 'Sourcing Event'",
+          "sourceSystems": [
+            "ARIBA"
+          ]
+        }
+      ]
+    }
+  ],
+  "releaseToggle": "RELEASE_INTERNAL"
+}

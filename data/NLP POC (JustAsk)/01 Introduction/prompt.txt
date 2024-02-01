@@ -1,0 +1,89 @@
+>>>>>>>>  Prompt 1.0 Compliance Example 1: Compliance Rate for Standard Invoice Processing
+
+The data source contains 2 csv files that can be used to construct an event log.
+
+The attributes and data types are documented below.
+
+OTC_EventLog.csv
+----------------------------------------------------------
+Attribute                                 | Data Type
+----------------------------------------------------------
+CaseId                                    | string
+EventName                                 | string
+Timestamp                                 | timestamp
+
+
+OTC_AttributeLog.csv
+----------------------------------------------------------
+Attribute                                 | Data Type
+----------------------------------------------------------
+CaseId                                    | string
+Gross Sales                               | float
+Net Sales                                 | float
+Rejected                                  | float
+Receivable                                | float
+Overdue receivable                        | float
+Credit Score                              | float
+Risk Class                                | string
+Invoice Due Date                          | timestamp
+Dispute Case                              | string
+Days Sales Outstanding                    | float
+Collection Effectiveness Index            | float
+Accounts Receivable Turnover Rate         | float
+Average Days Delinquent                   | float
+Delivered on Time                         | string
+Automation Rate                           | float
+Cost per 1k Revenue                       | float
+FTEs per 1Bil Revenue                     | float
+Credit Reviews per Credit FTE             | float
+Data Set                                  | string
+
+Your goal is to construct SIGNAL query for the above data which would
+show the compliance rate for standard invoicing with payment received. 
+Compliance rate represents the count of cases exhibiting specific patterns / behaviours / sequences of events, divided by the total number of cases. 
+In this example we combine SIGNAL FILTER and MATCHES expressions count cases exhibiting a specific event pattern.
+
+>>>>>>>>  Prompt 1.1 Compliance Example 1: Compliance Rate for Standard Invoice Processing
+
+Your goal is to construct SIGNAL query for the above data which would
+show the compliance rate for standard invoicing with payment received.
+The respective event names are 'Create Invoice' and 'Receive Payment'.
+Compliance rate represents the count of cases exhibiting specific patterns / behaviours / sequences of events, 
+divided by the total number of cases.
+Combine SIGNAL FILTER and MATCHES expressions count cases exhibiting a specific event pattern.
+
+>>>>>>>>>> prompt 2.0 Unpaid Invoices with Non Evaluated Risk Class
+
+Your goal is to construct SIGNAL query for Unpaid Invoices by Risk Class (Standard Process Deviation).
+Count of cases where invoice payment has not been received according to customer risk class. 
+We calculate this by counting the cases exhibiting specific behaviours, 
+specifically the event 'Create Invoice' is not followed by the event 'Receive Payment' or 'Cancel Invoice', 
+and group the result by the case level attribute 'Risk Class'. 
+A behaviour is an expression evaluating case or event level attributes and can be used in a pattern matching expression.
+
+>>>>>>>>>> prompt 2.1 Unpaid Invoices with Non Evaluated Risk Class
+
+Your goal is to construct SIGNAL query for Unpaid Invoices by Risk Class (Standard Process Deviation).
+Count of cases where invoice payment has not been received according to customer risk class event 'Not evaluated'. 
+We calculate this by counting the cases exhibiting specific behaviours, 
+specifically the event 'Create Invoice' is not followed by the event 'Receive Payment' or 'Cancel Invoice', 
+and group the result by the case level attribute 'Risk Class'. 
+A behaviour is an expression evaluating case or event level attributes and can be used in a pattern matching expression.
+
+>>>>>>>>>> prompt 2.2 Unpaid Invoices with Non Evaluated Risk Class
+
+Your goal is to construct SIGNAL query for Unpaid Invoices by Risk Class (Standard Process Deviation).
+Count of cases where invoice payment has not been received according to customer risk class 'Not evaluated'. 
+We calculate this by counting the cases exhibiting specific behaviours, 
+specifically the event 'Create Invoice' is not followed by the event 'Receive Payment' or 'Cancel Invoice', 
+and group the result by the case level attribute 'Risk Class'. 
+A behaviour is an expression evaluating case or event level attributes and can be used in a pattern matching expression.
+
+>>>>>>>>>> prompt 2.3 Unpaid Invoices with Non Evaluated Risk Class
+
+Your goal is to construct SIGNAL query for Unpaid Invoices by Risk Class (Standard Process Deviation).
+Count of cases where invoice payment has not been received according to customer risk class, i.e., 
+their attribute 'Risk Class' has value 'Not evaluated'. 
+We calculate this by counting the 'Unpaid invoices' cases exhibiting specific behaviours, 
+specifically the event 'Create Invoice' is not followed by the event 'Receive Payment' or 'Cancel Invoice'.
+Take into account that apart from the above other events are possible.

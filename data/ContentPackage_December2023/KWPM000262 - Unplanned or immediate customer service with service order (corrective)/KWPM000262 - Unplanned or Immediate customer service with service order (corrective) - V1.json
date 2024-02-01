@@ -1,0 +1,82 @@
+{
+  "comment" : "KWPM000262 Unplanned/Immediate customer service with service order (corrective)",
+  "bpmn_model": "Unplanned or Immediate customer service with service order (corrective)",
+  "source_data": [
+    {
+      "ppi_id": "KWPM000262",
+      "type": "main",
+      "filter": "PLKNZ eq '2' or PLKNZ eq ''"
+    }
+  ],
+  "version": "1",
+  "process_name": "KWPM000262_02",
+  "event_definitions": {
+    "Create customer service order": {
+      "pattern": "ERDAT != @initial",
+      "timestamp": "ERDAT",
+      "timestamp_offset_minutes": 10,
+      "id": "EVENT_10",
+      "variants": {
+        "Create customer service order from customer service plan": {
+          "pattern": "AKKNZ == '4'",
+          "id": "10"
+        },
+        "Create customer service order from notification": {
+          "pattern": "AKKNZ == '3'",
+          "id": "20"
+        },
+        "Create customer service order online": {
+          "pattern": "AKKNZ == ''",
+          "id": "30"
+        },
+        "Create customer service order with order reference": {
+          "pattern": "AKKNZ == '5'",
+          "id": "40"
+        },
+        "Create customer service order as subsequent order": {
+          "pattern": "AKKNZ == '2'",
+          "id": "50"
+        },
+        "Create customer service order for a sales order service item": {
+          "pattern": "AKKNZ == '8'",
+          "id": "60"
+        },
+        "Create customer service order for a sales order repair item": {
+          "pattern": "AKKNZ == '9'",
+          "id": "70"
+        }
+      },
+      "include_other_variants": "Create customer service order via other means"
+    },
+    "Release customer service order": {
+      "pattern": "FTRMI != @initial",
+      "timestamp": "FTRMI",
+      "timestamp_offset_minutes": 40,
+      "id": "EVENT_20"
+    },
+    "Confirm customer service order initially": {
+      "pattern": "GSTRI != @initial",
+      "timestamp": "GSTRI",
+      "timestamp_offset_minutes": 70,
+      "id": "EVENT_30"
+    },
+    "Confirm customer service order finally": {
+      "pattern": "GETRI != @initial",
+      "timestamp": "GETRI",
+      "timestamp_offset_minutes": 110,
+      "id": "EVENT_40"
+    },
+    "Set customer service order to technically completed": {
+      "pattern": "IDAT2 != @initial",
+      "timestamp": "IDAT2",
+      "timestamp_offset_minutes": 140,
+      "id": "EVENT_50"
+    },
+    "Set customer service order to business completed": {
+      "pattern": "IDAT3 != @initial",
+      "timestamp": "IDAT3",
+      "timestamp_offset_minutes": 170,
+      "id": "EVENT_60"
+    }
+  }
+}

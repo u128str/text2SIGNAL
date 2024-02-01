@@ -1,0 +1,431 @@
+{
+  "metrics": [
+    {
+      "id": "avg_cycle_time",
+      "name": "Average cycle time",
+      "description": "Average cycle time calculated from the first to the last event",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time)) - (SELECT FIRST(end_time))\n   )",
+      "aggregationType": "CASE",
+      "category": "Cycle Time",
+      "version": "1.0.0"
+    },
+    {
+      "id": "median_cycle_time",
+      "name": "Median cycle time",
+      "description": "Median cycle time calculated from the first to the last event",
+      "signalFragment": "MEDIAN((SELECT LAST(end_time)) - (SELECT FIRST(end_time)))",
+      "aggregationType": "CASE",
+      "category": "Cycle Time",
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_custom_cycle_time",
+      "name": "Average custom cycle time",
+      "description": "Average cycle time between two events of interest to the user",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) FILTER (\n\t\tWHERE (event_name IN (${end_events}))))\n\t-(SELECT FIRST(end_time) FILTER (\n\t\tWHERE (event_name IN (${start_events}))))\n   )",
+      "aggregationType": "CASE",
+      "category": "Cycle Time",
+      "version": "1.0.0"
+    },
+    {
+      "id": "avg_cycle_time_open_cases",
+      "name": "Average cycle time for open cases",
+      "description": "Average cycle time for all currently open cases",
+      "signalFragment": "AVG(\n\t(SELECT LAST(end_time) - FIRST(end_time))) FILTER (\n\t\tWHERE (SELECT FIRST(event_name) FILTER (\n\t\t\tWHERE event_name IN (${closing_events}))) IS NULL\n   )",
+      "aggregationType": "CASE",
+      "category": "Cycle Time",
+      "version": "1.0.0"
+    },
+    {
+      "id": "planned_actual_cycle_time_ratio",
+      "name": "Ratio between planned and actual average cycle time",
+      "description": "Comparison between planned and actual average cycle time: when > 1 then the actual cycle time is smaller than that planned",
+      "signalFragment": "(DURATION ${threshold_cycle_time})/\nAVG(\n\t(\n\t\t(SELECT LAST(end_time) WHERE event_name\n\t\t\tIN (${end_events})\n\t)\n\t-\n(SELECT FIRST(end_time) WHERE event_name\n\t\t\tIN (${start_events})\n)\n)\n )",
+      "aggregationType": "CASE",
+      "category": "Cycle Time",
+      "version": "1.0.0"
+    },
+    {
+      "id": "percentage_timely_execution",
+      "name": "Percentage of cases executed in less than a given time",
+      "description": "Percentage of cases executed in less than a given time threshold",
+      "signalFragment": "count(case_id)\n\tFILTER (WHERE \n\t\t\t(SELECT LAST(end_time) FILTER (WHERE event_name\n\t\t\tIN (${end_events}))\n\t\t-\n\tFIRST(end_time) FILTER (WHERE event_name\n\t\t\tIN (${start_events}))\n\t\t) < DURATION ${threshold_cycle_time}\n)\n/ COUNT(case_id) FILTER (\n\tWHERE (SELECT BOOL_OR(event_name IN (${end_events})))\n\t) * 100",
+      "aggregationType": "CASE",
+      "category": "Cycle Time",
+      "version": "1.0.0"
+    }
+  ],
+  "variables": [
+    {
+      "name": "start_events",
+      "description": "Events defining the starting point of the process for the cycle time calculation, for example 'Create Sales Order Item'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Create Sales Order Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Create PR Item'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "PROCURE_TO_PAY",
+            "ACQUIRE_TO_ONBOARD"
+          ]
+        },
+        {
+          "defaultValue": "'Create Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INVOICE_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Vendor Creates Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INVOICE_TO_PAY"
+          ]
+        },
+        {
+          "defaultValue": "'Create Process Order'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "MAKE_TO_STOCK"
+          ]
+        },
+        {
+          "defaultValue": "'Create Inspection Lot'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "'Create Lead'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "'Create Incident'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "'Create Meter Reading Order'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Create Sales Order Item'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "'Create Freight Order'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "end_events",
+      "description": "Events defining the end point of the process for the cycle time calculation, for example 'Post Goods Issue'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Post Goods Issue'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Create Goods Receipt'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "PROCURE_TO_PAY",
+            "ACQUIRE_TO_ONBOARD"
+          ]
+        },
+        {
+          "defaultValue": "'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INVOICE_TO_CASH",
+            "INVOICE_TO_PAY"
+          ]
+        },
+        {
+          "defaultValue": "'Actual finish time'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "MAKE_TO_STOCK"
+          ]
+        },
+        {
+          "defaultValue": "ILIKE 'Material Movement%'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "'Assign Lead Owner'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "'Assign Incident to User'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "'Data Plausibility Check Passed'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Post Goods Issue'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "'Post Carrier Invoice'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "closing_events",
+      "description": "Events defining the closing of a case, for example 'Clear Invoice', 'Update Opportunity Stage to: Closed Won', 'Reject Quote'",
+      "defaultValues": [
+        {
+          "defaultValue": "'Clear Invoice'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH",
+            "PROCURE_TO_PAY",
+            "INVOICE_TO_CASH",
+            "INVOICE_TO_PAY",
+            "ACQUIRE_TO_ONBOARD"
+          ]
+        },
+        {
+          "defaultValue": "'Create Usage Decision'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "'Technically completed'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "MAKE_TO_STOCK"
+          ]
+        },
+        {
+          "defaultValue": "'Update Opportunity Stage to: Closed Won',\n'Update Opportunity Stage to: 06 Closed Won (Onboarding)',\n'Update Opportunity Stage to: Closed Lost',\n'Update Opportunity Stage to: Dead',\n'Update Opportunity Stage to: Dead - No Opportunity',\n'Update Opportunity Stage to: Dead - No Decision',\n'Update Opportunity Stage to: Dead - Duplicate',\n'Update Opportunity Stage to: 00 Dead - Lost',\n'Update Lead Status to: Archive',\n'Reject Quote'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "'Close Incident'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "'Receive Incoming Payment'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'Post Goods Issue'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "'Post Carrier Invoice'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "threshold_cycle_time",
+      "description": "Threshold cycle time, for example '4hours'",
+      "defaultValues": [
+        {
+          "defaultValue": "'4hours'",
+          "sourceSystems": [
+            "SAP_ECC",
+            "SAP_S4HANA"
+          ],
+          "processTypes": [
+            "ORDER_TO_CASH",
+            "PROCURE_TO_PAY",
+            "INVOICE_TO_CASH",
+            "INVOICE_TO_PAY",
+            "MAKE_TO_STOCK",
+            "ACQUIRE_TO_ONBOARD",
+            "INSPECT_TO_QUALITY"
+          ]
+        },
+        {
+          "defaultValue": "'4hours'",
+          "sourceSystems": [
+            "SALESFORCE"
+          ],
+          "processTypes": [
+            "LEAD_TO_OPPORTUNITY",
+            "LEAD_TO_QUOTE"
+          ]
+        },
+        {
+          "defaultValue": "'4hours'",
+          "sourceSystems": [
+            "SERVICENOW"
+          ],
+          "processTypes": [
+            "INCIDENT_TO_RESOLUTION"
+          ]
+        },
+        {
+          "defaultValue": "'4hours'",
+          "sourceSystems": [
+            "SAP_ISU"
+          ],
+          "processTypes": [
+            "METER_TO_CASH"
+          ]
+        },
+        {
+          "defaultValue": "'4hours'",
+          "sourceSystems": [
+            "SAP_EWM"
+          ],
+          "processTypes": [
+            "EWM_BASIC_OUTBOUND"
+          ]
+        },
+        {
+          "defaultValue": "'4hours'",
+          "sourceSystems": [
+            "SAP_TM"
+          ],
+          "processTypes": [
+            "MANAGE_TRANSPORTATION"
+          ]
+        }
+      ]
+    }
+  ]
+}
