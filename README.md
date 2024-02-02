@@ -31,7 +31,7 @@ pip install -r requirements.txt
 
 # Documentation on data collection, analysis, test/train split 
 
-[notebooks/README.md](notebooks/README.md)
+[text2signal/README.md](text2signal/README.md)
 
 
 1. Get signals from Different sources :[notebooks/1_Phase_GetSignalsFromSignavio.ipynb](notebooks/1_Phase_GetSignalsFromSignavio.ipynb)
