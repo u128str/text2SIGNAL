@@ -29,9 +29,28 @@ pip install -r requirements.txt
 - Add libraries you are adding to the project (i.e., direct imports) to `pyproject.toml` and run `poetry lock --no-update` to update `poetry.lock` without changing the dependencies.
 - Activate the virtual environment with `poetry shell`.
 
+# Documentation on data collection, analysis, test/train split 
 
-```
-poetry export -f requirements.txt > requirements.txt
-python -m pip install -r requirements.txt
-poetry install
+[notebooks/README.md](notebooks/README.md)
+
+
+1. Get signals from Different sources :[notebooks/1_Phase_GetSignalsFromSignavio.ipynb](notebooks/1_Phase_GetSignalsFromSignavio.ipynb)
+2. Select samples which can be validated against real Signavio Process [notebooks/2_Phase_LoadSignalsFromCSV.ipynb](nonotebooks/2_Phase_LoadSignalsFromCSV.ipynb)
+3. Augment data with LLM-generated description Create Train/test  JSONL [notebooks/3_Phase_LLMexperiments_withSubsetSignalsFromCSV.ipynb](notebooks/3_Phase_LLMexperiments_withSubsetSignalsFromCSV.ipynb)
+   a. Requires : One needs to edit [**text2siganl/eval_reciprocal.py**](text2signal/eval_reciprocal.py)
+    Insert above-created Folder name e.g.:  `inputfolder="training_data_3_with_validated_signals_2023-12-06T11_08_27"`
+    Select LLM model `'deployment_id': "gpt-4"` to run
+
+```py
+# INPUT DIR is defined here
+inputfolder="training_data_10_with_validated_signals_2023-12-05T13_12_55"
+inputfolder="training_data_3_with_validated_signals_2023-12-06T11_08_27"
+...
+config = {
+        'deployment_id': "gpt-4", #"gpt-4-32k", 
+        #'anthropic-claude-v2-100k', #"gpt-4-32k",
+        # #'anthropic-claude-v1-100k', 
+...
+
+$ python eval_reciprocal.py 
 ```
