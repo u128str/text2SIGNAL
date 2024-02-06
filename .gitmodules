@@ -1,0 +1,3 @@
+[submodule "ft-training-external-gits/llm-fine-tuning-lab"]
+	path = ft-training-external-gits/llm-fine-tuning-lab
+	url = https://github.tools.sap/DL-COE/llm-fine-tuning-lab

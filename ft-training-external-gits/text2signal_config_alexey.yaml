@@ -1,0 +1,30 @@
+defaults:
+  - text2signal_config
+  - model: model
+  - data: text2signal_tuning_data
+  - trainer: lora_starcoder
+  - tracker: tracker
+  - _self_
+
+
+output_path: '/results/local_dataset_out_11_epochs_codellama-lr-05'
+
+tracker:
+    experiment_name: "text2signal"
+    run_name_suffix: "lora-11-epochs"
+    tracking_uri: "/results/tracker_11_epochs_codellama-lr-05"
+
+trainer:
+  load_in_4bit: false
+  load_in_8bit: true
+  val_check_interval: 1000
+  max_epochs: 11
+  learning_rate: 1e-5
+  lora_params:
+      lora_r: 64
+      lora_alpha: 32
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .

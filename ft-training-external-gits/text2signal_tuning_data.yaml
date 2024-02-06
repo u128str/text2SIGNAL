@@ -1,0 +1,37 @@
+batch_size: 4
+max_length: 1536
+accumulate_grad_batches: 4
+num_workers: 8
+mask_inputs: True
+mmlu_evaluation_path: null
+hf_dataset: null
+train_split_name: null
+val_split_name: null
+test_split_name: null
+train_path: '/mount/data/text2signal_train_5715.jsonl'
+val_path:   '/mount/data/text2signal_test_1000.jsonl'
+test_path:  '/mount/data/text2signal_test_1000.jsonl'
+query_template: >
+  <s>[INST]
+  You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite. 
+  SIGNAL stands for Signavio Analytics Language. 
+  SIGNAL is a dialect of SQL.
+  Your goal is to help users craft SIGNAL 
+  queries and understand the SIGNAL language better. 
+  
+  
+  ### Instruction:
+  
+  Task to solve:
+  
+  Construct SIGNAL expression querying given textual description in Input.
+  Expected output results are in JSON format.
+  
+  
+  ### Input:
+  {description_llm}
+  
+  ### Output:
+  [/INST]
+response_template: >
+  {{ "query":"""{query}"""}}</s>

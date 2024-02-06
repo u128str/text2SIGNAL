@@ -1,0 +1,401 @@
+{
+    # LuminousConfig
+    # Base config class providing general settings for non-mutability and json serialization options
+
+    #
+    "runner":     {
+        # RunnerConfig
+        # Base config class providing general settings for non-mutability and json serialization options
+
+        # Type of the runner to be invoked.
+        "runner_type": "pdsh",
+
+        # Hostfile path (in MPI style) that defines the resource pool available to the job (e.g., worker-0 slots=4)
+        "hostfile": null,
+
+        # List of hosts alternative to hostfile (e.g., worker-0 slots=4)
+        "hosts": [
+            "localhost",
+        ],
+
+        # (optional) Port used by PyTorch distributed for communication during training.
+        "master_port": 29500,
+
+        # optional) IP address of node 0, will be inferred via 'hostname -I' if not specified.
+        "master_addr": null,
+
+        # User script to launch
+        "script": "/aleph_alpha_luminous/src/luminous/train.py",
+
+        # Nunber of GPUs per node, if used if not defined in hosts' slots
+        "default_gpu_count": 2,
+
+        # docker configuration in case using a docker runner type
+        "docker_config": {
+            # RunnerDockerConfig
+            # Base config class providing general settings for non-mutability and json serialization options
+
+            # Name of the docker container to be started
+            "docker_container": "",
+            #"nvcr.io/l9lkbxzngzmv/aa-ft-02:latest",
+
+            # Run docker command with sudo
+            "docker_sudo": false,
+
+            # List of directories to be mounted in the docker under the same path
+            "docker_mounts": [
+                ["<your mounts to data and everything else>", "<data_path>"]]
+        }
+
+    },
+
+    #
+    "logger":     {
+        # LoggerConfig
+        # Base config class providing general settings for non-mutability and json serialization options
+
+        #
+        "log_level": "info",
+
+        #
+        "log_dir": "/results/aa-ft-log00",
+
+        #
+        "use_wandb": false,
+
+        # define the global ranks of process to write to wandb. If the list is ommitted or None only rank 0 will write to wandb.
+        "wandb_ranks": null,
+
+        # url of the wandb host
+        "wandb_host": "https://api.wandb.ai",
+
+        # Team name for Weights and Biases.
+        "wandb_team": "",
+
+        # wandb project name
+        "wandb_project": "finetuning-tests",
+
+        # wandb project name
+        "wandb_group": "first-base-full",
+
+        # set wandb api key in order not to perform a wandb login first
+        "wandb_api_key": "",
+
+        #
+        "use_tensorboard": true,
+
+        # define the global ranks of process to write to tensorboard. If the list is ommitted or None only rank 0 will write to tensorboard.
+        "tensorboard_ranks": null
+    },
+
+    #
+    "topology":     {
+        # TopologyConfig
+        # Base config class providing general settings for non-mutability and json serialization options
+
+        # Slices the model onto different GPUs for lower memory consumption (Layer Parallelism)
+        "model_parallel_size": 1,
+
+        # Slices Layers onto different GPUs for lower memory consumption (Pipeline Parallelism)
+        "pipe_parallel_size": 1,
+
+        # Splits the batch onto different GPUs for lower memory consumption (Data Parallelism)
+        "data_parallel_size": 2,
+
+
+        # global train batch size including all gradient accumulation steps
+        "global_batch_size": 32,
+
+        # Batch size for one training micro step. This is used when the global_batch_size cannot fit in GPU memory to determine the number of gradient accumulation steps.
+        "micro_batch_size": 2,
+
+        # Number of gradient accumulation. This is used when the global_batch_size cannot fit in GPU memory to determine the number of gradient accumulation steps.
+        "gradient_accumulation_steps": null,
+        
+        # Method to assign layers to pipeline stages
+        "pipe_partition_method": "uniform",
+
+        #
+        "activation_checkpointing_type": "every_layer"
+    }
+,
+
+    #
+    "optimizer":     {
+        # AdamWOptimizerConfig
+        # Base config class providing general settings for non-mutability and json serialization options
+
+        # First coefficient used for computing running averages of gradient and its square
+        "beta1": 0.9,
+
+        # Second coefficient used for computing running averages of gradient and its square
+        "beta2": 0.95,
+
+        # term added to the denominator to improve numerical stability (default: 1e-8)
+        "eps": 1.0e-08,
+
+        # clip global l2 grads to this value, deactivate if 0.0
+        "gradient_clipping": 1.0,
+
+        # number of floating points to allreduce in one go
+        "allreduce_bucket_size": 500000000,
+
+        # Configuration of the loss scaler
+        "loss_scaler":         {
+            # LossScalerConfig
+            # Loss scaling is designed to combat the problem of underflowing gradients encountered at long
+            # times when training fp16 networks.  Dynamic loss scaling begins by attempting a very high loss
+            # scale.  Ironically, this may result in OVERflowing gradients.
+
+            # The optimizer then skips the update step for this particular iteration/minibatch,
+            # and the loss scaler adjusts the loss scale to a lower value.
+            # If a certain number of iterations occur without overflowing gradients detected,
+            # the loss scaler increases the loss scale once more.
+            # In this way the  loss scaler attempts to "ride the edge" of
+            # always using the highest loss scale possible without incurring overflow.
+
+            #
+            "enable": false,
+
+            # Initial loss scale
+            "initial_scale": 4294967296.0,
+
+            #
+            "window": 1000,
+
+            #
+            "hysteresis": 2,
+
+            #
+            "consecutive_hysteresis": false,
+
+            #
+            "min_scale": 1.0,
+
+            #
+            "factor": 2.0
+        }
+,
+
+        # enable zero stage 1 optimizer
+        "zero": true
+    }
+,
+
+    #
+    "learning_rate_scheduler":     {
+        # LearningRateSchedulerConfig
+        # Base config class providing general settings for non-mutability and json serialization options
+
+        # Base learning rate; this is also the maximum learning rate.
+        "learning_rate": 0.00005,
+
+        # Minimum learning rate below which a step's learning rate will never drop. This is the final learning rate after the schedule has been applied.
+        "learning_rate_minimum": 0.0,
+
+        # Shape of the learning rate decay after warm up
+        "learning_rate_decay_style": "cosine",
+
+        # Number of iterations within which the learning rate follows the schedule. Warmup iterations are included.
+        "learning_rate_decay_iters": 200000,
+
+        # Number of warmup steps during which the learning rate is linearly increased to the maximum learning rate. The actual schedule starts after the warmump steps.
+        "learning_rate_warmup_steps": 500
+    }
+,
+
+    #
+    "training":     {
+        # TrainingConfig
+        # Base config class providing general settings for non-mutability and json serialization options
+
+        #
+        "weight_decay": 0.01,
+
+        "finetune": true,
+        "finetunable_parameters": ["text2signal"],
+        "finetunable_parameters_exclude": null
+    }
+,
+
+   "trainer":     {
+        # TrainerConfig
+        # Base config class providing general settings for non-mutability and json serialization options
+
+        # directory for saving checkpoints
+        "save_dir": "/results/aa-luninous-base-weights-ft-00",
+
+
+        # save a checkpoint every 'save_interval' steps to save_dir, iff save_dir is defined
+        "save_interval": 100,
+
+        # directory for loading checkpoints
+        "load_dir": "/results/aa-luninous-base-weights/luminous-base-2022-04",
+
+        # The number of training iterations to execute
+        "train_iterations": 10000,
+
+        # The number of evaluation iterations to execute at each evaluation interval
+        "eval_iterations": 10,
+
+        # The number of steps to execute before running an evaluation
+        "eval_interval": 100,
+
+        #
+        "seed": 42,
+
+        # error out if a checkpoint could not be loaded
+        "assert_checkpoint_loaded": True,
+
+        "load_optimizer_states": False,
+        "allowed_missing_keys_in_checkpoint": ["text2signal"],
+        "allowed_unexpected_keys_in_checkpoint": [
+            "image_encoder",
+            "symmetric",
+            "softprompt_summarization"
+        ],
+    }
+,
+
+    #
+    "profiler":     {
+        # ProfilerConfig
+        # Base config class providing general settings for non-mutability and json serialization options
+
+        # number of to be timed steps, will not run profiling if set to 0
+        "profile_steps": 0,
+
+        # start of profiler after this many steps of the current process. Not starting at step 0 give the GPUs time to (physically) warm up and only starts timing after initial meta data has been synced
+        "profile_start_at_step": 10,
+
+        # start of profiler after this many steps of the current process. Not starting at step 0 give the GPUs time to (physically) warm up and only starts timing after initial meta data has been synced
+        "profiler_output": null
+    }
+,
+
+    #
+    "luminous_architecture":     {
+        # LuminousArchitectureConfig
+        # Luminous architecture config object containing non-mutable (constant) architecture specific configurations
+
+        # Size of the vocabulary before padding; this matches the vocab size of the tokenizer
+        "vocab_size": 128000,
+        "vocab_file": "/aleph_alpha_luminous/tests/files/alpha-001-128k.json",
+
+        # Luminous hidden size.
+        "hidden_size": 5120,
+
+        # Number of luminous layers
+        "num_layers": 40,
+
+        # Number of attention heads
+        "num_attention_heads": 40,
+
+        #
+        "rotary_embedding_base": 10000,
+
+        # Sequence length in number of tokens in one sample on which a train job is run; at inference time the seqence length of a sample should (usually) not be exceeded.
+        "sequence_length": 2048,
+
+        #
+        "masked_softmax":         {
+            # MaskedSoftmaxConfig
+            # Base config class providing general settings for non-mutability and json serialization options
+
+            # select an optimization kernel, if anything other than torch is selected the optional gpu_optimization dependencies need to be installed
+            "kernel": "torch",
+
+            # Cast tensor to fp32 before softmaxing for higher precision; this cannot be applied for fused kernels
+            "softmax_in_fp32": false,
+
+            # Scale with which scores are multiplied (not divided!) before softmax is applied. If scale is applied setting also softmax_in_fp32 is likely helpful.
+            "scale": 1.0
+        },
+
+        #
+        "layernorm":         {
+            # LayerNormConfig
+            # Base config class providing general settings for non-mutability and json serialization options
+
+            # select an optimization type for the layer norm call, if anything other than torch is selected the optional gpu_optimization dependencies need to be installed
+            "optimization_type": "torch",
+
+            # A value added to the denominator for numerical stability
+            "layernorm_epsilon": 1e-05
+        },
+
+        #
+        "precision": "bfloat16",
+
+        # dropout applied after the embedding layer
+        "dropout_embedding": 0.1,
+
+        # dropout applied to the attention probabilities
+        "dropout_attention_probs": 0.1,
+
+        # dropout applied after the embedding layer
+        "dropout_after_attention": 0.1,
+
+        # dropout applied after the embedding layer
+        "dropout_after_mlp": 0.1,
+
+        #
+        "bias_names": null,
+        #
+        "bias_name": null,
+
+        # add image encoder to input embedding
+        "image_encoder": false,
+
+        # dropout applied after the image encoder projection
+        "dropout_image_encoder": 0.0,
+
+        #
+        "softprompts": null,
+
+        #
+        "softprompt_name": null,
+
+        #
+        "adapters": [
+            {"name": "image_encoder", "attention_downsampling_factor": 0.25, "mlp_downsampling_factor": 0.25},
+            {
+                    "name": "text2signal",
+                    "attention_downsampling_factor": 0.25,
+                    "mlp_downsampling_factor": 0.25,
+                    "init_std": 1e-05
+                }
+            ],
+
+        #
+        "adapter_name": "text2signal",
+
+        #
+        "embedding_heads": null,
+
+        #
+        "embedding_head": null
+    }
+,
+
+    #
+    "data":     {
+        # DataConfig
+        # Data config object containing non-mutable (constant) dataset specific configurations
+
+        "legacy_dataset": False,
+        "finetuning_dataset": True,
+
+        # Traing data prefix pointing to tokenized memory map
+        "data_prefixes": [
+            "/results/data/text2signal_train_5715_aa.json"
+        ],
+        "validation_data_prefixes": [
+            "/results/data/text2signal_test_1000_aa.json"
+        ],
+
+
+
+    }
+
+}
