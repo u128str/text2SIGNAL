@@ -1,0 +1,5 @@
+workspaces:
+  Process AI: "b0f07deabd3140aea5344baa686e0d84"
+  Solutions Demo Workspace: "ccf98b692d1d4e0aa895df3aab8cd905"
+
+root_dir: "data/temp"
