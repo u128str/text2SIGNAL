@@ -3,16 +3,16 @@ repos:
   rev: v4.4.0
   hooks:
     - id: check-added-large-files
-      exclude: '^data/'
+      exclude: '^(?:data|notebooks)/'
       args: [ --maxkb=50000 ]
     - id: check-toml
     - id: check-yaml
     - id: end-of-file-fixer
-      exclude: '^data/'
+      exclude: '^(?:data|notebooks)/'
     - id: mixed-line-ending
-      exclude: '^data/'
+      exclude: '^(?:data|notebooks)/'
     - id: trailing-whitespace
-      exclude: '^data/'
+      exclude: '^(?:data|notebooks)/'
       args:
         - --markdown-linebreak-ext=md
 - repo: https://github.com/astral-sh/ruff-pre-commit
