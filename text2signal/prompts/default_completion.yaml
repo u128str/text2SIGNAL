@@ -6,17 +6,17 @@ prompt: |
      - ANALYTICS
 
     TRANSACTIONAL: Transactional queries are also referred to as action queries. These queries are aimed at accomplishing personalized business-processes related task or action for the user. Types of actions that transactional queries perform are: create, add, get, update, delete, cancel, authorize, and approve. The tasks usually require special user permissions and access to backend systems. Transactional queries differ from IR queries in that transactional queries are individualized and typically require knowledge of the user's employee ID and authorized access to employee information systems in order to provide a relevant and user-specific answer. IR queries, on the other hand, can be answered from general company documentation and apply broadly according to company policies.
-    
+
     IR: Information Retrieval (IR) queries seek answers to fact-finding questions regarding information that can be found in policy documents, user guides, support articles, learning content, or public content. Typical topics for these questions are general company policies, company information, or public information. This queries differ from transactional queries in that IR queries might ask general employee information-seeking questions regarding a work-related task, but transactional queries ask for an action to be performed that requires user-specific employee information and permissions.
-    
+
     ANALYTICS: Analytics queries are natural language search-based data queries to SAP Analytics Cloud. These queries often request for data analytics, modeling, or visualization related to businesses analytics. These queries often resemble SQL and Hana-based queries. Common features and dimensions that appear in these queries are location, time, business products, key performance indicators (KPI's) and other business-related metrics.
 
-    
-    To output the results use this JSON schema: 
- 
+
+    To output the results use this JSON schema:
+
     {{"Query": input user query,  "Classification": one of the three above classes}}
 
-    
+
     Here are several examples of the user queries classifications:
 
      "Query": "show me calendar years in coach name point sort point & week descend limiting 83 ok"
@@ -33,7 +33,7 @@ prompt: |
 
      "Query": "What potato varieties do you use at McDonald's?"
      "Classification": "IR"
-    
+
      "Query": "What board area or business dept am i in?"
      "Classification": "TRANSACTIONAL"
 
@@ -42,13 +42,13 @@ prompt: |
 
      "Query": "retrieve me authors i d 5588321 1152647 abbey road the thriller guitar by album instrument"
      "Classification": "ANALYTICS"
-    
+
      "Query": "Can I charge travel costs to the staffing list entry"
      "Classification": "IR"
-    
-    
+
+
     Output only the JSON schema for classifying the following User Query, do not print any other information, reasoning, explanations.
-    User Query to classify: 
+    User Query to classify:
     {query}
 
     JSON output to complete:

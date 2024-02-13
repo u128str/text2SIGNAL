@@ -41,13 +41,13 @@ You are each working on one of a number of POC’s leveraging LLM/ML tech to pro
 Let’s get together and discuss how we can support each other with a central training dataset.
 Fareed has offered to support us with training data coming from various value accelerator resources and has shared some links to various github respositories that contain:
 
-SIGNAL metrics developed for value accelerators. 
-Each query is associated with a human-readable explanation 
+SIGNAL metrics developed for value accelerators.
+Each query is associated with a human-readable explanation
 20 metrics per accelerator
 Example: https://github.com/signavio/pex-metric-library/blob/main/metric_definitions/invoice_to_cash.json
 Documentation for the same metrics in .md format
 Example: https://github.com/signavio/pi-connector-documentation/blob/master/Metrics%20library/Invoice-to-Cash/Invoice-to-Cash.md
-Dashboards developed for accelerators. 
+Dashboards developed for accelerators.
 JSON files containing all the formulas and configs for each widget, including the description and title, which are in human readable form.
 Example: https://github.tools.sap/SAP-Signavio-PIA/pia-dashboards
 </details>
@@ -75,9 +75,9 @@ Two criteria are applied:
 - *HTML->TXT* docs is about ~29k gpt4 tokens:
 
 ```js
-  {'total_tokens': '29245', 
-  'total_cost_$': '0.043951000000000004', 
-  'prompt_tokens': '29078', 
+  {'total_tokens': '29245',
+  'total_cost_$': '0.043951000000000004',
+  'prompt_tokens': '29078',
   'completion_tokens': '167',
   'latency': 34.23758792877197}
 ```
@@ -91,9 +91,9 @@ This is one of the prompts used where some additional requirements were added: [
 
 ```yaml
 prompt: |
-    You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite. 
-    SIGNAL stands for Signavio Analytics Language. Your goal is to help users craft SIGNAL 
-    queries and understand the SIGNAL language better. Here is a dump of 
+    You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite.
+    SIGNAL stands for Signavio Analytics Language. Your goal is to help users craft SIGNAL
+    queries and understand the SIGNAL language better. Here is a dump of
     the technical documentation:
 
     {tech_doc}
@@ -106,10 +106,10 @@ prompt: |
 
     Follow these instructions literally:
     - Use strict SIGNAL syntax.
-    - When referencing column in GROUP BY clauses, please use column index. 
+    - When referencing column in GROUP BY clauses, please use column index.
     - Instead of the HAVING clause, use a subquery with a WHERE clause.
-    - Explain how the query was constructed. 
-    
+    - Explain how the query was constructed.
+
 output_parser: pydantic_custom
 
 ```
@@ -125,7 +125,7 @@ Example of the data used taken from
 - **{tech_doc}** [data/text2signal-1-156.txt](data/text2signal-1-156.txt)
 
 - **{signal_description}** [data/GT/text4signal_007.json](data/GT/text4signal_007.json):
-  
+
 ```text
 "Count of cases where invoice payment has not been received and customer risk class has not been assessed. We calculate this by counting the cases exhibiting specific behaviours, specifically where the case level attribute 'Risk Class' = 'Not Evaluated' and the event 'Create Invoice' is not followed by the event 'Receive Payment' or 'Cancel Invoice'. A behaviour is an expression evaluating case or event level attributes and can be used in a pattern matching expression."
 
@@ -178,7 +178,7 @@ predictions/
 
 **?-** means that LLM predicted syntax error can be easily corrected.
 
-## II. Signal2Text -> Text2Signal evaluation results (manual substitution) 
+## II. Signal2Text -> Text2Signal evaluation results (manual substitution)
 
 In this study we use LLM twice.
 In the first phase we provide a valid SIGNAL query and ask LLM to summarize it.
@@ -190,9 +190,9 @@ This is one of the prompts used where some additional requirements were added: [
 
 ```yaml
 prompt: |
-    You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite. 
-    SIGNAL stands for Signavio Analytics Language. Your goal is to help users craft SIGNAL 
-    queries and understand the SIGNAL language better. Here is a dump of 
+    You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite.
+    SIGNAL stands for Signavio Analytics Language. Your goal is to help users craft SIGNAL
+    queries and understand the SIGNAL language better. Here is a dump of
     the technical documentation:
 
     {tech_doc}
@@ -200,17 +200,17 @@ prompt: |
 
     Task to solve:
 
-    Summarize the given SIGNAL query as a human-readable description. 
-    SIGNAL query: 
-    {signal} 
-     
+    Summarize the given SIGNAL query as a human-readable description.
+    SIGNAL query:
+    {signal}
+
     Form the output in JSON format:
     {{
     "case": {case},
     "query": {signal},
     "signal_description": text of the Signal summary should be here.
-    }} 
-    
+    }}
+
 output_parser: pydantic_custom
 ```
 
@@ -241,11 +241,11 @@ In the second phase we use the LLM-generated summarizations/descriptions to gene
 |    Syntax    |  ok | ok | ok | ?  | Err | ?  | Err | ?   | Err |
 |    Result    |  ok | ok | ok | ok | Err | ok | Err | Err | Err |
 |  **gpt4-32k** p1||||||||||  24-10-2023 8:00 |
-|    Syntax    |  ok | Err |  ?  | ?  |  Err | ?  | Err | Err | Err | 
-|    Result    |  ok | Err |  ok | ok |  Err | ok | Err | Err | Err | 
+|    Syntax    |  ok | Err |  ?  | ?  |  Err | ?  | Err | Err | Err |
+|    Result    |  ok | Err |  ok | ok |  Err | ok | Err | Err | Err |
 |  **gpt4-32k** pr3||||||||||  24-10-2023 13:00 |
 |    Syntax    |  ok | ok | Err | Err | Err | ?  | ok  | ok  | ok  |
-|    Result    |  ok | ok | Err | Err | Err | ok | Err | Err | ?Err| 
+|    Result    |  ok | ok | Err | Err | Err | ok | Err | Err | ?Err|
 
 
 ## III. Text2Signal with Retrieval-Augmented Generation approach
@@ -271,9 +271,9 @@ For comparison prompt with K=4 pieces of documentation each 1000 tokens long is 
 ```js
 K=26 # Max for 1000-long chunks
 {
-Total Cost (USD): $0.011414500000000001, 
-'datetime': '2023-11-02T14_26_27', 
-'latency': 20.634613037109375, 
+Total Cost (USD): $0.011414500000000001,
+'datetime': '2023-11-02T14_26_27',
+'latency': 20.634613037109375,
 "completion_tokens": 425,
 "prompt_tokens": 7043,
 "total_tokens": 7468
@@ -281,9 +281,9 @@ Total Cost (USD): $0.011414500000000001,
 
 K=5
  {
-Total Cost (USD): $0.003647, 
-'datetime': '2023-11-02T11_51_00', 
-'latency': 19.12104296684265, 
+Total Cost (USD): $0.003647,
+'datetime': '2023-11-02T11_51_00',
+'latency': 19.12104296684265,
 "completion_tokens": 433,
 "prompt_tokens": 1854,
 "total_tokens": 2287
@@ -299,9 +299,9 @@ The respective RAG prompt reads [SignavioText2Signal/prompts/defaultRAG.yaml](pr
 
 ```yaml
 prompt: |
-    You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite. 
-    SIGNAL stands for Signavio Analytics Language. Your goal is to help users craft SIGNAL 
-    queries and understand the SIGNAL language better. 
+    You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite.
+    SIGNAL stands for Signavio Analytics Language. Your goal is to help users craft SIGNAL
+    queries and understand the SIGNAL language better.
 
     Task to solve:
 
@@ -309,10 +309,10 @@ prompt: |
 
     Follow these instructions literally:
     - Use the dump of the SIGNAL technical documentation below to create task query with strict SIGNAL syntax.
-    - When referencing column in GROUP BY clauses, please use column index. 
+    - When referencing column in GROUP BY clauses, please use column index.
     - Instead of the HAVING clause, use WHERE clause.
-    - Explain how the query was constructed. 
-    
+    - Explain how the query was constructed.
+
     Here is a dump of the SIGNAL technical documentation:
 
     {tech_rag}
@@ -337,7 +337,7 @@ output_parser: pydantic_custom
 
 # Discussion
 
-## TEXT2SIGNAL 
+## TEXT2SIGNAL
 
 <details>
 <summary><i>Query 4. Use-case: Variants. Example 2. Top X Variants by Percentile
@@ -346,14 +346,14 @@ output_parser: pydantic_custom
 Prompt original (as in PoC) version:
 
 ```JS
-{"case":"Top X Variants by Percentile", 
+{"case":"Top X Variants by Percentile",
 "signal_description":"Your goal is to construct SIGNAL query with maximum cycle time in milliseconds of 90% of all cases within each variant. For the purposes of the demo, we limit the results to the top 5 results. A process variant is a unique sequence of recorded events in a process (sometimes referred to as a trace)."}
 ```
 
 Result in **WRONG** SIGNAL format:
 
 ```sql
-SELECT 
+SELECT
     event_name AS "Variant",
     PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY (SELECT LAST(end_time) - FIRST(end_time))) AS "90% Cycle Time (ms)"
 FROM THIS_PROCESS
@@ -365,7 +365,7 @@ LIMIT 5
 Improved prompt: To resolve the above problem one has to add instruction: `When referencing column in GROUP by closures Please use column index.`
 
 ```sql
-SELECT 
+SELECT
     event_name AS "Variant",
     PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY (SELECT LAST(end_time) - FIRST(end_time))) AS "90% Cycle Time (ms)"
 FROM THIS_PROCESS
@@ -381,7 +381,7 @@ LIMIT 5
 
 
 - *GT*  Query 6: Compliance Rate for Standard Invoice Processing
-  
+
 ```js
 {
     "category": "Compliance",
@@ -395,17 +395,17 @@ Input prompt:
 
 ```YAML
 prompt: |
-    You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite. 
-    SIGNAL stands for Signavio Analytics Language.Your goal is to help users craft SIGNAL 
-    queries and understand the SIGNAL language better. Here is a dump of 
+    You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite.
+    SIGNAL stands for Signavio Analytics Language.Your goal is to help users craft SIGNAL
+    queries and understand the SIGNAL language better. Here is a dump of
     the technical documentation:
 
     {{tech_doc}}
-    
-    Your goal is to construct SIGNAL query for the above data which would show the compliance 
-    rate for standard invoicing with payment received. The respective event names are 'Create Invoice' and 
-    'Receive Payment'. Compliance rate represents the count of cases exhibiting 
-    specific patterns / behaviours / sequences of events, divided by the total number of cases. 
+
+    Your goal is to construct SIGNAL query for the above data which would show the compliance
+    rate for standard invoicing with payment received. The respective event names are 'Create Invoice' and
+    'Receive Payment'. Compliance rate represents the count of cases exhibiting
+    specific patterns / behaviours / sequences of events, divided by the total number of cases.
     Combine SIGNAL FILTER and MATCHES expressions count cases exhibiting a specific event pattern.
 
 output_parser: pydantic_custom
@@ -424,11 +424,9 @@ In this query, the MATCHES expression is used to identify the specific event pat
 Relevant part of the LLM answer:
 
 ```JS
-SELECT 
+SELECT
     COUNT(case_id) FILTER (WHERE event_name MATCHES ('Create Invoice' ~> 'Receive Payment')) / COUNT(case_id) * 100 AS "Compliance Rate"
 FROM THIS_PROCESS
 ```
 
 </details>
-
-
