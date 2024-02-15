@@ -43,7 +43,19 @@ pip install -r requirements.txt
 - Add libraries you are adding to the project (i.e., direct imports) to `pyproject.toml` and run `poetry lock --no-update` to update `poetry.lock` without changing the dependencies.
 - Activate the virtual environment with `poetry shell`.
 
-# Documentation on data collection, analysis, test/train split
+### Run the code
+Create a .env file in the root directory of the project with the following content:
+
+```
+MY_SIGNAVIO_PASSWORD=*****
+MY_SIGNAVIO_NAME=******@sap.com
+```
+
+
+### Using Jupyter Notebooks
+Follow the instructions within the notebook to make API calls to Signavio workspaces and load data from saved JSON files.
+
+#### Documentation on data collection, analysis, test/train split
 
 [text2signal/README.md](text2signal/README.md)
 
@@ -76,3 +88,8 @@ These refactored notebooks are designed to replace the original first and second
 
 [notebooks/Refactored_1_Phase_GetSignalsFromSignavio.ipynb](notebooks/Refactored_1_Phase_GetSignalsFromSignavio.ipynb)
 [notebooks/Refactored_2_Phase_LoadSignalsFromCSV.ipynb](notebooks/Refactored_2_Phase_LoadSignalsFromCSV.ipynb)
+
+
+
+### Using Python Scripts in text2signal/data
+You can also run Python scripts located in the `text2signal/data` directory for more specific tasks. These scripts sometimes require configuration files located in `text2signal/configs`. Some scripts may require you to modify or provide specific configuration files in `text2signal/configs`. Refer to the script's main method for details on the required configurations.
