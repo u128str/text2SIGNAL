@@ -5,7 +5,7 @@
 # python -m venv ll-bnch-new
 # source llm-bnch/bin/activate
 # pip install sap-llm-eval-toolkit --extra-index-url https://int.repositories.cloud.sap/artifactory/api/pypi/proxy-deploy-releases-hyperspace-pypi/simple --trusted-host int.repositories.cloud.sap --index-url  https://int.repositories.cloud.sap/artifactory/api/pypi/build-releases-pypi/simple
-sap-llm-eval-toolkit
+sap-llm-eval-toolkit==0.1.11
 # for jsons/string comparisons
 deepdiff
 sentence-transformers
