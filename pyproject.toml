@@ -21,6 +21,9 @@ matplotlib = "^3.8.2"
 sqlglot = "^20.11.0"
 transformers = "^4.37.2"
 sentence-transformers = "^2.3.1"
+#openai = "^1.11.1"
+openai = "^0.28.1"
+tiktoken = "^0.5.2"
 
 [[tool.poetry.source]]
 name = "hyperspace"
@@ -30,6 +33,7 @@ priority = "primary"
 [[tool.poetry.source]]
 name = "internal-hyperspace"
 url = "https://int.repositories.cloud.sap/artifactory/api/pypi/proxy-deploy-releases-hyperspace-pypi/simple/"
+#      https://int.repositories.cloud.sap/artifactory/api/pypi/proxy-deploy-releases-hyperspace-pypi/simple
 priority = "primary"
 
 [[tool.poetry.source]]

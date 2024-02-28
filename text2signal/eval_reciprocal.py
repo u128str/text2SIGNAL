@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 
 #from llm_commons.langchain.btp_llm import init_llm
 from llm_commons.langchain.proxy import init_llm
+#from gen_ai_hub.proxy.langchain.init_models import init_llm
 
 #from langchain.prompts import PromptTemplate 
 

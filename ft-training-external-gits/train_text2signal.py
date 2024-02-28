@@ -8,7 +8,7 @@ from lightning import LightningDataModule
 from omegaconf import OmegaConf
 from pydantic.dataclasses import dataclass
 
-from fine_tuning.config.utils import validate_config
+from fine_tuning.config.utils import validate_and_cast_config
 from fine_tuning.data.dict.dataloader_utils import DictDataConfig, prepare_data
 from fine_tuning.training.trainer import get_lightning_model
 
@@ -46,7 +46,7 @@ def get_data_module(tokenizer: AutoTokenizer, config: DictDataConfig, debug=Fals
     return data_module
 
 @hydra.main(config_path='../fine_tuning/config', config_name='text2signal_config_alexey')
-@validate_config(TrainConfigDict)
+@validate_and_cast_config(TrainConfigDict)
 def main_local_jsonl(cfg: TrainConfigDict):
     print(OmegaConf.to_container(cfg))
     L.seed_everything(42)

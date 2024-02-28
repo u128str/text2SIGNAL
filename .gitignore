@@ -6,6 +6,15 @@ __pycache__/
 # C extensions
 *.so
 
+notebooks/external_gits
+# chromaDB
+notebooks/chromadb_embeddings
+chromadb_embeddings
+notebooks/CostManagement_*
+text2signal/data/training_data_1542_with_validated_signals_2024-02-01T12_18_40_3_samples_gpt-4
+
+
+
 # Distribution / packaging
 .Python
 build/
@@ -148,3 +157,5 @@ dmypy.json
 
 notebooks/external_gits
 
+.env_aicore
+poetry.lock
