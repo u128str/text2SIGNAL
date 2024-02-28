@@ -11,7 +11,8 @@ python-dotenv = "1.0.0"
 deepdiff = "6.7.1"
 pyyaml = "6.0.1"
 sap-doxml-commons = { extras = ["data"], version = "4.47.0", source = "internal-hyperspace-deploy" }
-sap-llm-eval-toolkit = { extras = ["all"], version = "0.1.11", source = "internal-hyperspace" }
+sap-llm-eval-toolkit = { version = "0.1.11", source = "internal-hyperspace" }
+signavio = {version = "^2.0.0", source = "signavio"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "7.4.3"
@@ -30,20 +31,29 @@ name = "hyperspace"
 url = "https://common.repositories.cloud.sap/artifactory/api/pypi/deploy-releases-hyperspace-pypi/simple/"
 priority = "primary"
 
+
 [[tool.poetry.source]]
 name = "internal-hyperspace"
 url = "https://int.repositories.cloud.sap/artifactory/api/pypi/proxy-deploy-releases-hyperspace-pypi/simple/"
 #      https://int.repositories.cloud.sap/artifactory/api/pypi/proxy-deploy-releases-hyperspace-pypi/simple
 priority = "primary"
 
+
 [[tool.poetry.source]]
 name = "internal-hyperspace-deploy"
 url = "https://int.repositories.cloud.sap/artifactory/api/pypi/deploy-releases-pypi/simple/"
 priority = "primary"
 
+
 [[tool.poetry.source]]
 name = "PyPI"
 priority = "default"
+
+
+[[tool.poetry.source]]
+name = "signavio"
+url = "https://common.repositories.cloud.sap/artifactory/api/pypi/signavio-pypi/simple"
+priority = "explicit"
 
 [build-system]
 requires = ["poetry-core"]
