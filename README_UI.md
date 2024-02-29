@@ -16,8 +16,6 @@ pip install -r requirementsUI.txt
 Set the following environment variables in a .env file:
 
 ```dotenv
-AZURE_OPENAI_API_KEY=
-AZURE_OPENAI_ENDPOINT=
 
 AZURE_OPENAI_API_FT_KEY=
 AZURE_OPENAI_FT_ENDPOINT=
