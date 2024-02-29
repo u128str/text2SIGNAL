@@ -6,8 +6,8 @@ To run the Streamlit app, follow these steps:
 Create a virtual environment and install the required dependencies using the requirementsUI.txt file:
 
 ```bash
-python3 -m venv text2signal
-source text2signal/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirementsUI.txt
 ```
 
