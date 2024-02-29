@@ -1,0 +1,10 @@
+# python3 -m venv text2signal
+openai
+streamlit
+python-dotenv
+pathlib
+requests
+datetime
+pandas
+tqdm
+chromadb
