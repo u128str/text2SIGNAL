@@ -40,11 +40,21 @@ from signavio_lib import q_list_columns
 from signavio_lib import query_to_api_signal, query_to_api_table
 from signavio_lib import credentials_actualization, POST_Signavio
 
+
+# Second page
+if "auth" not in st.session_state:
+  st.write("Please re-Authenticate")
+  if st.button("Home"):
+    st.switch_page("01_gui_signvio_signal_main_page.py")
+  st.stop()
+
+
 # Load environment variables from .env file
-env_path="../.env"
+env_path=".env"
 if os.path.exists(env_path):
   load_dotenv(override=True)
   config = dotenv_values(env_path)
+  print(f"Config: {config}")
 
 
 # Read environment variables
@@ -56,7 +66,7 @@ You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite. \
 
 title = os.environ.get("TITLE", "Signavio Signal ChatBot SandBox")
 text_input_label = os.environ.get("TEXT_INPUT_LABEL", "Provide your NLP description for Signal:")
-image_file_name = os.environ.get("IMAGE_FILE_NAME", "../signavioPI.png")
+image_file_name = os.environ.get("IMAGE_FILE_NAME", "./signavioPI.png")
 image_width = int(os.environ.get("IMAGE_WIDTH", 220))
 temperature = float(os.environ.get("TEMPERATURE", 0.0))
 system = os.environ.get("SYSTEM", signavio_assistant_profile)
@@ -74,9 +84,11 @@ api_key=os.getenv("AZURE_OPENAI_KEY")
 model="gpt-35-turbo-0613-text2signal-1epoch-lrm-5" # 1 epoch lr*5 
 azure_endpoint=os.getenv("AZURE_OPENAI_FT_ENDPOINT")
 # Signavio
-system_instance = 'https://editor.signavio.com'
-workspace_id = 'b0f07deabd3140aea5344baa686e0d84' # workspace Process AI 
-workspace_name="Process AI"
+
+
+system_instance =  st.session_state["systeminstance"] # 'https://editor.signavio.com'
+workspace_id = st.session_state["workspaceid"]   # 'b0f07deabd3140aea5344baa686e0d84' # workspace Process AI 
+workspace_name=st.session_state["workspacename"] # "Process AI"
 
 # Configure a logger
 logging.basicConfig(stream = sys.stdout, 
@@ -85,6 +97,8 @@ logging.basicConfig(stream = sys.stdout,
 logger = logging.getLogger(__name__)
 
 # Log variables
+
+
 logger.info(f"title: {title}")
 logger.info(f"text_input_label: {text_input_label}")
 logger.info(f"image_file_name: {image_file_name}")
@@ -108,6 +122,10 @@ openai.api_type = api_type
 #default_credential = DefaultAzureCredential() if openai.api_type == "azure_ad" else None
 #token_provider = get_bearer_token_provider(DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default")
 
+
+logger.info(f"AzureOpenAI azure_endpoint: {azure_endpoint}")
+logger.info(f"AzureOpenAI api_key: {api_key}")
+
 client = AzureOpenAI(
     api_version=api_version,
     azure_endpoint=azure_endpoint,
@@ -123,11 +141,17 @@ openai_ef = embedding_functions.OpenAIEmbeddingFunction(api_key=api_key,
 # Chromadb
 file_path='notebooks/text2signal_train_5715.jsonl'
 #file_path='notebooks/probe.jsonl'
-path_db="../chromadb_embeddings"
+path_db="chromadb_embeddings"
 collection_name="my_collection"
 collection_name="collection_5715_train_set"
 
 if not Path(path_db).is_dir():
+    st.error("Check path to DB (l:142) or Click I know what I am doing")
+    if st.button("I know what I am doing"):
+      st.write("Start constructing ChromaDB for RAG - takes 20 mins...")
+    else:  
+      st.stop()
+    
 
     client_db = chromadb.PersistentClient(path=path_db)
     client_db.heartbeat()
@@ -197,16 +221,15 @@ if "messages" not in st.session_state:
 
 # Authenicate Signavio
 
-user_name = os.environ.get('MY_SIGNAVIO_NAME','alexey.streltsov@sap.com') # username
-pw = os.environ.get('MY_SIGNAVIO_PASSWORD', None) # Signavio password
-system_instance = 'https://editor.signavio.com'
-workspace_id = 'b0f07deabd3140aea5344baa686e0d84' # workspace Process AI 
-workspace_name="Process AI"
-
-logger.info(f"Your are: {user_name}")
-auth = credentials_actualization(system_instance, workspace_id, user_name, pw, workspace_name=workspace_name) 
-
-logger.info(f"Signavio Auth: {auth}")
+#user_name = os.environ.get('MY_SIGNAVIO_NAME','alexey.streltsov@sap.com') # username
+#pw = os.environ.get('MY_SIGNAVIO_PASSWORD', None) # Signavio password
+#system_instance = 'https://editor.signavio.com'
+#workspace_id = 'b0f07deabd3140aea5344baa686e0d84' # workspace Process AI 
+#workspace_name="Process AI"
+#logger.info(f"Your are: {user_name}")
+#auth = credentials_actualization(system_instance, workspace_id, user_name, pw, workspace_name=workspace_name) 
+auth=st.session_state["auth"]
+logger.info(f"Signavio Auth: {system_instance} {workspace_id} {auth}")
 
 # Authenticate to Azure OpenAI
 ### if openai.api_type == "azure":
@@ -373,7 +396,7 @@ def rag_prompt_query():
 def signal_change():
   # Avoid handling the event twice when clicking the Send button
   signal_input = st.session_state['query']
-  logger.info(f"INput Signal: {signal_input}")
+  logger.info(f"Input Signal: {signal_input}")
   signal_endpoint = system_instance + '/g/api/pi-graphql/signal'
   q = {'query': 'SELECT count(1) \nFROM FLATTEN("defaultview-2")'}
   query_request = requests.post(
@@ -390,6 +413,14 @@ def signal_change():
 #     col_names = POST_Signavio(query=q_list_columns,workspace_name=workspace_name, auth=auth)['data']['subjectView']['columns']
 #          st.button(label = "Get Attributes", on_click = signal_attributes
 def signal_attributes():
+  #  "variables": {
+  #      "id": "defaultview-2",
+  #      "subjectId": "test00-11"
+  #  }
+    #q_list_columns["variables"]["subjectId"]=st.session_state.active_investigation['id']
+    #q_list_columns["variables"]["id"] = st.session_state.active_investigation['view']['id']
+    q_list_columns["variables"]["id"]=st.session_state.active_investigation_details["data"]["investigation"]['view']['id']
+    q_list_columns["variables"]["subjectId"]=st.session_state.active_investigation_details["data"]["investigation"]["id"]
     col_names = POST_Signavio(query=q_list_columns,workspace_name=workspace_name, auth=auth)['data']['subjectView']['columns']
     schema_min=[el["name"] for el in col_names]
     query_events='SELECT DISTINCT(event_name) FROM FLATTEN("defaultview-2")'
@@ -462,6 +493,9 @@ def signal_widget_deploy():
     widget_template['variables']['widget']['name']=f"{stamp} : {title}"
     widget_template['variables']['widget']['description']=f"{description}"
     r["widget_template"]=  widget_template
+    
+    #widget_template["variables"]["id"] = f"{st.session_state.active_investigation['id']}"
+    widget_template["variables"]["id"] =st.session_state.active_investigation_details["data"]["investigation"]["rootWidget"]
     res = POST_Signavio(query=widget_template,workspace_name=workspace_name,auth=auth)
     r["ok"]=res #.json()
     st.session_state['widget_summary'] = r #json.dumps(r)
