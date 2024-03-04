@@ -454,7 +454,19 @@ def signal_widget_prepare():
   {signal}
   """
   message_title, usage = generate_response(prompt_title)
+  
+  st.session_state['past'].append(prompt_title)
+  st.session_state['generated'].append(message_title)
+  st.session_state['prompts'].append({"role": "assistant", "content": message_title})
+  st.session_state['usage'].append(usage)
+  
   message_description, usage = generate_response(prompt_description)
+  
+  st.session_state['past'].append(prompt_description)
+  st.session_state['generated'].append(message_description)
+  st.session_state['prompts'].append({"role": "assistant", "content": message_description})
+  st.session_state['usage'].append(usage)
+  
   st.session_state["widget_title"]=message_title
   st.session_state["widget_description"]=message_description
 
@@ -612,6 +624,12 @@ def add_llm_usage(reason=""):
  
 
 # --------------- > UI
+
+st.sidebar.write(f":red[USER:] {st.session_state.username}")
+st.sidebar.write(f'Process: {st.session_state.active_investigation_details["data"]["subject"]["name"]}')
+st.sidebar.write(f"Investigation: {st.session_state.active_investigation_details['data']['investigation']['name']}")
+st.sidebar.write(f"view: {st.session_state.active_investigation_details['data']['investigation']['view']['id']}")
+
 # Create a 3-column layout. Note: Streamlit columns do not properly render on mobile devices.
 # For more information, see https://github.com/streamlit/streamlit/issues/5003
 #col1, col2, col_price, col_tokens = st.columns([3, 2, 2 ,2 ])

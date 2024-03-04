@@ -162,7 +162,7 @@ if "list_of_workspaces" in st.session_state:
     st.write("Here List of ALL available workspaces...") 
     st.write (pd.DataFrame(st.session_state["list_of_workspaces"]["data"]["session"]["workspaces"]))
 
-if "workspacename" in st.session_state and  'workspaceid' in st.session_state :
+if "workspacename" in st.session_state and 'workspaceid' in st.session_state:
     workspace_name=st.session_state["workspacename"]
     workspace_id= st.session_state['workspaceid']
     st.write(f"Here List of available processes for selected workspace: {workspace_name} id: {workspace_id}") 
@@ -181,48 +181,18 @@ if "workspacename" in st.session_state and  'workspaceid' in st.session_state :
     #        "metrics": [],
     #        "access": "PRIVATE"
     #    }
-    
-if "process_id" in st.session_state:
-    #"operationName": "subjectViews",
-    #"variables": {
-    #    "subjectId": "demo01-1"
-    #},
-    get_process_views["variables"]["subjectId"]=st.session_state["process_id"]
-    list_processe_views =  POST_Signavio(query=get_process_views,workspace_name=workspace_name,auth=st.session_state["auth"]) #['data']['subjects']
-    st.session_state.process_views=list_processe_views
-    #st.write(st.session_state.process_views)
 
-#def get_active_investigation():
-#    if "process_id" in st.session_state:
-def create_new_investigation():
-            stamp_name=datetime.now().strftime("(LLM-powered: %d/%m/%Y %H:%M:%S)")
-            create_investigation["variables"]["investigation"]["name"]=stamp_name
-            create_investigation["variables"]["subjectId"]=st.session_state["process_id"]
-            
-            
-            # select latest
-            create_investigation["variables"]["investigation"]["viewId"]=st.session_state.process_views["data"]["subjectViews"][-1]["id"]
-            
-            investigation = POST_Signavio(query=create_investigation,workspace_name=st.session_state["workspacename"],auth=st.session_state["auth"])
-            print(investigation)
-            #st.write (investigation)
-            st.session_state["investigation"]=investigation
-            st.session_state.active_investigation=investigation["data"]["createInvestigation"]
-            get_active_investigations_list()
-            set_active_investigation()
-
-    
-def get_active_investigations_list():    
+def get_investigations_list():    
     #     "variables": {     "subjectId": "test00-1" },
     list_of_investigations["variables"]["subjectId"]=st.session_state["process_id"]
     investigations=POST_Signavio(query=list_of_investigations,workspace_name=workspace_name,auth=st.session_state["auth"])
     #st.write (investigations)
     st.session_state["investigations"]=investigations
     #st.text_input("Select Process view", "defaultview-02", key="process_view")
-    st.session_state.active_investigation=investigations["data"]["subject"]["investigations"][-1]
-    set_active_investigation()
+    #st.session_state.active_investigation=investigations["data"]["subject"]["investigations"][-1]
+    #set_active_investigation(id=st.session_state.active_investigation)
 
-def set_active_investigation(): 
+def set_active_investigation(inv=""): 
     # Investigation details:
     # investigation_details = {
     #  "operationName": "Investigation",
@@ -230,31 +200,112 @@ def set_active_investigation():
     # "investigationId": "llm-powered-28022024-180247-1",
     # "subjectId": "test00-1"
      # }
-    query_investigation_details["variables"]["investigationId"]=st.session_state.active_investigation["id"]
-    query_investigation_details["variables"]["subjectId"]=st.session_state["process_id"]
-    #print(query_investigation_details["variables"])
-    active_investigation_details= POST_Signavio(query=query_investigation_details,workspace_name=workspace_name,auth=st.session_state["auth"])
-    #print("hgkjhjh",active_investigation_details)
-    st.session_state.active_investigation_details=active_investigation_details
+    if inv != "":
+        active_investigation=inv
+    else:
+        active_investigation = st.session_state.active_investigation
+    #print("IN set_active_investigation:",active_investigation )
+    st.session_state.active_investigation=active_investigation
+    try:
+        query_investigation_details["variables"]["investigationId"]=active_investigation["id"]
+        query_investigation_details["variables"]["subjectId"]=st.session_state["process_id"]
+        #print("Q:",query_investigation_details)
+        #print(query_investigation_details["variables"])
+        active_investigation_details= POST_Signavio(query=query_investigation_details,workspace_name=workspace_name,auth=st.session_state["auth"])
+        #print("qqqqq",active_investigation_details)
+        st.session_state.active_investigation_details=active_investigation_details
+    except Exception as e:
+        st.error(f"Error in set_active_investigation {e}")
 
-    #st.text_input("Select Active Investigation ", active_investigation, key="active_investigation")
+
+if "process_id" in st.session_state:
+    #"operationName": "subjectViews",
+    #"variables": {
+    #    "subjectId": "demo01-1"
+    #},
+    process_id=st.session_state["process_id"]
+    get_process_views["variables"]["subjectId"]=process_id
+    list_processe_views =  POST_Signavio(query=get_process_views,workspace_name=workspace_name,auth=st.session_state["auth"]) #['data']['subjects']
+    st.session_state.process_views=list_processe_views
+    
+    st.write(f"Here List of available investigations for process {process_id}:") 
+    get_investigations_list()
+    #st.write(st.session_state.process_views)
+
+#get_active_investigations_list()
 
 if "investigations" in st.session_state:
     st.write(pd.DataFrame(st.session_state.investigations["data"]["subject"]["investigations"]))
-    
-if "active_investigation" in st.session_state:    
+    #st.session_state.active_investigation= st.session_state.investigations["data"]["subject"]["investigations"][-1]
+
+
+if "new_active_investigation_id" in st.session_state:
+    new_id= st.session_state.new_active_investigation_id
+    #print("new id ", new_id)
+    try: 
+        inv = [ inv for inv in st.session_state.investigations["data"]["subject"]["investigations"] if inv["id"] == new_id][0]
+        st.session_state.active_investigation=inv
+        #set_active_investigation(inv=inv)
+    except Exception as e:
+        #st.error(f"in new_active_investigation_id: {e}")
+        st.session_state.active_investigation=st.session_state.investigations["data"]["subject"]["investigations"][-1]
+        
+if "active_investigation" not in st.session_state:
+    st.session_state.active_investigation= st.session_state.investigations["data"]["subject"]["investigations"][-1]
+    #active_investigation = st.session_state.active_investigation["id"]
+    #print(active_investigation)
+
+st.text_input("Select Investigation where we create LLM-based widgets ", st.session_state.active_investigation["id"] , key="new_active_investigation_id") 
+
+if "active_investigation" in st.session_state:
+    #if "active_investigation" in st.session_state:    
     #st.write(st.session_state["active_investigation"])
     st.write("Selected Investigation:")
+    #print("got new invesigation", st.session_state.active_investigation)
     st.write(pd.DataFrame(st.session_state.active_investigation))
-    
-#if "active_investigation_details" in st.session_state:
-#    st.write(st.session_state.active_investigation_details)
-get_active_investigations_list()
-st.button("List of Investigations", on_click=get_active_investigations_list)
 
+
+
+
+ 
+
+    
+    #st.session_state.active_investigation= st.session_state.investigations["data"]["subject"]["investigations"][0]
+
+#def get_active_investigation():
+#    if "process_id" in st.session_state:
+def create_new_investigation():
+        try:
+            stamp_name=datetime.now().strftime("(LLM-powered: %d/%m/%Y %H:%M:%S)")
+            create_investigation["variables"]["investigation"]["name"]=stamp_name
+            create_investigation["variables"]["subjectId"]=st.session_state["process_id"]
+            
+            # select latest process_views
+            create_investigation["variables"]["investigation"]["viewId"]=st.session_state.process_views["data"]["subjectViews"][-1]["id"]
+            investigation = POST_Signavio(query=create_investigation,workspace_name=st.session_state["workspacename"],auth=st.session_state["auth"])
+            #print("NEW INV:",investigation)
+            #st.write (investigation)
+            #st.session_state["investigation"]=investigation
+            #st.session_state.active_investigation=investigation["data"]["createInvestigation"]
+            get_investigations_list()
+            st.session_state.active_investigation=investigation["data"]["createInvestigation"]
+            st.session_state.new_active_investigation_id=investigation["data"]["createInvestigation"]["id"]
+
+            #
+        except Exception as e:
+            st.error(f"Error In create new investigation {e} ")
+            #st.warning(st.session_state.active_investigation)
+
+
+    #st.text_input("Select Active Investigation ", active_investigation, key="active_investigation")
 st.button("Create new LLM-powered investigation", on_click=create_new_investigation)
 #st.button("set_active_investigation", on_click=set_active_investigation)
 
+
+
+get_investigations_list()
+set_active_investigation()
+    
 
 # Process details
 def signal_attributes():
@@ -288,6 +339,15 @@ def signal_attributes():
 
 #st.button(label = "Attributes", on_click = signal_attributes)
        
+st.sidebar.markdown(f"# Signavio connection details")
+st.sidebar.write(f":red[USER:] {st.session_state.username}")
+st.sidebar.write(f'Process: {st.session_state.active_investigation_details["data"]["subject"]["name"]}')
+st.sidebar.write(f"Investigation: {st.session_state.active_investigation_details['data']['investigation']['name']}")
+st.sidebar.write(f"view: {st.session_state.active_investigation_details['data']['investigation']['view']['id']}")
+#st.sidebar.write(pd.DataFrame(st.session_state.active_investigation_details['data']['investigation']["widgets"]))
+#st.write(st.session_state.active_investigation_details)
+#st.write(f":red[USER:] {st.session_state.username}")
+
 signal_attributes()
 with st.chat_message('signal'):
     if st.session_state['query_list_of_events_text'] != "": # print schema for attributes only
@@ -295,15 +355,3 @@ with st.chat_message('signal'):
         st.code(f'Attributes = {s}')
         st.code(f'EVENTS_NAMES= {st.session_state["query_list_of_events_text"]["EVENTS_NAMES"]}')#
         st.write(st.session_state['query_request_text']) 
-
-st.sidebar.markdown(f"# Signavio connection details")
-st.sidebar.write(f":red[USER:] {st.session_state.username}")
-st.sidebar.write(f'Process: {st.session_state.active_investigation_details["data"]["subject"]["name"]}')
-st.sidebar.write(f"Investigation: {st.session_state.active_investigation_details['data']['investigation']['name']}")
-st.sidebar.write(f"view: {st.session_state.active_investigation_details['data']['investigation']['view']['id']}")
-#st.sidebar.write(pd.DataFrame(st.session_state.active_investigation_details['data']['investigation']["widgets"]))
-
-
-#st.write(st.session_state.active_investigation_details)
-
-#st.write(f":red[USER:] {st.session_state.username}")
