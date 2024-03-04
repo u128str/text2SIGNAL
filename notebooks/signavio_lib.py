@@ -72,6 +72,8 @@ def POST_Signavio(query={},workspace_name="Process AI",auth={}, system_instance=
             # possibly check response for a message
             #raise ex  # let the caller handle it
             return({"requests.HTTPError":ex})
+            #raise ex  # let the caller handle it
+
         except requests.Timeout:
             print("request took too long")
         
