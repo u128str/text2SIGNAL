@@ -5,17 +5,21 @@ https://gist.github.com/paolosalvatori/478944506a809313de162759442df8c0
 # - https://levelup.gitconnected.com/its-time-to-create-a-private-chatgpt-for-yourself-today-6503649e7bb6
 #
 # Use the following command to run the app: 
-# - streamlit run notebooks/gui_signvio_signal.py 
+# - streamlit run notebooks/01_Signavio_connection.py
 # Create .env file with following variables:
 """
 import os
 import sys
 import time
-import openai
+#import openai
 import logging
 import streamlit as st
-from streamlit_chat import message
-from azure.identity import DefaultAzureCredential
+
+# BUG from code_editor import code_editor
+#from streamlit_chat import message
+#from azure.identity import DefaultAzureCredential
+#from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+
 from dotenv import load_dotenv
 from dotenv import dotenv_values
 
@@ -24,12 +28,9 @@ import requests
 import json
 
 from datetime import datetime
-
-from azure.identity import DefaultAzureCredential, get_bearer_token_provider
-
 from openai import AzureOpenAI
 
-# RAG
+# RAG ChromaDB
 from tqdm import tqdm
 import chromadb
 from chromadb.utils import embedding_functions
@@ -40,48 +41,61 @@ from signavio_lib import q_list_columns
 from signavio_lib import query_to_api_signal, query_to_api_table
 from signavio_lib import credentials_actualization, POST_Signavio
 
+from collections import deque 
+
+st.set_page_config(page_title="Signavio LLM-SandBox", layout="centered")
+
+image_width=int("400")
+image_file_name="notebooks/pages/sap-signavio-logo-colored.svg"
+with st.sidebar:
+    st.image(image_file_name, width = image_width)  
 
 # Second page
 if "auth" not in st.session_state:
   st.write("Please re-Authenticate")
   if st.button("Home"):
-    st.switch_page("01_gui_signvio_signal_main_page.py")
+    st.switch_page("01_Signavio_connection.py")
   st.stop()
-
+  
 
 # Load environment variables from .env file
 env_path=".env"
 if os.path.exists(env_path):
   load_dotenv(override=True)
   config = dotenv_values(env_path)
-  print(f"Config: {config}")
+  #print(f"Config: {config}")
 
+#username=st.session_state.get(username)
+#st.json(st.session_state)
 
-# Read environment variables
+# Read environment variable
+#title = os.environ.get("TITLE", "Signavio Signal SandBox")
+title = os.environ.get("TITLE", "")
+text_input_label = os.environ.get("TEXT_INPUT_LABEL", "Provide your NLP description for Signal")
+### image_file_name = os.environ.get("IMAGE_FILE_NAME", "./signavioPI.png")
+image_file_name=os.environ.get("IMAGE_FILE_NAME","notebooks/pages/sap-signavio-logo-colored.svg")
+image_width = int(os.environ.get("IMAGE_WIDTH", 280))
 
+# llm
+temperature = float(os.environ.get("TEMPERATURE", 0.0))
 signavio_assistant_profile="""
 You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite. \nSIGNAL stands for Signavio Analytics Language. \nSIGNAL is a dialect of SQL.\nYour goal is to help users craft SIGNAL queries and understand the SIGNAL language better
 """
-
-
-title = os.environ.get("TITLE", "Signavio Signal ChatBot SandBox")
-text_input_label = os.environ.get("TEXT_INPUT_LABEL", "Provide your NLP description for Signal:")
-image_file_name = os.environ.get("IMAGE_FILE_NAME", "./signavioPI.png")
-image_width = int(os.environ.get("IMAGE_WIDTH", 220))
-temperature = float(os.environ.get("TEMPERATURE", 0.0))
 system = os.environ.get("SYSTEM", signavio_assistant_profile)
-api_base = os.getenv("AZURE_OPENAI_BASE")
-api_key = os.getenv("AZURE_OPENAI_KEY")
-api_type = os.environ.get("AZURE_OPENAI_TYPE", "azure")
-api_version = os.environ.get("AZURE_OPENAI_VERSION", "2023-05-15")
-engine = os.getenv("AZURE_OPENAI_DEPLOYMENT")
-model = os.getenv("AZURE_OPENAI_MODEL")
+
+#api_base = os.getenv("AZURE_OPENAI_BASE")
+#api_key = os.getenv("AZURE_OPENAI_KEY")
+#api_type = os.environ.get("AZURE_OPENAI_TYPE", "azure")
+#api_version = os.environ.get("AZURE_OPENAI_VERSION", "2023-05-15")
+#engine = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+#model = os.getenv("AZURE_OPENAI_MODEL")
+#api_base = os.getenv("AZURE_OPENAI_BASE")
 
 # Working
-api_base = os.getenv("AZURE_OPENAI_BASE")
+api_type = os.environ.get("AZURE_OPENAI_TYPE", "azure")
 api_version = os.environ.get("AZURE_OPENAI_VERSION", "2023-12-01-preview")
-api_key=os.getenv("AZURE_OPENAI_KEY")
-model="gpt-35-turbo-0613-text2signal-1epoch-lrm-5" # 1 epoch lr*5 
+api_key= os.getenv("AZURE_OPENAI_KEY")
+model = os.getenv("AZURE_OPENAI_DEPLOYMENT", "gpt-35-turbo-0613-text2signal-1epoch-lrm-5") # 1 epoch lr*5 
 azure_endpoint=os.getenv("AZURE_OPENAI_FT_ENDPOINT")
 # Signavio
 
@@ -97,24 +111,24 @@ logging.basicConfig(stream = sys.stdout,
 logger = logging.getLogger(__name__)
 
 # Log variables
-
+logger.info(f"azure_endpoint: {azure_endpoint}")
 
 logger.info(f"title: {title}")
 logger.info(f"text_input_label: {text_input_label}")
 logger.info(f"image_file_name: {image_file_name}")
 logger.info(f"image_width: {image_width}")
-logger.info(f"temperature: {temperature}")
-logger.info(f"system: {system}")
-logger.info(f"api_base: {api_base}")
-logger.info(f"api_key: {api_key}")
+logger.info(f"LLM temperature: {temperature}")
+logger.info(f"LLM system message: {system}")
+#logger.info(f"api_base: {api_base}") # azure_endpoint
+#logger.info(f"api_key: {api_key}")
 logger.info(f"api_type: {api_type}")
 logger.info(f"api_version: {api_version}")
-logger.info(f"engine: {engine}")
+#logger.info(f"engine: {engine}")
 logger.info(f"model: {model}")
 
 
 # Configure OpenAI
-openai.api_type = api_type
+#openai.api_type = api_type
 #openai.api_version = api_version
 #openai.api_base = api_base 
 
@@ -133,19 +147,33 @@ client = AzureOpenAI(
 )
 
 openai_ef = embedding_functions.OpenAIEmbeddingFunction(api_key=api_key,
-                                                        api_type="azure",
-                                                        api_base = api_base,
+                                                        api_type=api_type,
+                                                        api_base = azure_endpoint,
                                                         api_version = api_version,
                                                         model_name="text-embedding-ada-002")
 
 # Chromadb
 file_path='notebooks/text2signal_train_5715.jsonl'
-#file_path='notebooks/probe.jsonl'
+file_path='notebooks/probe.jsonl'
 path_db="chromadb_embeddings"
-collection_name="my_collection"
-collection_name="collection_5715_train_set"
+collection_name="my_collection_5"
+#collection_name="collection_5715_train_set"
 
-if not Path(path_db).is_dir():
+if Path(path_db).is_dir():
+    client_db = chromadb.PersistentClient(path=path_db)
+    client_db.heartbeat()
+    try:
+      collection = client_db.get_collection(name=collection_name, embedding_function=openai_ef)
+      collection_exist=True
+      #collection = client_db.get_collection("my_collection")
+      #logger.info(collection.count(),"DB from files:",collection.peek())
+      logger.info(f" {collection.count()} <------------ {collection_name} DB from dir: {path_db}") 
+    except Exception as e:
+      collection_exist=False
+      st.error(e)
+
+
+if not Path(path_db).is_dir() or not collection_exist:
     st.error("Check path to DB (l:142) or Click I know what I am doing")
     if st.button("I know what I am doing"):
       st.write("Start constructing ChromaDB for RAG - takes 20 mins...")
@@ -164,7 +192,7 @@ if not Path(path_db).is_dir():
         client_db.delete_collection(name=collection_name)
         st.session_state.messages = []
     except:
-        print("Hopefully you'll never see this error.")  
+        logger.error("Hopefully you'll never see this error.")  
 
     collection = client_db.create_collection(name=collection_name, embedding_function=openai_ef)
     data = []
@@ -204,30 +232,11 @@ if not Path(path_db).is_dir():
         id += 1
     logger.info(f" {collection.count()} <------------ NEW DB") #,collection.peek())
 
-if Path(path_db).is_dir():
-    #client = chromadb.Client(Settings(is_persistent=True,
-    #                                persist_directory= <PERSIST_DIR_NAME>,
-    #                            ))
-    client_db = chromadb.PersistentClient(path=path_db)
-    client_db.heartbeat()
-    collection = client_db.get_collection(name=collection_name, embedding_function=openai_ef)
-    #collection = client_db.get_collection("my_collection")
-    
-    #logger.info(collection.count(),"DB from files:",collection.peek())
-    logger.info(f" {collection.count()} <------------ DB from dir: {path_db}") 
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Authenicate Signavio
-
-#user_name = os.environ.get('MY_SIGNAVIO_NAME','alexey.streltsov@sap.com') # username
-#pw = os.environ.get('MY_SIGNAVIO_PASSWORD', None) # Signavio password
-#system_instance = 'https://editor.signavio.com'
-#workspace_id = 'b0f07deabd3140aea5344baa686e0d84' # workspace Process AI 
-#workspace_name="Process AI"
-#logger.info(f"Your are: {user_name}")
-#auth = credentials_actualization(system_instance, workspace_id, user_name, pw, workspace_name=workspace_name) 
+# Authenicate Signavio on page 1 
 auth=st.session_state["auth"]
 logger.info(f"Signavio Auth: {system_instance} {workspace_id} {auth}")
 
@@ -243,7 +252,7 @@ logger.info(f"Signavio Auth: {system_instance} {workspace_id} {auth}")
 ###   logger.error("Invalid API type. Please set the AZURE_OPENAI_TYPE environment variable to azure or azure_ad.")
 ###   #raise ValueError("Invalid API type. Please set the AZURE_OPENAI_TYPE environment variable to azure or azure_ad.")
 
-st.set_page_config(page_title="Signavio ChatBot-Lab", layout="centered")
+
 
 # Customize Streamlit UI using CSS
 style="""
@@ -340,6 +349,10 @@ st.markdown(style, unsafe_allow_html=True)
 
 
 # Initialize Streamlit session state
+
+if 'model' not in st.session_state:
+  st.session_state['model'] = model
+
 if 'prompts' not in st.session_state:
   st.session_state['prompts'] = [{"role": "system", "content": system}]
 
@@ -373,7 +386,7 @@ if 'query' not in st.session_state:
     
 #RAG
 if 'rag_results' not in st.session_state:
-    st.session_state['rag_results'] = []
+    st.session_state['rag_results'] = {}
 
 # Refresh the OpenAI security token every 45 minutes
 #def refresh_openai_token():
@@ -381,6 +394,11 @@ if 'rag_results' not in st.session_state:
 #      st.session_state['openai_token'] = default_credential.get_token("https://cognitiveservices.azure.com/.default")
 #      openai.api_key = st.session_state['openai_token'].token
 
+# Feedback logging
+@st.cache_resource
+def statistics_llm_usage():
+    return deque()
+llm_usage_queue= statistics_llm_usage()
 
 def rag_prompt_query():
     prompt = st.session_state['rag_prompt_query']
@@ -398,7 +416,7 @@ def signal_change():
   signal_input = st.session_state['query']
   logger.info(f"Input Signal: {signal_input}")
   signal_endpoint = system_instance + '/g/api/pi-graphql/signal'
-  q = {'query': 'SELECT count(1) \nFROM FLATTEN("defaultview-2")'}
+  # q = {'query': 'SELECT count(1) \nFROM FLATTEN("defaultview-2")'}
   query_request = requests.post(
         signal_endpoint,
         cookies=auth[workspace_name]["cookies"],
@@ -410,43 +428,21 @@ def signal_change():
   #st.session_state['query_request_text']= ""
 
 
-#     col_names = POST_Signavio(query=q_list_columns,workspace_name=workspace_name, auth=auth)['data']['subjectView']['columns']
-#          st.button(label = "Get Attributes", on_click = signal_attributes
-def signal_attributes():
-  #  "variables": {
-  #      "id": "defaultview-2",
-  #      "subjectId": "test00-11"
-  #  }
-    #q_list_columns["variables"]["subjectId"]=st.session_state.active_investigation['id']
-    #q_list_columns["variables"]["id"] = st.session_state.active_investigation['view']['id']
-    q_list_columns["variables"]["id"]=st.session_state.active_investigation_details["data"]["investigation"]['view']['id']
-    q_list_columns["variables"]["subjectId"]=st.session_state.active_investigation_details["data"]["investigation"]["id"]
-    col_names = POST_Signavio(query=q_list_columns,workspace_name=workspace_name, auth=auth)['data']['subjectView']['columns']
-    schema_min=[el["name"] for el in col_names]
-    query_events='SELECT DISTINCT(event_name) FROM FLATTEN("defaultview-2")'
-    signal_endpoint = system_instance + '/g/api/pi-graphql/signal'
-    query_request = requests.post(
-        signal_endpoint,
-        cookies=auth[workspace_name]["cookies"],
-        headers=auth[workspace_name]["headers"] ,
-        json={'query': str(query_events) })
-    events=query_request.json()    
-    #logger.info(events)
-    events_list=[item for row in events["data"] for item in row]
-    out={"Attributes:":schema_min, 
-         "EVENTS_NAMES": events_list}
-    st.session_state['query_request_text'] = pd.DataFrame(col_names) #([out]) #(col_names) #'Initialization'
-    st.session_state['query_list_of_events_text']=out
-
-
 
 
 def arr_dimen(a):
   return [len(a)]+arr_dimen(a[0]) if(type(a) == list) else []
 
 def signal_widget_prepare():
-  #stamp=datetime.now().strftime("(LLM-created: %d/%m/%Y %H:%M:%S)")
   signal=st.session_state["widget_signal"]
+  if "Paste Validated Signal query here" in signal:
+    container = st.empty()
+    container.success(":red[Paste signal to validate]")  # Create a success alert
+    time.sleep(3)  # Wait 2 seconds
+    container.empty()
+    #st.session_state["widget_description"]=
+    return
+  #stamp=datetime.now().strftime("(LLM-created: %d/%m/%Y %H:%M:%S)")
   prompt_title=f"""
   Describe this query by one short sentence
   signal query:
@@ -469,7 +465,11 @@ def signal_widget_deploy():
   title=st.session_state["widget_title"]
   signal=st.session_state["widget_signal"]
   description=st.session_state["widget_description"]
-  r = {"creation_datetime":stamp,"title":title, "signal":signal,"description":description}
+  r = {"creation_datetime":stamp,
+       "title":title, 
+       "signal":signal,
+       "description":description,
+       "Investigation": st.session_state.active_investigation}
   signal_endpoint = system_instance + '/g/api/pi-graphql/signal'
   query_request = requests.post(
         signal_endpoint,
@@ -477,6 +477,7 @@ def signal_widget_deploy():
         headers=auth[workspace_name]["headers"] ,
         json={'query': str(signal) })
   r["validation"]=query_request.json()
+  # here we select type of widget
   try:
     #if r["validation"]['header'][0]['dataType'] !=  'NUMBER':
     dim_data=arr_dimen(r["validation"]["data"])
@@ -499,15 +500,14 @@ def signal_widget_deploy():
     res = POST_Signavio(query=widget_template,workspace_name=workspace_name,auth=auth)
     r["ok"]=res #.json()
     st.session_state['widget_summary'] = r #json.dumps(r)
+    # add feedback
+    add_llm_usage(reason="widget_creation")
   
   except Exception as e:
     st.session_state["widget_title"]="Error trying to create a widget"
     st.session_state["widget_description"]=f"Error: {e}"
     st.session_state['widget_summary'] = r["validation"]
     logging.error(f'Widget creation error: {e} {r["validation"]}')
-
-
-  # 
 
 
 # Send user prompt to Azure OpenAI 
@@ -517,7 +517,7 @@ def generate_response(prompt):
 
     #if openai.api_type == "azure_ad":
     #  refresh_openai_token()
-      
+    model= st.session_state['model']
     completion = client.chat.completions.create(
         model = model,
         messages = st.session_state['prompts'],
@@ -533,14 +533,20 @@ def generate_response(prompt):
     return message, usage
   except Exception as e:
     logging.exception(f"Exception in generate_response: {e}")
+    st.error(f"Exception in generate_response: {e}")
+    st.button("Re-new chat", on_click=new_click)
 
 # Reset Streamlit session state to start a new chat from scratch
 def new_click():
+  #  negative add feedback
+  if len(st.session_state['prompts']) > 1:
+      add_llm_usage(reason="reinitialization_llm_dialog")     
+      
   st.session_state['prompts'] = [{"role": "system", "content": system}]
   st.session_state['past'] = []
   st.session_state['generated'] = []
   st.session_state['usage'] = []
-  st.session_state['rag_results'] = []
+  st.session_state['rag_results'] = {}
   st.session_state['llm_prompt'] = ""
   st.session_state['current_cost']="0.0"
   st.session_state['current_tokens']="0"
@@ -549,7 +555,7 @@ def new_click():
   st.session_state['prompt_tokens']=""
   st.session_state['total_tokens']=""
   st.session_state["widget_summary"]=""
-  st.session_state["widget_title"]="paste answer from LLM: Describe query by one short sentence"
+  st.session_state["widget_title"]="Paste answer from LLM: Describe query by one short sentence"
   st.session_state["widget_description"]=""
   
   # Validation
@@ -591,21 +597,33 @@ def llm_prompt():
     logger.info(f"---------------> Tokens. Completion {ct}. Prompt: {pt}. Total:{tt} ")
     # input $0.0030 / 1K tokens  output $0.0060 / 1K tokens       
     #logger.info(f"Cost: {st.session_state['current_cost']}")
+
+
+def add_llm_usage(reason=""):
+  #if "llm_usage_list" not in st.session_state:
+    llm_usage_queue.append({"success_session":f'{st.session_state.session_id}',
+                            "reason": reason,
+        "username":f"{st.session_state.username}",
+        "model":f"{st.session_state.model}",
+        "report_creation_datetime": datetime.now().strftime("%d/%m/%Y_%H:%M:%S"),
+        "llm_usage": f"{st.session_state.prompts}"
+                      })
+    st.session_state.llm_usage_list=llm_usage_queue 
  
 
 # --------------- > UI
 # Create a 3-column layout. Note: Streamlit columns do not properly render on mobile devices.
 # For more information, see https://github.com/streamlit/streamlit/issues/5003
-col1, col2, col_price, col_tokens = st.columns([3, 2, 2 ,2 ])
-
+#col1, col2, col_price, col_tokens = st.columns([3, 2, 2 ,2 ])
+col1, col_price, col_tokens = st.columns([3, 2 ,2 ])
 # Display the robot image
 with col1:
   st.image(image = image_file_name, width = image_width)
 
 # Display the title
-with col2:
-  #st.title(title) 
-  st.write(f'<p class="big-font"> {title} </p>', unsafe_allow_html=True)
+#with col2:
+#  #st.title(title) 
+#  st.write(f'<p class="big-font"> {title} </p>', unsafe_allow_html=True)
 
 with col_price:  
     text_price = st.metric(label="Total Price [$]:", value=st.session_state["current_cost"])
@@ -623,7 +641,9 @@ col3, col4, col5 = st.columns([7, 1, 1])
 
 # Create text input in column 1
 with col3:
-  user_input = st.text_area(text_input_label, key = "llm_prompt") #, on_change = llm_prompt)
+    text_input_label_final =f"{text_input_label} add: ...... For table '{st.session_state.active_investigation['view']['id']}'"
+    user_input = st.text_area(text_input_label_final, key = "llm_prompt") #, on_change = llm_prompt)
+
 
 # Create send button in column 2
 with col4:
@@ -639,13 +659,22 @@ with col5:
 # - rich: display the chat history as a list of messages using the Streamlit markdown() function
 #if st.session_state['generated']:
 #tab1, tab2, tab3 = st.tabs(["normal", "rich","Signal"])
-tab1, tab2, tab3, tab4  = st.tabs(["FT gpt3.5-turbo LLM", "RAG", "Signal Queries","Create Signal Widget"])
+tab1, tab2, tab4  = st.tabs(["FT gpt3.5-turbo LLM", "RAG", "Create Signal Widget"])
 with tab1:
   for i in range(len(st.session_state['generated']) - 1, -1, -1):
     with st.chat_message('user'): #, avatar="🤖"):
       st.write(st.session_state['past'][i])
+      #st.code(st.session_state['past'][i])
     with st.chat_message('assistant'): #,avatar="🤖"): #, avatar="🦖"):
-      st.write(st.session_state['generated'][i])
+      #st.write(st.session_state['generated'][i])
+      st.code(st.session_state['generated'][i], line_numbers=True)
+      if len(st.session_state['generated'])-1 == i:
+        st.session_state['query']= st.session_state['generated'][i]
+        if st.button(f"Validate it on Signavio", on_click =signal_change):
+          st.markdown("                                ")
+          st.info(st.session_state['query_request'])
+      #your_code_string = st.session_state['generated'][i]
+      #response_dict = code_editor(your_code_string) #st.code(st.session_state['generated'][i])
 #  RAG
 with tab2:        
   col_rag_prompt, col_rag_button=st.columns([6,1] )
@@ -654,6 +683,7 @@ with tab2:
   with col_rag_button:
         st.button(label = "RAG", on_click = rag_prompt_query)
   res = st.session_state['rag_results']
+  #print("DBG_RAG:",res)
   if isinstance(res, dict) and 'ids' in res.keys():
       ids=res['ids'][0]
       distances=res['distances'][0]
@@ -667,40 +697,41 @@ with tab2:
           #with st.chat_message('query'): #, avatar="🤖"):
               st.write(metadatas[i])
 # Signavio
-with tab3:
-    # Add Signavio part
-      col_signal_validation, col_signal_validation_button=st.columns([6,1] )
-      with col_signal_validation:
-         user_input = st.text_area("Paste/Type Signal here for API validation:", key = "query", on_change = signal_change, height=35)       
-      with col_signal_validation_button:
-        st.button(label = "Validate", on_click = signal_change)
-        #     col_names = POST_Signavio(query=q_list_columns,workspace_name=workspace_name, auth=auth)['data']['subjectView']['columns']
-        st.button(label = "Attributes", on_click = signal_attributes)
-       
-      with st.chat_message('user'):
-          st.write(st.session_state['query_request'])
-      with st.chat_message('signal'):
-          if st.session_state['query_list_of_events_text'] != "": # print schema for attributes only
-            st.write(st.session_state['query_list_of_events_text']) #
-            st.write(st.session_state['query_request_text']) 
+#with tab3:
+#    # Add Signavio part
+#      col_signal_validation, col_signal_validation_button=st.columns([6,1] )
+#      with col_signal_validation:
+#         user_input = st.text_area("Paste/Type Signal here for API validation:", key = "query", on_change = signal_change, height=35)       
+#      with col_signal_validation_button:
+#        st.button(label = "Validate", on_click = signal_change)
+#        #     col_names = POST_Signavio(query=q_list_columns,workspace_name=workspace_name, auth=auth)['data']['subjectView']['columns']
+#        #st.button(label = "Attributes", on_click = signal_attributes)
+#       
+#      with st.chat_message('user'):
+#          st.code(st.session_state['query_request'])
+#      with st.chat_message('ai'): #, avatar="LLM"): # avatar=st.image("docs/deer-head.svg")): 
+#          st.code(st.session_state['query'])
+#      with st.chat_message('signal'):
+#          if st.session_state['query_list_of_events_text'] != "": # print schema for attributes only
+#            st.code(st.session_state['query_list_of_events_text']) #
+#            st.write(st.session_state['query_request_text']) 
           
       #message(st.session_state['query_request'])
-      with st.chat_message('ai'): #, avatar="LLM"): # avatar=st.image("docs/deer-head.svg")): 
-          st.write(st.session_state['query'])
+
       #message(st.session_state['query'], avatar_style = "bottts", seed = "Fluffy")
 # Widget
 with tab4:
   w_name, w_button = st.columns([6,1])
   with w_name:
-    signal = st.text_input('Widget Signal','Paste Validated Signal query here ', 
+    signal = st.text_input(':red[Widget Signal]','Paste Validated Signal query here', 
                            key= "widget_signal" )
-    st.write('The current Widget Signal:', signal)
-    title = st.text_input('Widget name', 
+    st.write(':red[The current Widget Signal:]', signal)
+    name = st.text_input(':green[Widget name]', 'Paste here your name or answer from LLM: Describe this query by one short sentence',
                           key="widget_title")
-    st.write('The current Widget title:', title)
-    description = st.text_input('Widget description', 'Paste here answer from LLM: Describe how this query works', 
+    st.write(':green[The current Widget name:]',name)
+    description = st.text_input(':blue[Widget description]', 'Paste here your description or answer from LLM: Describe how this query works', 
                           key="widget_description")
-    st.write('The current Widget description:', description)
+    st.write(':blue[The current Widget description:]', description)
     with st.chat_message('user'):
       st.write(st.session_state['widget_summary'])  
 with w_button:

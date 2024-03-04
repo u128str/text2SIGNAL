@@ -56,8 +56,9 @@ def credentials_actualization(system_instance, workspace_id, user_name, pw, auth
 #system_instance = 'https://editor.signavio.com'
 #workspace_id = 'b0f07deabd3140aea5344baa686e0d84' # workspace Process AI 
 #workspace_name="Process AI"
-def POST_Signavio(query={},workspace_name="Process AI",auth={}, system_instance='https://editor.signavio.com'):
-        signal_endpoint = system_instance + '/g/api/pi-graphql/graphql'
+def POST_Signavio(query={},workspace_name="Process AI",auth={}, system_instance='https://editor.signavio.com', suffix='/g/api/pi-graphql/graphql'):
+         # https://editor.signavio.com/g/api/graphql
+        signal_endpoint = system_instance + suffix
         timeout=50
         try:
             query_request = requests.post(
@@ -69,7 +70,8 @@ def POST_Signavio(query={},workspace_name="Process AI",auth={}, system_instance=
             query_request.raise_for_status()
         except requests.HTTPError as ex:
             # possibly check response for a message
-            raise ex  # let the caller handle it
+            #raise ex  # let the caller handle it
+            return({"requests.HTTPError":ex})
         except requests.Timeout:
             print("request took too long")
         
@@ -196,4 +198,11 @@ get_process_views={
         "subjectId": "demo01-1"
     },
     "query": "query subjectViews($subjectId: ID!) {\n  subjectViews(subjectId: $subjectId) {\n    ...SubjectView\n    __typename\n  }\n}\n\nfragment SubjectView on SubjectView {\n  id\n  name\n  isDefaultView\n  isAccessView\n  columns {\n    ...SubjectViewColumn\n    __typename\n  }\n  users {\n    ...SubjectViewUser\n    __typename\n  }\n  __typename\n}\n\nfragment SubjectViewColumn on SubjectViewColumn {\n  name\n  isVisible\n  dataType\n  processVariableId\n  filter {\n    ... on SubjectViewColumnDateTimeFilter {\n      startDate\n      endDate\n      type\n      processVariableId\n      __typename\n    }\n    ... on SubjectViewColumnChoiceFilter {\n      includes\n      excludes\n      type\n      processVariableId\n      __typename\n    }\n    ... on SubjectViewColumnNumberFilter {\n      min\n      max\n      type\n      processVariableId\n      __typename\n    }\n    __typename\n  }\n  __typename\n}\n\nfragment SubjectViewUser on SubjectViewUser {\n  id\n  role\n  entity {\n    ...UserOrGroup\n    __typename\n  }\n  __typename\n}\n\nfragment UserOrGroup on UserOrGroup {\n  ... on User {\n    ...User\n    __typename\n  }\n  ... on UserGroup {\n    ...UserGroup\n    __typename\n  }\n  ... on Everyone {\n    ...Everyone\n    __typename\n  }\n  __typename\n}\n\nfragment Everyone on Everyone {\n  type\n  __typename\n}\n\nfragment User on User {\n  id\n  firstName\n  lastName\n  name\n  email\n  type\n  __typename\n}\n\nfragment UserGroup on UserGroup {\n  id\n  name\n  type\n  __typename\n}\n"
+}
+
+
+get_workspaces={
+    "operationName": "Session",
+    "variables": {},
+    "query": "fragment SessionUser on User {\n  id\n  mail\n  name\n  isAdmin\n  language\n  isExpired\n  privileges\n  __typename\n}\n\nquery Session {\n  session {\n    id\n    showMultiLanguage\n    isTechnicalWorkflowUser\n    locales\n    tenantLanguage\n    canCreate\n    createPrivileges {\n      editor\n      jm\n      dictionary\n      __typename\n    }\n    tasksUrl\n    isSamlConfigured\n    samlShareUrlPattern\n    sriRegion\n    version\n    isHubNextEnabled\n    user {\n      ...SessionUser\n      __typename\n    }\n    workspaces {\n      id\n      name\n      __typename\n    }\n    activeWorkspace {\n      id\n      name\n      __typename\n    }\n    analyticsAPIKey\n    __typename\n  }\n}\n"
 }
