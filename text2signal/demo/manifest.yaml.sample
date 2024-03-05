@@ -1,0 +1,16 @@
+---
+applications:
+- name: text2signal-app
+  routes:
+    - route: text2signal.internal.cfapps.eu12.hana.ondemand.com
+  buildpack: python_buildpack
+  path: .
+  memory: 512M
+  command: export PYTHONPATH=/home/vcap/app && streamlit run 01_gui_signvio_signal_main_page.py --server.port 8080
+  env:
+    AZURE_OPENAI_API_FT_KEY:
+    AZURE_OPENAI_FT_ENDPOINT:
+    AZURE_OPENAI_BASE:
+    AZURE_OPENAI_KEY:
+    AZURE_OPENAI_MODEL:
+    AZURE_OPENAI_DEPLOYMENT:

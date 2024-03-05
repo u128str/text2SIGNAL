@@ -37,9 +37,11 @@ streamlit run notebooks/01_gui_signvio_signal_main_page.py
 
 Install Cloud Foundry cli following the steps from [cf](https://github.com/cloudfoundry/cli).
 
+`brew install cloudfoundry/tap/cf-cli@7`
+
 Make sure that you can execute the deployment script
 
-`chmod 755 demo/deploy-app.sh`
+`chmod 755 demo/deploy-app.sh`  
 
 Then you can use the provided shell script:
 

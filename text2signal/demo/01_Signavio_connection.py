@@ -1,5 +1,6 @@
 # This is first starting page for Text2Signal SandBox UI
 # $ streamlit run notebooks/01_gui_signvio_signal_main_page.py 
+# streamlit run 01_Signavio_connection.py 
 
 import streamlit as st
 import requests
@@ -10,7 +11,7 @@ st.set_page_config(
 )
 
 image_width=int("400")
-image_file_name="notebooks/pages/sap-signavio-logo-colored.svg"
+image_file_name="images/sap-signavio-logo-colored.svg"
 with st.sidebar:
     st.image(image_file_name, width = image_width)    
 
@@ -19,13 +20,13 @@ with st.sidebar:
 st.markdown("# Signavio connection tab ")
 
 
-import hmac
+#import hmac
 import pandas as pd
 
 #Signavio
-from signavio_lib import credentials_actualization, POST_Signavio
-from signavio_lib import q_list_processes, create_investigation, list_of_investigations
-from signavio_lib import q_list_columns, query_investigation_details, get_process_views, get_workspaces
+from sources.signavio_lib import credentials_actualization, POST_Signavio
+from sources.signavio_lib import q_list_processes, create_investigation, list_of_investigations
+from sources.signavio_lib import q_list_columns, query_investigation_details, get_process_views, get_workspaces
 
 from datetime import datetime
 from collections import deque 
@@ -285,7 +286,8 @@ def create_new_investigation():
             
             # select latest process_views
             create_investigation["variables"]["investigation"]["viewId"]=st.session_state.process_views["data"]["subjectViews"][-1]["id"]
-            investigation = POST_Signavio(query=create_investigation,workspace_name=st.session_state["workspacename"],auth=st.session_state["auth"])
+            workspace_name=st.session_state["workspaceid"]
+            investigation = POST_Signavio(query=create_investigation,workspace_name=workspace_name,auth=st.session_state["auth"])
             #print("NEW INV:",investigation)
             #st.write (investigation)
             #st.session_state["investigation"]=investigation

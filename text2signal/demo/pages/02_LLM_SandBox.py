@@ -37,16 +37,16 @@ from chromadb.utils import embedding_functions
 
 # Signavio
 import pandas as pd
-from signavio_lib import q_list_columns
-from signavio_lib import query_to_api_signal, query_to_api_table
-from signavio_lib import credentials_actualization, POST_Signavio
+#from sources.signavio_lib import q_list_columns
+from sources.signavio_lib import query_to_api_signal, query_to_api_table
+from sources.signavio_lib import credentials_actualization, POST_Signavio
 
 from collections import deque 
 
 st.set_page_config(page_title="Signavio LLM-SandBox", layout="centered")
 
 image_width=int("400")
-image_file_name="notebooks/pages/sap-signavio-logo-colored.svg"
+image_file_name="images/sap-signavio-logo-colored.svg"
 with st.sidebar:
     st.image(image_file_name, width = image_width)  
 
@@ -73,7 +73,7 @@ if os.path.exists(env_path):
 title = os.environ.get("TITLE", "")
 text_input_label = os.environ.get("TEXT_INPUT_LABEL", "Provide your NLP description for Signal")
 ### image_file_name = os.environ.get("IMAGE_FILE_NAME", "./signavioPI.png")
-image_file_name=os.environ.get("IMAGE_FILE_NAME","notebooks/pages/sap-signavio-logo-colored.svg")
+image_file_name=os.environ.get("IMAGE_FILE_NAME","images/sap-signavio-logo-colored.svg")
 image_width = int(os.environ.get("IMAGE_WIDTH", 280))
 
 # llm
@@ -83,20 +83,13 @@ You are SIGNAL assistant, a part of SAP Signavio's Process Intelligence Suite. \
 """
 system = os.environ.get("SYSTEM", signavio_assistant_profile)
 
-#api_base = os.getenv("AZURE_OPENAI_BASE")
-#api_key = os.getenv("AZURE_OPENAI_KEY")
-#api_type = os.environ.get("AZURE_OPENAI_TYPE", "azure")
-#api_version = os.environ.get("AZURE_OPENAI_VERSION", "2023-05-15")
-#engine = os.getenv("AZURE_OPENAI_DEPLOYMENT")
-#model = os.getenv("AZURE_OPENAI_MODEL")
-#api_base = os.getenv("AZURE_OPENAI_BASE")
 
 # Working
 api_type = os.environ.get("AZURE_OPENAI_TYPE", "azure")
 api_version = os.environ.get("AZURE_OPENAI_VERSION", "2023-12-01-preview")
 api_key= os.getenv("AZURE_OPENAI_KEY")
 model = os.getenv("AZURE_OPENAI_DEPLOYMENT", "gpt-35-turbo-0613-text2signal-1epoch-lrm-5") # 1 epoch lr*5 
-azure_endpoint=os.getenv("AZURE_OPENAI_FT_ENDPOINT")
+azure_endpoint=os.getenv("AZURE_OPENAI_BASE")
 # Signavio
 
 
@@ -153,10 +146,10 @@ openai_ef = embedding_functions.OpenAIEmbeddingFunction(api_key=api_key,
                                                         model_name="text-embedding-ada-002")
 
 # Chromadb
-file_path='notebooks/text2signal_train_5715.jsonl'
-file_path='notebooks/probe.jsonl'
+file_path='sources/text2signal_train_5715.jsonl'
+#file_path='notebooks/probe.jsonl'
 path_db="chromadb_embeddings"
-collection_name="my_collection_5"
+#collection_name="my_collection_5"
 collection_name="collection_5715_train_set"
 
 if Path(path_db).is_dir():
@@ -625,10 +618,12 @@ def add_llm_usage(reason=""):
 
 # --------------- > UI
 
+st.sidebar.markdown(f"# Signavio connection details")
 st.sidebar.write(f":red[USER:] {st.session_state.username}")
-st.sidebar.write(f'Process: {st.session_state.active_investigation_details["data"]["subject"]["name"]}')
-st.sidebar.write(f"Investigation: {st.session_state.active_investigation_details['data']['investigation']['name']}")
-st.sidebar.write(f"view: {st.session_state.active_investigation_details['data']['investigation']['view']['id']}")
+st.sidebar.write(f":green[Workspace:] {st.session_state.workspace_name['name']}")
+st.sidebar.write(f':green[Process:] {st.session_state.active_investigation_details["data"]["subject"]["name"]}')
+st.sidebar.write(f":green[Investigation:] {st.session_state.active_investigation_details['data']['investigation']['name']}")
+st.sidebar.write(f":red[view:] {st.session_state.active_investigation_details['data']['investigation']['view']['id']}")
 
 # Create a 3-column layout. Note: Streamlit columns do not properly render on mobile devices.
 # For more information, see https://github.com/streamlit/streamlit/issues/5003

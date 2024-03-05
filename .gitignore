@@ -159,3 +159,10 @@ notebooks/external_gits
 
 .env_aicore
 poetry.lock
+
+.venv1
+.venv
+text2signal/demo/manifest.yaml
+
+text2signal/demo_old
+text2signal/demo/manifest.yaml
